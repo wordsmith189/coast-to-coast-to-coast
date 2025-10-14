@@ -1,0 +1,460 @@
+---
+title: "Canadian language attitudes from 'coast to coast to coast': On the pluricentricity of English"
+author:
+  - name: Stefan Dollinger
+    affiliation: University of British Columbia
+  - name: Lars Hinrichs
+    affiliation: The University of Texas at Austin
+format: html
+editor: visual
+---
+
+# 1 Introduction
+
+The present paper explores key aspects of the linguistic autonomy and the character, recognition and social embedding of “Standard Canadian English”. A focus on the standard of a given context, its conceptualization, perception and discursive construction is sociolinguistically relevant for several reasons. One can argue that attitudes towards a standard variety shape other aspects of linguistic practice. As sociolinguists are not immune to wider social developments we may expect shifting interpretations over time. For instance, while the first generation of Canadian linguists tended to emphasize differences  between Canadian English and other varieties, above all American English (e.g. Avis et al. 1967, Scargill 1974), the linguistics of Canadian English has seen a different effect in the era of the free trade negotiations of the 1980s and early 1990s[\[1\]](#_ftn1). This period was marked by statements as to the weakness of Canada-US border as a linguistic divide (e.g. Chambers 1980, Warkentyne & Brett 1981: 307, Warkentyne 1983: 73), or even to its irrelevance (e.g. Woods 1993: 174). The latter point is only occasionally echoed in more recent writings (e.g. Sadlier-Brown 2012: 547).
+
+What generally unites these claims, however, is the lack of a comparative US sample in addition to Canadian samples, which means that US usage is inferred from circumstantial evidence (e.g. dictionary and usage guides, or general impressions) but not based on data collected in the same way as on the Canadian side. Whenever a more rigorous design is brought to study cross-border linguistic influences, however, the relevance  of the Canada-US border is shown and its linguistic effects – subtle yet consistent – become evident (e.g. Chambers 1994, 2000; Boberg 2000, Boberg 2005, Boberg 2008; Dollinger 2012) and the pluricentric character of North American English – with a dominant US Standard and a non-dominant Canadian Standard – is accepted.
+
+By “pluricentric” we refer to pluricentric theory as applied by Clyne (1995) and Muhr (2025). A pluricentric language is defined as “a language with several interacting centres, each providing a national variety with at least some of its own (codified) norms” (Clyne 1995: 20). The notion of centre is to be taken in an abstract manner, there is not need for a physical centre (as in Canada), though there often is.  In the context of pluricentric languages, it is noteworthy that “contiguous varieties” of the same language, such as Canadian and American English, or, in the European context, Austrian German and German German or Netherlandic and Belgian Dutch, have traditionally been faced with disciplinary scepticism that questions the reality of younger linguistic varieties varieties  (e.g. Scherr & Ziegler 2023).
+
+By contrast, “non-contiguous varieties”, i.e. those separated by a sea border such as Australian and New Zealand English, or Irish English and English English, have been recognized as autonomous more easily. Such questions of dominance (heteronomy) or non-dominance (autonomy) are part and parcel of the sociolinguistic theory of linguistic pluricentricity (e.g. Clyne 1984, 1995, Muhr 2012, Dollinger 2019b). The terms “dominant” and “non-dominant” derive from Clyne (1995) to express that the social fact that the “relation \[between pluricentric varieties\] is usually asymmetric and the norms of the dominant variety are preferred” in some contexts (Muhr 2025: 17-18).
+
+Based on a language attitudinal questionnaire, the present paper explores notions of the “standard” for Canadian English and notions of linguistic autonomy as central tenets of pluricentric theory. It is structured in the following way: after a brief overview of existing attitudinal work on Canadian English, we will first introduce the present data set, collected in late 2023. We will then discuss the main results, correlations and modelling effects for the 3000-respondent-survey. In a next step, the findings will be placed into the context of existing literature on language attitudes and perceptions and Canadian English, before they are interpreted in the larger framework of the sociolinguistic theory of pluricentricity. It will be highlighted that pluricentricity has been the dominant approach in the sociolinguistics of World Englishes and that other concepts, purported to stand in competition or to “complement” pluricentricity, appear in philological frames that not only face decolonial or dehegemonic challenges (e.g. Oakes 2021, Dollinger 2025a, 2025b) but that appear to be epistemologically fraught (Dollinger 2019b).
+
+As pluricentric modelling does not lend itself well to data-driven perspectives that disregard the social salience of variables and speaker attitudes (e.g. Elspaß et al. 2025, Scherr & Ziegler 2023), we recognize the central role of speakers’ emic perspectives, i.e. the cognitive representation of multiple standard varieties in North America, in addition to etic dimension, i.e. linguistic production. Following de Cillia & Ransmayr (2019), we employ non-linguistic terminology in our questions to probe the identification, conceptualization, and acceptance of a non-dominant standard variety, in our case Standard Canadian English (StCanE) in opposition to Standard American English, as indicative of multiple standards and thus linguistic pluricentricity in North America.
+
+# 2 Literature
+
+Following Leitner (1992), two English varieties can be considered dominant today: Standard English English and Standard American English. All other varieties, including Standard Canadian English, are non-dominant varieties (e.g. Clyne 1992, originally called “non-dominant” “other” varieties) and are particularly prone to the effects of linguistic insecurity (Preston 2013). It is one purpose of this study to assess the belief of Canadians in the linguistic autonomy of their own standard, Standard Canadian English.
+
+A few studies have hitherto investigated the phenomenon of linguistic attitudes and have either focussed on impressionistic assessment or on the linguistic insecurity among Canadian English speakers. Chambers (1986) surmises that Canadians, because of a higher degree of variation in spelling across provinces, are generally not favourable towards linguistic standards. Attitudinal data at the time suggested that Canadian English was orienting towards an American Standard in the early 1980s, although 1 in 4 Winnipeggers still considered the British form as “correct” (Owens and Baker 1984: 349).
+
+Earlier attitudinal work sought to correlate measurements of attitudes towards country and statehood with linguistic features. Warkentyne (1983) and Gulden (1979) report on the same study, conducted in 1977 at the University of Victoria undergraduate in linguistics cohort. Gulden (1979: 45) reports on 64 students, while Warkentyne (1983: 72) speaks of “68 Canadian-born in two introductory English linguistics courses”, and “most of them indicated” to be “preparing for a career as teachers of English” (Gulden 1979: 45). Their results, however, are completely identical.
+
+**The 1977 UVic student study**
+
+The UVic study assessed on the one hand respondents’ general attitudes towards Canada, the US and the UK and on the other measured more specifically Canadian national identity with three questions:
+
+a\. questions about an obligation to buy Canadian products,
+
+b\. an evaluation of Canadian-produced TV programmes,
+
+c\. and a direct question about the existence of a Canadian national identity
+
+(Gulden 1979: 57)
+
+The study assessed attitudes on a scale from -1 (negative) to +1 (positive). General national identity was assessed at +0.292, so slightly positive in this student cohort of a median age of 23, while for the linguistic items the score was lower with +0.193, leading the researchers to conclude that “This group of Canadians does not feel very strongly about speaking a distinctive variety of English called Canadian English” (Gulden 1979: 58, Warkentyne 1983: 73, Table 1). The linguistic assessment was based on the following questions:
+
+d.     Is the language of CBC announcers the standard for spoken Canadian English?
+
+e.     Should a Canadian be offended if people from other countries consider him to be an American?
+
+f.      How should he feel if taken for British?
+
+g.     Does it make sense at all to speak of Canadian English as different from American and British English?
+
+Answer options appeared in six intervals from -1 (negative) to +1 (positive). Some of these questions appear somewhat loaded (“does it make sense at all”; would a classification of Canadians as Americans “offend” a Canadian). In our questionnaire, similar questions were  used in the present study with there-extrapositions or Yes/No questions on Likert scales.
+
+Interesting in this context is the finding that questions “asking about Canadian identity directly show the most positive answers” (ibid: 58), which would relate to questions \[c\] and \[g\] above. For question \[c\] the value is +0.563, for the linguistic identity, \[g\], it is +0.344. It is possible that the rather negative framing of \[g\] underreported linguistic identity assessments, leading Gulden to summarize that “Canadians, or at least the present group, seem to believe in their national and linguistic identity, possibly more so than the low value of the entire \[compound\] variable would suggest” (ibid: 58) and lists as possible causes “an unfortunate choice of questions and/or by intervening factors such as modesty or insecurity” (ibid: 109). We have reason to assume that linguistic insecurity needs to be mitigated against, especially in non-dominant standard variety settings, such as Canadian English.
+
+The study’s general national identity results, however, do not always fare positively for Canadian-ness. As Table 1 shows, the teacher’s degree students rated the U.S. “higher as a country in general” over Canada (ibid: 115), and, more strongly so, the U.K. over Canada and the U.K over the US:
+
+|     |                                  |     |        |     |
+|-----|----------------------------------|-----|--------|-----|
+|     |                                  |     |        |     |
+|     | (1)   Preference ratings         |     |        |     |
+|     |                                  |     |        |     |
+|     | US (-1) vs. Canada (+1)          |     | -0.219 |     |
+|     |                                  |     |        |     |
+|     | UK (-1) vs. Canada (+1)          |     | -0.382 |     |
+|     |                                  |     |        |     |
+|     | UK (-1) vs. US (+1)              |     | -0.395 |     |
+|     |                                  |     |        |     |
+|     | UK (-1) vs. US (+1) benefits     |     | -0.307 |     |
+|     |                                  |     |        |     |
+|     | (2)   Canadian national identity |     | +0.292 |     |
+|     |                                  |     |        |     |
+|     | Canadian linguistic identity     |     | +0.193 |     |
+|     |                                  |     |        |     |
+|     | (3)   Personality ratings        |     |        |     |
+|     |                                  |     |        |     |
+|     | Americans                        |     | +0.129 |     |
+|     |                                  |     |        |     |
+|     | British                          |     | +0.222 |     |
+|     |                                  |     |        |     |
+|     | Canadians                        |     | +0.205 |     |
+|     |                                  |     |        |     |
+
+Table 1: Attitudinal ratings in 1977, UVic students (Warkentyne 1983: Table 1)
+
+The fourth line in the preference ratings refers to impressions of the perceived benefits that an association with the UK or the US offers to Canada. In 1977, this sample was clearly on the UK side. More generally, British people were rated more positively than Canadian people, but the Americans the lowest. Warkentyne comments that the “low scores on the items concerning Canadian identity should allay any fears that nationalism may be carried to the extreme” (1983: 73). Discussing correlations, including those about self-ratings and satisfaction in general, Gulden concludes “a striking combination”: “those who do not have a very high opinion of themselves or any other people (except Americans) are more likely to favour the U.S. over the U.K.” and those who show a high self-evaluation “are correlated with a preference for the U.K. over the U.S.” (ibid: 123-4).
+
+**The 2000s: an increase of Canadian linguistic awareness**
+
+A generation later, studies that use direct questions to assess respondents’ attitudes towards linguistic autonomy found that scores had markedly improved, with considerable majorities offering affirmative responses. A 2009 Vancouver study found that:
+
+-   81% believed that “there is a Canadian way of speaking English”
+
+-   73% claimed to be able to “tell Canadian English speakers from American English speakers”
+
+-   69% considered “Canadian English are part of \[their\] Canadian identity"
+
+-   74% wanted Canadian English “taught in schools, using Canadian dictionaries, grammars etc.” (2009 data, Dollinger 2020: Table 4.5)
+
+Positive assessment can also be seen in terms of domestic linguistic attitudes. McKinnie & Dailey-O’Cain (2002) polled Ontarians’ and Albertans’ assessments of “pleasantness” and “correctness” of varieties of Canadian English. In terms of “correctness”, both Albertans and Ontarians consider BC English as most correct (ibid: 283). A paper on 6–12-year-old elementary students and their parents in BC and Alberta found that 69% considered the Standard Canadian English speaker as “sounding Canadian”, while the Mandarin and Cantonese-accented speaker scored 26 and 23% respectively (Dollinger, Chan, Pasula & Maag 2024: 326). This difference shows “a bias towards a StCanE accent which we attribute to the forcefulness of standard language ideology in Canada” (ibid). It was also shown that “the multilingual speaker is less tolerant towards L2-accented English than monolingual speakers” (ibid: 329).
+
+What is available to date for assessments of Standard Canadian English are province-related findings from Manitoba, Alberta, Ontario and BC, but no study of national scope. One recent exception is Freake (2023: 196-7), a perceptual dialectology and language regard study on Canadian English with a national sample, confirming perceived dialect regions within the country. The present study hits in the same curb by offering solid data from all provinces and territories. It intends to gauge to what degree “Canadian English has become a reality for many of its speakers” (Dollinger 2019a: 224).
+
+# 3 The data
+
+The data was collected with a questionnaire of 25 language attitude and usage questions, which was complemented by 14 social background question. Data was collected with 18 students in an upper level English linguistics seminar at UBC (ENGL 489, Language Majors Seminar) in November and December 2023. The questionnaire can be accessed online. Over 3000 responses were collected, from all ten provinces and three territories, of which up to 3001 were used in the analysis. Table 1 shows the absolute  numbers of responses by place of residence (Live now) and formative region, that is the region in which at least 9 years during the formative years 0-18 were spent. Because of low returns from residents of the territories (one from Nunavut (1) and case numbers in the mid-teens from Yukon and Northwest Territories), we created a class for “north of sixty” (degrees of latitude) territories, TR.
+
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | **Province/Territory** |         | **Live now (n)** |         | **Formative region (n)** |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | BC                     |         | 628              |         | 444                      |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | AB                     |         | 663              |         | 506                      |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | SK                     |         | 277              |         | 278                      |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | MB                     |         | 327              |         | 295                      |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | ON                     |         | 450              |         | 520                      |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | QC                     |         | 123              |         | 105                      |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | NB                     |         | 47               |         | 36                       |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | NS                     |         | 46               |         | 45                       |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | PE                     |         | 62               |         | 45                       |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | NL                     |         | 42               |         | 42                       |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | TR                     |         | 35               |         | 10                       |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | **Canada total**       |         | **2700**         |         | **2326**                 |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | US                     |         | 93               |         | 127                      |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | UK                     |         | 0                |         | 32                       |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | others                 |         | 208              |         | 482                      |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         | **TOTAL**              |         | **3001**         |         | **2967**                 |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+|         |                        |         |                  |         |                          |         |
++---------+------------------------+---------+------------------+---------+--------------------------+---------+
+
+Table 1: Absolute frequencies: locations
+
+Response numbers by age and gender are depicted in Figure 1. As can be seen, the cohort 20-24 is best represented, with females typically outnumbering males. Non-binary respondents are best represented in the cohorts from 20-49.
+
+# 4 Results & Discussion
+
+In the first section we aim to connect public discourse and use of language reference tools with language attitudinal data. We will use several single variables and some indices that will, overall, allow us to interpret the strength of the notion of “Canadian English” as a standard variety in the minds of its speakers and with it the role of the pluricentricity of English in North America.
+
+**Attitudinal autonomy in CanE**
+
+Figure 2 offers an overview of six key questions which were asked of Canadian residents (this includes transient residents, e.g. foreign students). Combining the answers of “Definitely yes” and “Probably yes”, the notion of an autonomously “Canadian way of speaking” is confirmed by 70.1%, with 9% undecided. Compared with 81.1% from 2009 from a six-point scale, the present five-point scale probably more closely reflects the actual state of attitudes. Similar percentages, 68% see CanE as a “distinct kind of English”, like American or British English. On the question of spelling, the sample is more divided, with more undecided ones (26.4%) than definite yeses (24.8%). This is somewhat add odds with almost 39% “definitely” confirming that Canadian universities should encourage Canadian spelling and a clear 78% wish to have a Canadian spelling option in software applications, with 12% undecided. Lastly, in terms of a free digital dictionary of CanE, nearly 71% claim they would use it.
+
+Figure 1: Absolute frequencies: age and gender for formative years in Canada
+
+With such answers the linguistic autonomy of Standard Canadian English seems well enshrined at this point, confirming the 2009 data overall and showing considerable differentiation from the early 1980s, when “Americanization” was the most virulently discussed attribute of Canadian English. This change in outlook is remarkable and warrants a closer look at the social distribution of those who recognize Canadian English – most commonly through its standard that had been documented and fully codified as a distinct variety of English by 1967 (Gregg 1993, Dollinger 2019: 131-32).
+
+**Familiarity with “Standard Canadian English”**
+
+While “Canadian English”, as a slur, dates to 1857 (DCHP-3, s.v. “Canadian English”), “Standard Canadian English” (StCanE) is a concept that has been discussed in linguistic circles only since the 1970s. It is in pluricentric theory the key concept whose understanding is a *sine-qua-non* for an appreciation of the linguistic autonomy of a variety, i.e. Canadian English. In the public and in schooling, however, uptake of StCanE as a term and autonomous concepts has been slower. While the public perception of a “Canadian English” has been strong, related discourse is subject to considerable fluctuation.  Figure 3 (left) shows data to that effect, which compares the use of Canadian dictionary titles in domestic media since the 1970s with the frequencies of the term “Canadian English” (“Canadian Newsstream” database) from 1980 to the end of 2024, shown in Figure 3 (right).
+
+In general, the 1980s and 1990s were a period of increasing language awareness in Canada, with the uptake of Canadian dictionary titles lagging behind an increase or decrease of the phrase “Canadian English” in the media by a period of five years. The more the concept is discussed, the more Canadian dictionary titles are used as reference sources in the media. The years 1996-1998 have been the most productive years in Canadian English dictionary publishing so far, with four full-size titles appearing. The sole winner, the *Canadian Oxford Dictionary* of this Canadian dictionary war, however, was shut down in 2008, which led to US titles being the most prevalent ones, as Figure 3 (left) shows. Today, the *Canadian English Dictionary* is scheduled to take over that function when finished (Chew 2025).
+
+That is as much detail as can be extracted from corpus searches. We aim use the current study to fill in some gaps in interpretation. Figure 4 summarizes the respondent’s general familiarity with the term “Standard Canadian English” or “Canadian Standard English” by region, that is by their formative years (“have you heard the term…”).  We assigned a province/territory or country to those who spent at least nine years in their ages 0-18 in one location and show the Canadian as well as the US and UK responses for comparison.
+
+Figure 4 depicts the 10 Canadian provinces (BC to NL) and one plot for the three Canadian Territories (TR), completed by the UK and US respondents. Most often respondents reported having heard the term “Standard Canadian English” in New Brunswick (NB), followed by Ontario (ON), British Columbia (BC), Alberta (AB), Quebec (QC), Manitoba, Sasktachewan. These seven provinces show significant differences between yes and no. The Maritime provinces, Nova Scotia (NS) do not reach significance, though more have heard the term, while in Prince Edward Island (PEI) those who haven’t heard are in the majority, there’s a tie in the Territories (TR). The UK respondents are more exposed to the term than people raised in Manitoba (MB), Newfoundland and Labrador (NL) and [Saskatchewan (SK)]{.underline}.
+
+The Americans (US) in our sample, all of whom likely with some ties to Canada as an artefact of our data collection method (snowball method), are more familiar with the term than Nova Scotians (NS) and Prince Edward Islanders (PE). The assumption is that if speakers are familiar with Standard Canadian English they are more likely to comprehend the social relevance of the variety as a marker of identity. Such awareness would therefore be strongest in New Brunswick (which sets it apart from the other Atlantic Provinces NS, PE and NL), followed by Ontario, then BC and Alberta.
+
+Figure 5 shows exposure to “Standard Canadian English” with respondents’ status of multilingualism. Monolingual speakers, socialized in Canada, are significantly less likely to “have heard” of “Standard Canadian English” or “Canadian Standard English”. Monolinguals are more likely to have a “default” of “English unspecified” as a variety and need to learn to appreciate the special characteristics of Standard Canadian English.
+
+Figure 5 shows that Multilinguals who  were raised in Canada are significantly more likely than Monolinguals to have heard about Standard CanE. What, however, do they understand by the term, which is used in specialist circles, but very little in public discourse today (Figure 3 right, 2020-24 period)?
+
+An open answer field solicited definitions of Standard Canadian English, with the options to decline (“don’t know what it is”, “do know it but cannot describe it well”), was designed to yield only the answers of the confident respondents in that aspect, some of which are reproduced in Table 2 below:
+
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | Responses to “Do you know what “Standard Canadian English?”                                                                                                               |     | Social characteristics                                                                                                  |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 1.     “English used **across the country**”                                                                                                                              |     | 15-19, US-raised, female now in Montreal for UG), fluent English & Spanish, French advanced; Ashkenazi                  |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 2.     “It's a **normalised pronunciation** of English that one would hear in somewhat formal broadcasts from the **CBC**”                                                |     | early 60s, male, but L2 multilingual, English & French fluent, Italian intermediate, Spanish & Chinese beginner         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 3.     **Useless spelling** when the **USA** is right next door and is most of our media                                                                                  |     | Bilingual Quebecker, lived in QC, BC and in the USA during formative years, 30-34, male.                                |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 4.     “I assume it is the Canadian English **of the dominant group (socially, in number)** and that corresponds to what one would hear in **mainstream media**.”         |     | Montrealer, 50s, female, Francophone + Anglophone (Bilingual in the official sense), intermed. Italian                  |    |
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 5.     English but with **Canadian (more British)** spellings and vocab, maybe pronunciation.                                                                             |     | University student in 2^nd^ year, 15-19, male, from Edmonton, AB, monolingual                                           |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 6.     It is the English that includes words used in a **Canadian context**, or spelled in the way Canadians are accustomed to spelling them.                             |     | Nanaimo, female BC resident, 40-44, grew up in Ontario, Anglophone with intermediate French                             |    |
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 7.     Canadian English per the **Canadian Oxford dictionary**. Or **"CBC English"**                                                                                      |     | BC resident, female, 30-34, grew up in Calgary, AB, multilingual                                                        |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 8.     The English dialect largely spoken in **Ontario and western Canada**                                                                                               |     | Saskatchewanian, male, 30-34, multilingual  (fluent in English, French); Spanish, Japanese, Mandarin (intermediate)     |    |
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 9.      It is the standard dialect used in Canadian classrooms, by **Canadian media**, by **Canadian government**, etc.                                                   |     | Montrealer, Italian-Canadian, 20-24, multilingual                                                                       |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     | 10.   English spoken by people who primarily **grew up** or acquired their English **in Canada**                                                                          |     | Chinese-Canadian Montrealer, fluent in Mandarin and English, intermed. French, 20-24                                    |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+|     |                                                                                                                                                                           |     |                                                                                                                         |    |
++-----+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----+-------------------------------------------------------------------------------------------------------------------------+----+
+
+Table 2: Select responses to the question “Do you know what “Standard Canadian English” is?
+
+Of the ten descriptions of Standard Canadian English, notions of widespread use (1, 4, 6), media (2, 4, 7, 9), more British influence (5), a regional dimension (8) and socialization in Canada (10) are recurring themes, with occasional sceptics (3). What is striking is that the attribute of “educated”, normally a mainstay in standard variety definitions, is absent. Trudgill & Hannah (2017: 6) speak of a “North American English (NAmEng), meaning English as written and spoken by educated speakers in the United States of America and Canada”, though a definition rooted in educated speech does not feature prominently in the responses, with only three in the entire sample mentioning “educated” speakers.
+
+            The next question asked, “Do you know what ‘Standard Canadian English’ (or ‘Canadian Standard English’) is?”. Figure 6 only shows the ones that were able to answer “Yes” to that question. There were two Yes-categories: “Yes, but I can’t describe it well” and those that did offer a description (n for both Yes-categories was 1513 or 48.2%). While the data in Figure 6 is significant for age, visual inspection shows that starting at 25-29 virtually no change is visible in the two lines. This means that the youngest age cohorts 14 and under, 15-19 and 20-24 are the ones that produce significance for age. In other words: once the university years are over and basic education is completed, there is no change in knowledge about the standard: only some 25% of those how know what Standard Canadian English is are able to describe it in some form.
+
+One additional issue is that the older teenagers are the age cohort that is the least likely to know what StCanE is. Only 10 of the 116 youngsters aged 15-19-years and socialized in Canada (162 overall, including newcomers) know what “Standard Canadian English” is, which raises the question how English is taught at Canadian schools, without using this key concept in pluricentric theory. Failure to teach the concept of linguistic pluricentricity in school may offer an explanation why the monolingual speakers (Figure 5) are less likely to have heard about StCanE than multilinguals, which leaves the monolinguals potential for linguistic identity formation untapped.
+
+**“Canadian way” of speaking**
+
+Another way of gauging the awareness of StCanE is to ask about a “Canadian way” of speaking, (Dollinger 2020: 63, Table 4.5). Without using linguistic terminology of standard varieties, the respondents answer with a personal assessment or impression. Figure 7 shows the results for Canadian residents and those who spent their formative years in Canada (left). Those growing up in Canada see consistently more a “Canadian way of speaking”. Figure 7 (right) divides the “formative years” on the left by gender, suggesting that females overall play a more important role than males in that process, with non-binaries numerally too weak to make a difference.
+
+The recognition of this expression of linguistic autonomy seems to be  predominantly female-led. In terms of age, we see a slight decrease among the younger cohorts, which to a degree will correlate with education: as we will see below, the more educated a respondent is, the more likely they are to recognize Standard Canadian English.
+
+**Standard Language Attitude Index (SLAI)**
+
+A further attempt to gauge awareness of standard varieties is via a composite Index SLAI. The original concept of combining five factors was reduced to four due to low internal consistency with the last factor (Have you heard the term “Standard Canadian English”), which was treated separately above. SLAI averages the following four variables at the level of the individual respondent.[\[1\]](#_ftn1)
+
+-   **Spell_uni**: Do you think Canadian university departments should encourage Canadian English spelling in academic work?
+
+-   **spell**: Do you think that Canadian spelling is important (e.g. "colour" instead of "color", "familiarize" not "familiarise")?
+
+-   **distinct**: In your opinion, is Canadian English a distinct kind of English (e.g. similar to American English being distinct from British English)?
+
+-   **cdn_way**: In your opinion, is there a Canadian way of speaking English?
+
+An internal consistency test of the SLAI revealed an overall Cronbach 𝛼 of 0.7 suggesting that the index meets the consistency threshold for research work proposed by Nunnally & Bernstein (1994).
+
+Figure 8 shows the distribution of SLAI with Education as explanatory variable, a significant effect (p\<0.05 for all education levels). Figure 8 shows that recognition of StCanE increases regularly with highest level of education completed.
+
+When we introduce Gender into the mix, which tested as significant, a more nuanced picture emerges that allows us to distinguish between English monolingual speakers and multilingual speakers on another level. Among the monolinguals, shown in Figure 9 on the left, gender is more important as a predictor than among the multilinguals (shown on the right). Specifically, monolingual (young) females with only an elementary school education are considerably more positive towards Standard Canadian English, expressed via a higher SLAI, than their male counterparts. A gap that is second widest among those with a graduate education. In the undergraduate segment, non-binary students are more sceptical than both males and females.
+
+For the multilinguals (right), males and females align much more closely with one another, with the notable exception of those who only completed elementary school, where males are again more sceptical. Note that non-binaries are, from high-school on, more sceptical, except those with a postgraduate degree, which have a slightly higher SLAI than both females and males in their cohort. 
+
+While the difference between male and female participants is clearest among respondents with *either* elementary education *or* those with a graduate degree, the countertrends for males on the one hand and females on the other can be shown in Figure 10:
+
+In monolinguals females have a higher SLAI than their multilingual peers. The same holds for non-binary speakers. For men, however, the trend is reverse, as multilingual speakers have a higher SLAI than monolingual speakers, which leads to a split between males and females as a significant variable overall.
+
+The effects explored here were entered into a linear regression model predicting respondent’s aggregate values for SLAI. Region, gender and education were found to make highly significant predictions, as shown in Table 3 below.
+
+**“Ethnic Orientation Index” and “English Use Index”**
+
+Given that speakers’ status as multilingual speakers has effects on the recognition of StCanE, the effect of a speaker’s ethnic group and one’s orientation towards that group – or lack thereof – seemed like a reasonable choice for further exploration. Ethnic heritage group membership has been a recent focus in work on CanE (e.g. Nagy 2024, Nagy, Hoffman & Walker 2020), going back to at least Hoffman & Walker (2010), whose concept of an EOI – Ethnic Orientation Index – was adapted for written questionnaire surveys such as ours and scaled down from 32 to just five questions:
+
+Yielding scores from 0 (not at all, not applicable) to 3 (very much) for each attribute, the scores range from 0 to 15. In the data set, 896 respondents reported an EOI (of the 2326 who spent their formative years in Canada, see Table 1). Of these 896 emic self-declarations, we accepted an etic EOI for 820. The remaining 76 self-reported distinct cultural group memberships of “White Canadian Settler”, or “English/ Scottish Canadian”, which we excluded. 
+
+Ethnic Orientation has no correlation with SLAI or with the key question of a “Canadian way of speaking”. As shown in Figure 4, Education does a good job in tuning speakers, regardless of their ethnic backgrounds, onto a positive wavelength for Canadian English; it does, however, do a much less impressive job teaching the necessary concepts for a full appreciation of pluricentric Englishes, as just a little over half of the population have ever heard of StCanE (Figure 4).
+
+Another measure is the “English Use Index” (EUI), inspired by Chambers & Heisler’s (1999) “Language Use Index”. The EUI gauges how frequently English is used based on six contexts:
+
+Average EUI is significantly different between the monolinguals and self-reported bi- and multilinguals. The low EUI (some non-English use) speakers are less convinced and high EUI speakers (considerable non-English use) even more so. The EUI suggests that monolinguals (EUI = 0) are driving the identification with Canadian English.  This is striking, as they are also the ones who are less likely to have heard of StCanE (Figure 5). The higher the EUI, the less likely one is to conceptualize Canadian English as an autonomous variety, though one is more likely to have heard about StCanE. The finding is consistent with multilingual children and their parents in a study in BC and Alberta (Dollinger et al. 2024). It may seem counter-intuitive that those who speak more than one language regularly would be less open towards the autonomy of Standard Canadian English but in the lived experiences – one may have learned American English in the Philippines before coming to Canada or UK English in Hong Kong – the Canadian dimension in English seems to be less important for the multilinguals who use their languages in one of the contexts.
+
+While we know from previous work that local terms “do not register with the bi- and multilinguals to the same degree” as in the long-term resident population (Dollinger 2012: 529), this explanation does not apply to the results shown here to the same degree as all spent at least 9 years from ages 0-18 in Canada. While among multilingual newcomers the adoption of Canadian items is an exception (only 1 in 5 local forms was used, in that study the term *homo milk* ‘whole milk’) (ibid: 529-30), some of this group’s often predominant UK forms reinforce Canadian English features that seem to “preserve some of the Canadian markers that local speakers seem to be losing” (ibid: 530).
+
+# 5 Conclusion
+
+The results show that roughly one in two respondents knows what StCanE is, while just 13% of respondents were able to offer a definition. As Figure 6 has shown, knowledge about the standard is low before age 25-29, it appears that the conceptual work relating to Canadian English is not carried out sufficiently in high school and elementary school but only at the post-secondary level. This is a remarkable feature of Canadian English, with Canadian schools displaying a kind of laissez-faire attitude regarding the linguistic standard (e.g. spell one way, but consistently).
+
+Students in elementary and secondary students are linguistically socialized in an unspecified construct of “standard English”, schematized in Figure 15 on the left. The pluricentric notion, shown in the right panel, with separate reference points for each national standard, appears late in the respondents’ learning biographies, after high school, and then captures only a fraction of the domestic population. Ethnicity does not affect preferences for a pluricentric view, but, as Figure 13 suggests, the frequency of English use does: the less often one uses English, the less likely one is to construct Canadian English as one of the “peaks” of English in Figure 15. The Canadian (functional) monolinguals are less likely to have heard of the domestic standard.
+
+The previous literature attests to an increase in linguistic awareness between the late 1970s and the early 2000s. In the 1977 UVic study a question about the CBC as the bearer of the Canadian standard was asked, and questions about subjective feelings when Canadians are mistaken for an American or British speaker, as well as whether a separate entity of Canadian English existed. These were reported in a composite index, however. An only mildly positive outlook in this category of “linguistic national identity” (+0.193 on a scale from -1 to +1) led to the conclusion that the group did “not feel very strongly about speaking a distinctive variety” (Gulden 1979: 58). In the early 2000s, 81% reported that, by and large, they believed in a “Canadian way of speaking English”.
+
+            In the present study, among those having grown up in Canada, a very similar share of 81.4% recognize a Canadian way of speaking in 2023. Women appear to be leading that change and maintenance of language awareness of Canadian English (Figure 7). The cognitive identification with Canada has important linguistic and perceptual repercussions. Swan and Babel (2018: 155), for instance, suggest that language ideologies and attitudes play a role in discriminating Canadians from Americans in perception studies, for which their data shows that “Seattle and Vancouver listeners are generally not able to differentiate a talker as being from Seattle or Vancouver” (p. 153), with the caveat that Seattleites are mildly sensitive to Canadian production stereotypes, which renders Seattleites more accurate in detecting Vancouverites than vice versa. Yet, 73% claimed in 2009 to be able to tell Americans from Canadians.
+
+Language attitudes are an important factor in “language making” (Krämer et al. 2022) and variety making, especially so for non-dominant varieties (Dollinger 2025b). Rather than declaring socially meaningful discrimination as not existent based on a lack of categoricity in production, as has been done in the Austrian context (e.g. Elspaß & Niehaus 2014: 50), the process of enregisterment and cognitive constructions by the speakers, including nationality, are actuated.
+
+Education is a key factor in that process of conceptually constructing a national standard variety. While the teaching of a “banal nationalism” (Billig 1995) in Canada – the bias that comes with teaching from a certain geographical and sociopolitical point of view – may be considered as somewhat more muted than in other places, certainly in the United States, it is nonetheless present. This can be witnessed in both the reported findings that direct questions on national identity produce more positive results than indirect ones (as Warkentyne 1983 already reported) and, more recently, the reinvigorated Canadian patriotism following the Trump tariffs and annexation threats in 2025.
+
+In the linguistic context, Oakes states that linguistic pluricentricity “cannot rely solely on linguistic data, but must also take into account the role of representations and attitudes” (Oakes 2021: 55). One could dismiss the Canadian case, or that of any other non-dominant variety, as a case of language ideology, which is usually frowned upon. However, “while language ideologies \[mediating between social structure and linguistic practice\] certainly help to shape language representations and attitudes, the latter should nonetheless be considered distinct” (ibid: 56-57). The language attitudes surveyed and reported here are subjective norms that may overlap with socially constructed ideology of “Canadian-ness” but are not identical with the latter. Subjective claims of linguistic identity involving the Canadian angle may easily be confused with nationalistic thinking, though that would deprive the speakers of non-dominant varieties, for whom their identity aspects as members of smaller nations are generally important, of their linguistic autonomy and recognition.
+
+Linguistic insecurity, as one aspect of language attitudes, is an indicator for the varying social prestige of varieties but not a good indicator of their relevance. Non-dominant variety speakers (e.g. Canadian English, Austrian German, Belgian Dutch, Quebec French, Catalan, Finnish Swedish) are confronted with linguistic insecurity in many of their encounters, which raises, to the degree that “linguistic insecurity reflects a perceived threat to individuals’ sense of linguistic dignity or self-esteem”, the issue to “recognize that there is also an ethical dimension to the question of linguistic pluricentricity”, which Oakes terms “linguistic pluricentric justice” (p. 58). Clearly, sociolinguistic practice ought to consider the emic angle as equally important, if not more so, than etic statements that will inevitably exert some hegemonic force (see Dollinger 2025b for a drastic example of field-internal presuppositions).
+
+We have seen in Figure 2 that only 22.2% answered “Definitely yes” to the question whether CanE was a distinct kind of English, like BrE and AmE, while 45.8 chose “Probably yes”. The lower degree of certainty in these answers suggests that a degree of linguistic insecurity is present. Although 78% would want to see a “Canadian English option” in software, the relatively low exposure rates to Standard Canadian English as a term (just around 50% anywhere but in New Brunswick and Ontario, where it is higher, Figure 4) result in a somewhat diffuse picture at present regarding the strength of linguistic autonomy of CanE. While linguistic autonomy is detectable in these data points, it is expressed more cautionarily.
+
+Similar results, from Austrian German, are interpreted not as a logical consequence of dominant and non-dominant standards and their intersections, but as two “norms of orality” of one standard, as, it is claimed, “a single … conceptualization of ‘standard’ does not meet the complex linguistic situation” in Austria (Koppensteiner & Lenz 2020: 59-60). However, a “transnational unmarked” variety is taken for granted and not questioned (ibid). Such interpretation is consistent with a suggested, but controversially discussed, One Standard German Axiom (OSGA) (in German: Axiom des Einheitsdeutschen, Dollinger 2019b: 14, 2025b).
+
+Pluricentric interpretations are occasionally critiqued as “lend\[ing\] themselves to nationalistic views and interpretations and exploitations precisely because they are interested predominantly in linguistic perception rather than production” (e.g. Schneider 2022: 470-71). Such critique confirms philological and linguistic disciplinary narratives that have become enshrined and that generally foreground particular perspectives of more established, more hegemonic interpretations of “language making” or “variety making”. In more extreme cases, pluricentric interpretations of non-dominant varieties – such as Canadian English, Austrian German or Brazilian Portuguese – are presented as “restrict\[ing\] the usage areas of standard varieties to national boundaries” based on “purely political criteria” (Elspaß 2025: 24), which undercuts non-dominant linguistic identity constructions and the principle of pluricentric linguistic justice (Oakes 2021) in lieu of something else (e.g. Herrgen’s 2015 ‘denationalization’ claim of German, critiqued in Dollinger 2019a: 79-84).
+
+Linguistic data are dynamic and greatly influenced by speakers attitudes, as we have aimed to show for Canadian English. The etic angle – linguistic production – makes little social sense without the emic – linguistic attitudes and perceptions (e.g. Scherr & Ziegler’s 2023 etic deconstruction of pluricentric German). When, for instance, large majorities of speakers perceive their younger standard variety as real (e.g. c. 85% in Austria, 78% in CanE from Figure 2), we ought to question the role of a sociolinguistics that seems to deny the relevance of such statements.
+
+In the Canadian context, the connection between linguistic identity and linguistic varieties is more widely accepted, and thus the relevance of attitudinal factors (e.g. Preston 2013) in linguistic claims of Canadianness. The idea of a One Standard English Axiom (OSGA) seems absurd, especially in the light of World Englishes. It is these attitudinal factors in the context of “pluricentric linguistic justice” that are to be considered, which is rather different from assumed “defenses of the concept of pluricentricity” (Schneider 2022: 470). It is not ideology that is the key point of pluricentric theory, but a consideration of the language attitudes of non-dominant speakers and a concession that standard varieties are dynamically shaped. In the Austrian case, it seems as if a similar expression of Austrian identities via an Austrian standard – which de facto happens routinely (de Cillia & Ransmayr 2019: Abb. 36) – is theoretically preempted via OSGA (see Dollinger 2019b) or allowed. In the present Canadian case, however, such notions of a single standard are of no social relevance and the study of the domestic Canadian standard can proceed without linguistic opposition.
+
+            The importance of education was highlighted by significant correlations in Figures 8 and 9 via a composite index (SLAI – Standard Language Attitude Index, referring to Standard Canadian English). SLAI confirms that for those growing up in Canada, no correlations with ethnic orientations can be discerned (Figure 12). Those who are themselves multilingual tend to orient themselves more towards StCanE if they are female or non-binary, while male multilinguals are more sceptical (Figure 10). Male scepticism towards the non-dominant StCanE is consistent, for instance in Figure 7 (right panel).
+
+            The frequency of English use (EUI) is, like multilingualism, a more important factor for the Canadian standard. Those who use English the least (Figure 13) also consider CanE its own distinct variety the least, while, conversely, monolingual speakers do so the most. These two groups show a significant difference (with more frequent English users in Canada in between, but not significant).
+
+As outlined in the beginning, language representations and attitudes are fuelled by wider social contexts. While Canadian national identity was on the rise in the 1970s, linguistic identity was not. This has shifted in the early 2000s and is still ongoing. However, today there is, in comparison to the early 2000s, little to no public discourse about the linguistic identity of Anglophone Canadians, as shown in Figure 1. It will remain to be see if and to what degree linguistic work on the unique angle of Canadian English ([www.canadianenglishdictionary.ca](http://www.canadianenglishdictionary.ca)) may enrich Canadian public discourse. 
+
+# References
+
+Billig, Michael. 1995. *Banal Nationalism*. London: Sage.
+
+Boberg, Charles. 2000. Geolinguistic diffusion and the U.S.-Canada border. *Language Variation and Change* 12: 1-24.
+
+Boberg, Charles. 2005. The North American Regional Vocabulary Survey: new variables and methods in the study of North American English. *American Speech* 80: 22-60.
+
+Boberg, Charles. 2008. Regional phonetic differentiation in Standard Canadian English. *Journal of English Linguistics* 36(2): 129-154.
+
+Chambers, J. K. (1980) Linguistic variation and Chomsky’s “homogeneous speech community”. In Murray Kinloch and A. B. House (eds), *Papers from the Fourth Annual Meeting of the Atlantic Provinces Linguistic Association* (pp. 1–31). Fredericton: University of New Brunswick.
+
+Chambers, J. K. 1994. An introduction to dialect topography. *English World-Wide* 15: 35-53.
+
+Chambers, J. K. 2000. Region and language variation. *English World-Wide* 21(2): 169-199.
+
+Chambers, J. K. and Troy Heisler. 1999. Dialect Topography of Québec City English. *Canadian Journal of Linguistics* 44(1): 23-48.
+
+Clarke, Sandra (ed.). 1993. *Focus on Canada*. Amsterdam: Benjamins.
+
+Clyne, Michael G. 1984. *Language and Society in the German-speaking Countries*. New York : Cambridge University Press.
+
+Clyne, Michael G. 1995. *The German Language in a Changing Europe*. New York: Cambridge University Press.
+
+DCHP-3 = Dollinger, Stefan and Margery Fee (eds). 2025. *DCHP-3: The Dictionary of Canadianisms on Historical Principles, Third Edition.* Vancouver, BC: University of British Columbia, [www.dchp.ca/dchp3](https://www.dchp.ca/dchp3). DOI: <https://doi.org/10.17613/hr345-77f43> (Published 15 May 2025).
+
+De Cillia, Rudolf and Jutta Ransmayr. 2019. *Österreichisches Deutsch macht Schule? Bildung und  Deutschunterrricht im Spannungsfeld von sprachlicher Variation und Norm.* Vienna: Böhlau. <https://austria-forum.org/web-books/en/osterreichdeutsch00de2019isds>
+
+Dollinger, Stefan. 2012. The western Canada-US border as a linguistic boundary: The roles of L1 and L2 speakers. *World Englishes* 31(4): 519–533.
+
+Dollinger, Stefan. 2019a. *Creating Canadian English: the Professor, the Mountaineer, and a National Variety of English.* Cambridge: Cambridge University Press.
+
+Dollinger, Stefan. 2019b. *The Pluricentricity Debate: On Austrian German and Other Germanic Standard Varieties.* London: Routledge.
+
+Dollinger, Stefan. 2020. English in Canada. In: *Handbook of World Englishes, Second edition*, ed. by Cecil Nelson, Zoya Proshina & Daniel Davis, 52-69. Malden, MA: Blackwell-Wiley.
+
+Dollinger, Stefan. 2025a. Eberhard Kranzmayer’s dovetailing with Nazism: His fascist years and the ‘One Standard German Axiom (OSGA)’. *Discourse & Society* *36*(2): 147-179.
+
+Dollinger, Stefan. 2025b. Dialectology as “language making”: hegemonic disciplinary discourse and the One Standard German Axiom (OSGA). In *(Dia)lects in the 21st Century: Selected Papers from* Methods in Dialectology XVII (Mainz, 2022), ed. by Susanne Wagner & Ulrike Stange-Hundsdörfer, 287-318. Berlin: LangSci Press.
+
+Elspass, Stephan. 2025. Pluriareal languages and the case of German. In Meer & Durgasingh (eds.), 15-44.
+
+Freake, Yvette. 2023. So you think you speak Canadian English: a study of language regard and lexical variation of English-speaking Canadians. Ph.D. thesis, York University, Toronto. Program in Linguistics.
+
+Gregg, Robert J. 1993. Canadian English lexicography. In Clarke (ed.), 27-44.
+
+Gulden, Brigitte K. \[now Halford, Brigitte K.\] 1979. Attitudinal factors in Canadian English usage. Victoria: University of Victoria, Department of Linguistics, MA thesis.
+
+Herrgen, Joachim. 2015. Entnationalisierung des Standards. Eine perzeptionslinguistische Untersuchung zur deutschen Standardsprache in Deutschland, Österreich und der Schweiz. In: Lenz & Glauninger (Eds.), pp. 139–164.
+
+Hoffman, Michol F. and James A. Walker. 2010. Ethnolects and the city: Ethnic orientation and linguistic variation in Toronto English. *Language Variation and Change* 22: 37-67.
+
+Krämer, Philipp, Leena Kolehmainen & Ulrike Vogl. 2022. What is “language making”? *International Journal for the Sociology of Language* 274: 1–27.
+
+Koppensteiner, Wolfgang & Alexandra Lenz. 2020. Tracing a standard language in Austria using methodological microvariations of verbal and matched guise technique. *Linguistik Online* 102 2/20: 47-82.
+
+Leitner, Gerhard. 1992. English as a pluricentric language. In *Pluricentric languages. Differing norms in different nations,* Michael Clyne (ed.), 179-237. Berlin: Mouton de Gruyter.
+
+McKinnie, Meghan & Jennifer Dailey-O’Cain. 2002. A perceptual dialectology of Anglophone Canada from the perspective of young Albertans and Ontarians. In: Preston & Long (eds), Vol. 2: 277-94.
+
+Meer, Philipp & Ryan Durgasingh (eds.) 2025. *Pluricentricity and Pluriareality: Dialect, Variation, and Standards.* Amsterdam: Benjamins. 
+
+Muhr, Rudolf. 2012. Linguistic dominance and non-dominance in pluricentric languages: A typology. In R. Muhr (Ed.), *Non-dominant varieties of pluricentric languages: Getting the picture* (pp. 23-48). Berne: Lang.
+
+Muhr, Rudolf. 2025. *Fundamentals of a General Theory of Pluricentric Languages*. Graz: PCL-Press, <https://pcl-press.org/publications/fundamentals-of-a-general-theory-of-pluricentric-languages/>
+
+Nagy, Naomi. 2024. *Heritage Languages*. Cambridge: Cambridge University Press.
+
+Nagy, Naomi, Michol F. Hoffman, James A. Walker. 2020. How do Torontonians hear ethnic identity? *TWPL* 42: 1-18.
+
+Nunnally, J.C. and Bernstein, I.H. 1994. The assessment of reliability. *Psychometric Theory* 3: 248-292.
+
+Oakes, Leigh. 2021. Pluricentric linguistic justice: a new ethics-based approach to pluricentricity in French and other languages. *Sociolinguistica* 35(1): 49-71.
+
+Owens, Thompson W. and Paul M. Baker. 1984. Linguistic insecurity in Winnipeg: validation of a Canadian index of linguistic insecurity. *Language in Society* 13: 337-350.
+
+Pratt, Terrence K. 1993. The hobglobin of Canadian English spelling. In S. Clarke (ed.), 45-64.
+
+Preston, Dennis R. & Daniel Long (eds.) 1999-2002. *Handbook of Perceptual Dialectology. Vol. 1, Vol. 2.* Amsterdam: Benjamins.
+
+Preston, Dennis. 2013. Linguistic insecurity forty years later. *Journal of English Linguistics* 41(4), 304–331.
+
+Sadlier-Brown, Emily. 2012. Across the country, across the border: homogeneity and autonomy of Canadian Raising. *World Englishes* 31(4): 534-548.
+
+Scherr, E & Ziegler A. (2023). A question of dominance: statistically approaching grammatical variation in German standard language across borders. *Journal of Linguistic Geography* 11, 91–103.
+
+Schneider, Edgar W. 2022. Parameters of epicentral status. *World Englishes* 41: 462–474.
+
+Swan, Julia T. and Molly Babel. 2018. Dialect Identification Across a Nation-State Border: Perception of Dialectal Variants in Seattle, WA and Vancouver, BC. *University of Pennsylvania Working Papers in Linguistics* 24(2): 147-56.
+
+Trudgill, Peter & Jean Hannah. 2017. *International English. A Guide to Varieties of English Around the World*. 6^th^ ed. Abingdon: Taylor and Francis.
+
+Warkentyne, Henry J. 1983. Attitudes and language behavior. *Canadian Journal of Linguistics* 28: 71-76.
+
+Warkentyne, Henry J. and A. C. Brett. 1981. British and American influences on Canadian English. *Working Papers of the Linguistic Cirlce of the University of Victoria* 1(2): 294-310.
+
+[\[1\]](#_ftnref1) Questions with answer choices on a four-point Likert scale were rescaled to match the spread of a five-point scale to enable us to meaningfully average the four responses.
+
+[\[1\]](#_ftnref1) Canada-US Trade Agreement in 1988, NAFTA in 1994, the European Union 1993 and the founding of the World Trade Organization in 1995
+
+[\[2\]](#_ftnref2) <https://www.academia.edu/129153656/>
