@@ -1,0 +1,267 @@
+---
+title: "2 Multivariate approach: `cdn_way`"
+subtitle: "Based on Dollinger's 2023 survey on CanE lg. attitudes"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: false
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+df <- import("data/df_cleaned.rds") %>% 
+  as_tibble()
+can_provs <- import("data/can_provs.rds")
+df
+```
+
+```{r incidental-data-fixes, include=FALSE, eval=FALSE}
+
+df <- df %>% 
+  mutate(region = case_match(region,
+                             "pe" ~ "pei",
+                             .default = region
+                             ))
+
+df <- df %>% 
+  mutate(gender = case_match(gender,
+                             "female" ~ "female", 
+                             "male" ~ "male",
+                             .default = "other"
+                             ))
+
+df %>% export("data/df_cleaned.rds")
+
+```
+
+
+## The important questions
+
+### Dependent variables (DV)
+
+According to Dollinger: 
+
+> Wichtig neben der **"way of speaking"** und **"distinct English"** question ist mir die **"Have your heard of the term Standard Canadian English?”** [Frage]
+
+These three correspond to the column labels 
+
+- `cdn_way`,
+- `distinct`, and
+- `st_heard`.
+
+
+### Independent variables (IV)
+
+According to Dollinger: 
+
+- `region`, 
+- `education`, 
+- `age`, and
+- `gender`.
+
+### Method
+
+Something on the more pedestrian side to begin with: a regression with the different values of the DV as outcome. 
+
+#### Ordinal logistic regression using only one variable as outcome
+
+Let's start with the first of the DVs, `cdn_way`. Here are our responses: 
+
+```{r echo=FALSE}
+df %>% count(cdn_way)
+```
+
+To preprocess the data, we will 
+
+- eliminate NA cases and
+- filter out non-Canadian respondents. 
+
+```{r}
+df_way <- df %>% 
+  filter(! is.na(cdn_way),
+         region %in% can_provs,
+         ! region == "us")
+
+```
+
+Because the `cdn_way` variable has levels that are *ordered* we will convert it into type `int` and sort the values properly. 
+
+```{r}
+df_way <- df_way %>% 
+  mutate(
+    cdn_way_num = case_match(cdn_way,
+      "definitely not" ~ 1,
+      "definitely yes" ~ 4,
+      "probably not" ~ 2, 
+      "probably yes" ~ 3,
+      .default = 0
+    )
+  )
+df_way %>% count(cdn_way_num)
+```
+
+Ensure that the DV is an ordinal factor and other important variables are factors as well.
+
+```{r}
+df_way$cdn_way_num <- ordered(df_way$cdn_way_num)
+df_way$gender <- as.factor(df_way$gender)
+df_way$region <- as.factor(df_way$region)
+df_way$edu_comp <- as.factor(df_way$edu_comp)
+```
+
+### Model fitting
+
+Fit the ordinal logistic regression model. Displaying only `head()` of the model output.
+
+```{r warning=FALSE}
+p_load(MASS, broom)
+
+# Fit the model
+model <- polr(cdn_way_num ~ age + gender + region + edu_comp, data = df_way, Hess = TRUE)
+
+# Optional: Get p-values
+ctable <- coef(summary(model))
+p_values <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+ctable <- cbind(ctable, "p value" = p_values)
+
+# Tidy model + p-values
+tidy_table <- tidy(model, conf.int = TRUE) %>%
+  mutate(
+    odds_ratio = exp(estimate),
+    p.value = 2 * pnorm(abs(statistic), lower.tail = FALSE),
+    sig = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.01 ~ "**",
+      p.value < 0.05 ~ "*",
+      p.value < 0.1 ~ ".",
+      TRUE ~ ""
+    )
+  ) %>%
+  filter(!term %in% c("1|2", "2|3", "3|4")) %>%
+  dplyr::select(term, estimate, odds_ratio, conf.low, conf.high, p.value, sig)
+
+# Create nicely formatted table
+tidy_table %>%
+  gt() %>%
+  fmt_number(columns = c(estimate, odds_ratio, conf.low, conf.high, p.value),
+             decimals = 3) %>%
+  cols_label(
+    term = "Predictor",
+    estimate = "Estimate (log-odds)",
+    odds_ratio = "Odds Ratio",
+    conf.low = "CI Lower",
+    conf.high = "CI Upper",
+    p.value = html("<i>p</i>-value"),
+    sig = "Significance"
+  ) %>%
+  tab_header(
+    title = "Ordinal Logistic Regression Summary",
+    subtitle = "Model predicting cdn_way_num"
+  ) %>%
+  tab_source_note(
+    source_note = html("<em>Note:</em> Odds ratios are exponentiated coefficients. Significance levels: <strong>***</strong> <i>p</i> < .001, <strong>**</strong> <i>p</i> < .01, <strong>*</strong> <i>p</i> < .05, <strong>.</strong> <i>p</i> < .1")
+  )
+
+```
+
+### Model term viz
+
+Visualize the model terms. One approach is to plot each model term individually, like so for `gender`:
+
+```{r}
+
+p_load(ggeffects)   # for predicted probabilities
+
+# Get predicted probabilities for a given variable (e.g. gender)
+pred <- ggpredict(model, terms = "gender")
+
+# Plot
+plot(pred) +
+  labs(title = "Predicted Probabilities of 'Canadian Way of Speaking English' by Gender",
+       y=NULL, x=NULL)
+
+```
+:::{.callout-tip appearance="simple"}
+It actually looks like `gender` is a pretty boring predictor!
+:::
+
+
+But this is not too useful, since we want to compare predictors. So now we try to plot all the model terms. 
+
+```{r plot-model-terms, echo=F, fig.height=6.5, fig.width=6.5}
+
+p_load(broom)
+
+# Fit ordinal logistic model
+model <- polr(cdn_way_num ~ age + gender + region + edu_comp, data = df_way, Hess = TRUE)
+
+# Get model summary with confidence intervals
+tidy_model <- broom::tidy(model, conf.int = TRUE)
+
+# Filter out intercept-like thresholds
+tidy_model_clean <- tidy_model %>%
+  filter(!term %in% c("1|2", "2|3", "3|4"))
+
+# Compute p-values manually from t-values
+tidy_model_clean <- tidy_model_clean %>%
+  mutate(
+    p.value = 2 * pnorm(abs(statistic), lower.tail = FALSE),  # 2-tailed p-values
+    OR = exp(estimate),
+    p_stars = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.01 ~ "**",
+      p.value < 0.05 ~ "*",
+      p.value < 0.1 ~ ".",
+      TRUE ~ ""
+    ),
+    term_label = paste(term, p_stars)
+  )
+
+
+n_cases <- format(nrow(df_way), big.mark = ",")
+
+# Plot odds ratios with stars
+ggplot(tidy_model_clean, aes(x = reorder(term_label, OR), y = OR)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = exp(conf.low), ymax = exp(conf.high)), width = 0.2) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  coord_flip() +
+  labs(title = "Odds Ratios for cdn_way_num",
+       caption = bquote(italic(N) == .(n_cases)),
+       y = "Odds Ratio (exp(β))",
+       x = NULL) +
+  theme_bw()
+
+```
+
+::: aside
+**Application values**
+<br>For each predictor, one of the levels is not visualized. That's the application value. So for gender, `female` is not shown. This means that the odds ratio for `female` is right on the dotted line (the model intercept), the other two values in the `gender` factor (`male` and `other`) are shown to the extent that they increase or decrease the chance of a higher rating in the response variable.<br>**Which level of a factor is the application value?** <br>It's the one that's first in the alphabet (cf. *female > male > other*).
+:::
+
+:::{.callout-tip appearance="simple"}
+
+Among Canadian respondents, the factor `edu_comp` has by far the most predictive power. <br>Among the **regions**, QC and BC stand out as particularly pessimistic, with statistical significance. <br>Note: while `regionpe` also looks at first glance like it might be interesting, it is not, since there are so few responses and there is no significance. 
+:::
+
+:::{.callout-warning appearance="simple"}
+In the spirit of a minimal adequate model, it would be best to drop the terms `gender` and `age` from the model entirely, since their predictions are weak and statistically insignificant.
+:::

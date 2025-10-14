@@ -1,0 +1,797 @@
+---
+title: "6 SLAI Version 2.0"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format: word-document
+number-sections: true
+toc: true
+echo: false
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+df <- import("data/df_cleaned_5.rds") %>% 
+  as_tibble() 
+```
+
+
+```{r}
+
+# Define two groups of selectors for region (where spent formative years) and province (of current residence).
+
+can_regions <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                  "NB", "NS", "PE", "NL", "TR", "US", "UK")
+
+can_provinces <- c(
+  "British Columbia", "Alberta", "Saskatchewan", 
+  "Manitoba", "Ontario", "Quebec", "New Brunswick", 
+  "Nova Scotia", "Prince Edward Island", "Newfoundland and Labrador", 
+  "Territories", "United States", "United Kingdom")
+```
+
+
+## Data prep
+
+Preview of our data. We want only canadian respondents, with `gender` reordered.
+
+```{r}
+
+# include only respondents from target regions
+df_canada <- df %>%
+  filter(region %in% can_regions) %>% 
+  select(region, gender, -region_previous, everything())
+
+# Reorder the levels of the gender variable
+df_canada <- df_canada %>%
+  mutate(gender = factor(gender, levels = c("female", "male", "other")),
+         region_previous = NULL
+         )
+
+df_canada
+```
+
+Next, we address comparability among survey questions. Some questions use a 4-point Likert scale, others a 5-point scale. We **rescale the 4-point Likert items to a 5-point scale** in order to make them comparable with the 5-point items. 
+
+```{r warning=FALSE}
+
+# Recode Likert responses to numeric
+
+df_canada <- df_canada %>%
+  
+  mutate(
+    st_heard = str_trim(st_heard),
+    spell_uni = str_trim(spell_uni),
+    distinct = str_trim(distinct),
+    cdn_way = str_trim(cdn_way),
+    spell = str_trim(spell),
+    
+    st_heard_num = case_match(st_heard,
+                              "no" ~ 1,
+                              "not sure" ~ 3,
+                              "yes" ~ 5,
+                              .default = NA
+                              ),
+
+    spell_uni_num = case_match(spell_uni,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "might or might not" ~ 3,
+      "probably yes" ~ 4,
+      "definitely yes" ~ 5,
+      .default = NA
+    ),
+
+    distinct_num = case_match(distinct,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "probably yes" ~ 3,
+      "definitely yes" ~ 4,
+      .default = NA
+    ),
+
+    cdn_way_num = case_match(cdn_way,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "probably yes" ~ 3,
+      "definitely yes" ~ 4,
+      .default = NA
+    ),
+
+    spell_num = case_match(spell,
+      "very unimportant" ~ 1,
+      "unimportant" ~ 2,
+      "neither unimportant nor important" ~ 3,
+      "important" ~ 4,
+      "very important" ~ 5,
+      .default = NA
+    )
+  )
+
+```
+
+
+## Forming the SLAI
+
+Let us consider forming an index variable of responses to the following questions:
+
+### DVs
+
+Response variables (ordinal or categorical):
+
+- `st_heard`: yes / no / not sure
+- `spell_uni`: Likert-style (5 levels)
+- `distinct`: Likert-style (4 levels)
+- `cdn_way`: Likert-style (4 levels)
+- `spell`: Likert-style (5 levels)
+
+### IVs
+
+And it takes an interest in the following predictors:
+
+- `umultiling`: yes / no (binary)
+- `edu_comp`: 6 levels (educational attainment)
+- `province`: 40 levels (many, likely sparse — might need recoding)
+- `gender`: 3 levels (female/male/nonbinary)
+
+### Justification of SLAI
+
+```{r warning=FALSE}
+
+# Rescale 4-point Likert items to 5-point scale
+rescale_4_to_5 <- function(x) {
+  1 + (x - 1) * (4 / 3)
+}
+
+df_canada <- df_canada %>%
+  mutate(
+    st_heard_scaled  = st_heard_num,
+    spell_uni_scaled = spell_uni_num,
+    distinct_scaled  = rescale_4_to_5(distinct_num),
+    cdn_way_scaled   = rescale_4_to_5(cdn_way_num),
+    spell_scaled     = spell_num
+  )
+
+attitude_vars <- c("st_heard_scaled", "spell_uni_scaled",
+                   "distinct_scaled", "cdn_way_scaled",
+                   "spell_scaled"
+                   )
+```
+
+The DVs listed above represent a battery of attitude elicitation questions that are, at the theoretical level, *reflective* of an overall attitude toward the concept of Standard Canadian English. We must assume, therefore, that these variables *covary*. If we can show high internal consistency, it is reasonable to treat their arithmetic mean as a single factor. 
+
+We are considering these variables in their numeric conversions that have been scaled to a 5-level scale. The converted variables are named:
+
+- `st_heard_scaled`
+- `spell_uni_scaled`
+- `distinct_scaled`
+- `cdn_way_scaled`
+- `spell_scaled`
+
+In order to test them for consistency, we begin by exploring them in terms of basic distribution statistics.
+
+#### Inspect distributions
+
+```{r}
+
+summary_tbl <- df_canada %>% 
+  summarise(
+    across(
+      all_of(attitude_vars),
+      list(
+        mean = ~ mean(.x, na.rm = TRUE),
+        sd   = ~ sd(.x,  na.rm = TRUE)
+      ),
+      .names = "{.col}_{.fn}"   
+    )
+  )
+
+summary_tbl %>% t() 
+```
+Visualize distribution of a single variable.
+
+```{r fig-st-heard-scaled, fig.width=6, fig.height=5.5}
+
+p_load(scales)
+
+df_canada %>% 
+  filter(!is.na(st_heard_scaled)) %>% 
+  count(st_heard_scaled) %>%                    
+  mutate(
+    pct = n / sum(n),                           
+    st_heard_scaled = factor(st_heard_scaled,   
+                             levels = 1:5,
+                             labels = 1:5)
+  ) %>% 
+  ggplot(aes(x = st_heard_scaled, y = pct)) +
+  geom_col(fill = "#34608D") +
+  geom_text(aes(label = percent(pct, accuracy = 1)),
+            vjust = -0.25, size = 3.3) +
+  scale_y_continuous(labels = percent_format(accuracy = 1),
+                     expand = expansion(mult = c(0, .05))) +
+  labs(x = "st_heard_scaled (1 = lowest … 5 = highest)",
+       y = "Percentage of responses",
+       title = "Distribution of st_heard_scaled") +
+  theme_minimal(base_size = 12) +
+  theme(plot.title.position = "plot")
+```
+Instead of making separate plots, let's viz all the attitude-relevant vars in one plot.
+
+
+```{r fig-attitude-vars}
+
+p_load(forcats, readr)
+likert_labels <- c("1" = "Strongly disagree",
+                   "2" = "Disagree",
+                   "3" = "Neutral",
+                   "4" = "Agree",
+                   "5" = "Strongly agree")
+
+## 2 ── reshape + percentage calculation ---------------------------------------
+plot_df <- df_canada %>% 
+  select(all_of(attitude_vars)) %>% 
+  mutate(across(everything(),            # turn 1:5 ints into ordered factors
+                ~ factor(.x, levels = 1:5, labels = names(likert_labels)))) %>% 
+  pivot_longer(everything(),
+               names_to  = "item",
+               values_to = "response") %>% 
+  count(item, response) %>% 
+  group_by(item) %>% 
+  mutate(pct = n / sum(n)) %>% 
+  ungroup()
+
+## 3 ── draw a 100 % stacked bar chart -----------------------------------------
+ggplot(plot_df,
+       aes(x = fct_rev(item), y = pct, fill = response)) +  # fct_rev → top-to-bottom
+  geom_col(width = 0.75) +
+  scale_y_continuous(labels = scales::percent_format(1),
+                     expand = expansion(mult = c(0, 0.02))) +
+  scale_fill_manual(
+    values = c("1" = "#B62D2D",  # custom palette: disagree (reds), neutral (gray), agree (greens)
+               "2" = "#D87070",
+               "3" = "grey70",
+               "4" = "#79B37D",
+               "5" = "#36823A"),
+    breaks = names(likert_labels),
+    labels = likert_labels,
+    guide  = guide_legend(reverse = TRUE)   # keep 1 at bottom of legend
+  ) +
+  coord_flip() +                           # items on y-axis, percentages x-axis
+  labs(x = NULL,
+       y = "Share of responses",
+       fill = NULL,
+       title = "Five attitude variables (1 = SD … 5 = SA)") +
+  theme_minimal(base_size = 11) +
+  theme(
+    legend.position  = "top",
+    legend.direction = "horizontal",
+    plot.title.position = "plot"
+  )
+```
+
+
+
+#### Compute internal consistency
+
+Next we calculate Cronbach’s α.
+
+::: {.callout-tip}
+## Cronbach’s α
+Rule of thumb: α ≥ .70 for research, α ≥ .80 for high‑stakes decisions (Nunnally & Bernstein, 1994).
+:::
+
+```{r}
+p_load(psych)
+psych::alpha(df_canada[, c(attitude_vars)]) 
+```
+
+:::{.callout-tip}
+## Internal consistency finding
+It looks like `st_heard_scaled` causes more trouble than the others. If we leave it out, Cronbach’s α improves the most.
+:::
+
+So, let's leave out `st_heard_scaled` and evaluate again.
+
+```{r}
+psych::alpha(df_canada[, c(attitude_vars[2:5])]) 
+```
+
+::: {.callout-important}
+## The takeaway
+We must exclude `st_heard_scaled` in order to form a reliable SLAI.
+:::
+
+### Calculate SLAI
+
+We calculate the SLAI out of the four variables that passed the consistency test by using the function `rowMeans()`. To prepare for plotting, we also filter out respondents that didn't answer one of the questions.
+
+We perform similar cleaning for the `edu` and `umultiling` variables.
+
+```{r}
+df_canada <- df_canada %>% 
+  mutate(slai = rowMeans(
+      cbind(
+        #st_heard_scaled, 
+        spell_uni_scaled, 
+        distinct_scaled,
+        cdn_way_scaled, 
+        spell_num),
+      na.rm = TRUE
+    ))
+```
+
+
+```{r}
+df_canada <- df_canada %>% 
+  mutate(
+    edu_comp = str_trim(edu_comp),
+    edu_comp = factor(
+      edu_comp,
+      levels = c(
+        "other",
+        "elementary school",
+        "high school",
+        "undergraduate degree",
+        "graduate degree",
+        "postgraduate degree"
+      )
+    )
+  ) %>% 
+  filter(! edu_comp == "other")
+```
+
+### Univariate dependencies
+
+```{r clean-slai-vars}
+# Filter complete cases for plotting
+df_plot <- df_canada %>%
+  filter(!is.na(slai), 
+         !is.na(edu_comp), 
+         !is.na(gender),
+         !is.na(umultiling))
+```
+
+```{r include=FALSE, eval=FALSE}
+
+df_plot %>% export("data/df_canada_6.rds")
+
+```
+
+
+Begin with `edu`.
+
+```{r fig-slai-by-edu}
+
+# Plot 1: Attitude Index by Education
+ggplot(df_plot, aes(x = slai, y = edu_comp)) +
+  geom_jitter(aes(color = gender), width = 0.1, alpha = 0.3, size = .8) +
+  geom_boxplot(aes(group = edu_comp), fill = "grey90", width = 0.5, outlier.shape = NA) +
+  labs(title = "Standard Language Attitude Index by Education", 
+       y = NULL, x = "Attitude Index (1–5)") +
+  theme_minimal()
+```
+
+Now plot the interaction `edu` x `gender.`
+
+```{r fig-edu-gender-plot, fig.width=7, fig.height=5.5}
+
+ggplot(df_plot, aes(x = edu_comp, y = slai, color = gender, group = gender)) +
+  stat_summary(fun = mean, geom = "point", position = position_dodge(0.5)) +
+  stat_summary(fun = mean, geom = "line", position = position_dodge(0.5),
+               linewidth=1.2) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, position = position_dodge(0.5)) +
+  scale_color_manual(values = c(
+  "male" = "#E69F00",      # warm gold
+  "female" = "#56B4E9",    # sky blue
+  "other" = "#009E73"      # teal green
+)) +
+  labs(title = "Standard Language Attitude Index by Education and Gender", x = NULL, y = "SLAI") +
+  #facet_grid(~umultiling) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+:::{.callout-tip appearance="simple"}
+The difference between male and female participants is clearest among respondents with only elementary education *and* among those with a graduate degree.
+:::
+
+And now: `edu` x `gender` x `umultiling.`
+
+```{r fig-edu-gender-multiling-plot, fig.width=9, fig.height=5.5}
+
+ggplot(df_plot, aes(x = edu_comp, y = slai, color = gender, group = gender)) +
+  stat_summary(fun = mean, geom = "point", position = position_dodge(0.5)) +
+  stat_summary(fun = mean, geom = "line", position = position_dodge(0.5),
+               linewidth=1.2) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, position = position_dodge(0.5)) +
+  scale_color_manual(values = c(
+  "male" = "#E69F00",      # warm gold
+  "female" = "#56B4E9",    # sky blue
+  "other" = "#009E73"      # teal green
+)) +
+  labs(title = "Standard Language Attitude Index by Education, Gender, Multilingualism", x = NULL, y = "SLAI") +
+  facet_grid(~umultiling) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+:::{.callout-tip appearance="simple"}
+Among monolinguals, `gender` is clearly more important (lines are farther apart). <br>Among bi-/multilinguals, `edu` is more important (slopes are greater).
+:::
+
+
+```{r fig-plot-gender-multiling, fig.height=5.5, fig.width=7, warning=FALSE}
+
+# 5️⃣ Plot 3: Interaction — Multilingualism × Gender with Sample Sizes
+df_plot %>%
+  count(umultiling, gender) -> n_labels
+
+ggplot(df_plot, aes(x = umultiling, y = slai, 
+                    color = gender, group = gender)) +
+  stat_summary(fun = mean, geom = "point", position = position_dodge(0.5)) +
+  stat_summary(fun = mean, geom = "line", position = position_dodge(0.5), 
+  linewidth = 1.2) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, position = position_dodge(0.5)) +
+  scale_color_manual(values = c(
+  "male" = "#E69F00",      # warm gold
+  "female" = "#56B4E9",    # sky blue
+  "other" = "#009E73"      # teal green
+)) +
+  geom_text(
+    data = n_labels,
+    aes(label = paste0("n=", n), y = 5.1),
+    position = position_dodge(0.5),
+    size = 3, color = "black"
+  ) +
+  #ylim(c(3.0, 4.8)) +
+  labs(title = "Standard Language Attitude Index by Multilingualism and Gender", 
+       x = "Multilingual", y = "SLAI") +
+  theme_minimal()
+
+```
+
+:::{.callout-tip appearance="simple"}
+The multilingual factor interacts strongly with gender. Women who are multilingual are less positively oriented toward StCanE. Men who are multilingual show the opposite trend: they value the concept of StCanE more highly. **Notice that with the more focused SLAI, this gender difference is now even sharper than before.** 
+:::
+
+
+## Statistical tests
+
+:::{.callout-warning appearance="simple"}
+From here until the end of the document, there are significant updates that are still outstanding, e.g. we had decided to focus more on `region` instead of `region`. We'll get to that!
+:::
+
+```{r}
+p_load(broom)
+
+extract_model_info <- function(model) {
+  # Extract model summary
+  model_summary <- summary(model)
+  
+  # Extract coefficients and p-values
+  model_info <- tidy(model) %>%
+    mutate(
+      p.value = round(p.value, 4),
+      significance = case_when(
+        p.value < 0.001 ~ "***",
+        p.value < 0.01 ~ "**",
+        p.value < 0.05 ~ "*",
+        TRUE ~ ""
+      )
+    ) %>%
+    select(term, estimate, p.value, significance)
+  
+  return(model_info)
+}
+
+# Example usage:
+# fit <- lm(mpg ~ wt + hp, data = mtcars)
+# model_info <- extract_model_info(fit)
+# model_info %>% flextable()
+
+```
+
+First the model output for a linear model with the formula
+
+`slai ~ gender`
+
+```{r}
+model_main <- lm(slai ~ gender, data = df_plot)
+
+model_info <- extract_model_info(model_main)
+
+model_info %>% 
+  flextable() %>% 
+  
+  set_header_labels(
+    term = "Model Term",
+    estimate = "Coefficient",
+    p.value = "P-Value",
+    significance = "Significance"
+  ) %>%
+  theme_vanilla() %>%
+  bold(i = ~ significance != "", bold = TRUE) %>%
+  color(i = ~ significance != "", color = "red") %>%
+  autofit()
+```
+
+
+The following is the model output for a linear model with the formula
+
+`slai ~ region + gender + edu_comp`
+
+```{r}
+model_main <- lm(slai ~ region + gender + edu_comp, data = df_plot)
+
+model_info <- extract_model_info(model_main)
+
+model_info %>% 
+  flextable() %>% 
+  
+  set_header_labels(
+    term = "Model Term",
+    estimate = "Coefficient",
+    p.value = "P-Value",
+    significance = "Significance"
+  ) %>%
+  theme_vanilla() %>%
+  bold(i = ~ significance != "", bold = TRUE) %>%
+  color(i = ~ significance != "", color = "red") %>%
+  autofit()
+
+
+```
+
+### Anova test
+
+```{r}
+p_load(car)
+
+anova_df <- Anova(model_main, type = 2) %>% 
+  as.data.frame() 
+
+colnames(anova_df)[which(names(anova_df) == "Pr(>F)")] <- "pval"
+
+anova_df <- anova_df %>% 
+  rownames_to_column(var = "Term") %>%
+  mutate(
+    pval = round(pval, 4),
+    Significance = case_when(
+      pval < 0.001 ~ "***",
+      pval < 0.01 ~ "**",
+      pval < 0.05 ~ "*",
+      TRUE ~ ""
+    )
+  ) %>% 
+  select(Term, Df, `F value`, pval, Significance)
+
+  #--PRINT---------------------------------------------------------#
+  #----------------------------------------------------------------#
+  anova_df %>% 
+    flextable() %>% 
+    
+    set_header_labels(
+      Term = "Model Term",
+      Df = "Degrees of Freedom",
+      `F value` = "F-Value",
+      `P-Value` = "pval",
+      `Sig.` = "Significance"
+    ) %>%
+    theme_vanilla() %>%
+    bold(i = ~ pval < 0.05, bold = TRUE) %>%
+    color(i = ~ pval < 0.05, color = "red") %>%
+    autofit()
+
+```
+
+### Interactions included in model
+
+```{r}
+model_interact <- lm(slai ~ region + (gender * edu_comp) + (gender * umultiling), data = df_plot)
+Anova(model_interact, type = 2)
+
+```
+
+:::{.callout-tip appearance="simple"}
+This shows that the `gender x edu` interaction term is **not** significant (at all), so we can stop talking about it.
+:::
+
+We remove the insignificant interaction term and model again.
+
+```{r}
+model_interact_2 <- lm(slai ~ region + (gender * umultiling), data = df_plot)
+Anova(model_interact_2, type = 2)
+```
+
+
+
+### Pairwise comparisons
+
+Between education levels.
+
+```{r}
+p_load(emmeans)
+
+emmeans(model_main, pairwise ~ edu_comp)
+
+```
+
+A better view of the output of the Anova for main effects.
+
+```{r}
+# Get Type II ANOVA table
+anova_table <- Anova(model_main, type = 2) %>%
+  as.data.frame() %>%
+  rownames_to_column("Term") %>%
+  mutate(
+    `F value` = round(`F value`, 2),
+    `Pr(>F)` = round(`Pr(>F)`, 3),
+    `Signif.` = case_when(
+      `Pr(>F)` < 0.001 ~ "***",
+      `Pr(>F)` < 0.01  ~ "**",
+      `Pr(>F)` < 0.05  ~ "*",
+      `Pr(>F)` < 0.1   ~ ".",
+      TRUE             ~ ""
+    )
+  )
+
+# View results with stars
+anova_table %>% gt()
+```
+
+
+### Visualize pairwise comparisons  
+
+First: `region` and `umultilingual`.
+
+```{r fig-plot-lm-region-multiling, warning=FALSE, fig.width=9, fig.height=6}
+
+# 1️⃣ Fit the model
+model <- lm(slai ~ region * umultiling, data = df_plot)
+
+# 2️⃣ Get estimated marginal means (EMMs)
+emm <- emmeans(model, ~ region * umultiling)
+
+# 3️⃣ Get pairwise contrasts of multilingualism within each region
+pairwise_within_region <- contrast(emm, method = "pairwise", by = "region")
+
+# 4️⃣ Format results for plotting
+plot_df <- as.data.frame(pairwise_within_region) %>%
+  mutate(
+    p.value = round(p.value, 3),
+    signif = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.01  ~ "**",
+      p.value < 0.05  ~ "*",
+      p.value < 0.1   ~ ".",
+      TRUE ~ ""
+    ),
+    contrast_label = paste(region, contrast, sep = ": ")
+  )
+
+ggplot(plot_df, aes(x = contrast_label, y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = estimate - SE, ymax = estimate + SE), width = 0.2) +
+  geom_text(aes(label = signif, y = estimate + SE + 0.05), size = 3) +
+  labs(
+    title = "Difference in Attitude Index: Multilingualism within Regions",
+    x = "Region: Multilingual Comparison",
+    y = "Estimated Difference (Multilingual Yes - No)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+
+```
+:::{.callout-tip appearance="simple"}
+Only in Alberta and British Columbia does being multilingual have a statistically significant effect on SLAI.
+:::
+
+For our second pairwise comparison: `region` and `gender`.
+
+
+```{r fig-plot-lm-region-gender, warning=FALSE, fig.width=9, fig.height=6}
+
+df_plot_2 <- df_plot %>% 
+  filter(!gender == "other")
+
+# 1️⃣ Fit the model
+model_2 <- lm(slai ~ region * gender, data = df_plot_2)
+
+# 2️⃣ Get estimated marginal means (EMMs)
+emm <- emmeans(model_2, ~ region * gender)
+
+# 3️⃣ Get pairwise contrasts of multilingualism within each region
+pairwise_within_region <- contrast(emm, method = "pairwise", by = "region")
+
+# 4️⃣ Format results for plotting
+plot_df_2 <- as.data.frame(pairwise_within_region) %>%
+  mutate(
+    p.value = round(p.value, 3),
+    signif = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.01  ~ "**",
+      p.value < 0.05  ~ "*",
+      p.value < 0.1   ~ ".",
+      TRUE ~ ""
+    ),
+    contrast_label = paste(region, contrast, sep = ": ")
+  )
+
+ggplot(plot_df_2, aes(x = contrast_label, y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = estimate - SE, ymax = estimate + SE), width = 0.2) +
+  geom_text(aes(label = signif, y = estimate + SE + 0.05), size = 3) +
+  labs(
+    title = "Difference in Attitude Index: Gender within Regions",
+    x = "Region: Gender Comparison",
+    y = "Estimated Difference (female - male)",
+    caption = "Gender modeled as binary to enable pairwise comparisons."
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1),
+        plot.caption.position = "plot")
+
+
+```
+:::{.callout-tip appearance="simple"}
+This is interesting, but in this approach, hardly anything is significant. It's all a wash! See the table below.
+:::
+
+```{r}
+plot_df_2 %>% 
+  mutate(estimate = round(estimate, 4)) %>% 
+  select(9,8,3) %>% 
+  gt()
+```
+
+
+
+### Multivariate model plot
+
+```{r fig-plot-coefs, fig.width=9, fig.height=6.5}
+p_load(broom)
+
+
+# 1 Tidy and annotate the model
+tidy_model <- tidy(model_main) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(
+    p_star = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.01  ~ "**",
+      p.value < 0.05  ~ "*",
+      p.value < 0.1   ~ ".",
+      TRUE ~ ""
+    ),
+    term_label = paste(term, p_star),
+    estimate_label = round(estimate, 2)
+  )
+
+# 2️ Plot with coefficient labels
+ggplot(tidy_model, aes(x = reorder(term_label, estimate), y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = estimate - std.error, ymax = estimate + std.error), width = 0.2) +
+  # geom_text(aes(label = estimate_label), hjust = -0.3, size = 3.5) +  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  coord_flip() +
+  labs(
+    title = "Predicting Standard Language Attitude Index: Model Coefficients",
+    x = NULL,
+    y = "Estimate (β)"
+  ) +
+  theme_minimal()
+
+```
+

@@ -1,0 +1,210 @@
+---
+title: "11 Age and gender"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: false
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+
+df <- import("data/df_cleaned_5.rds") %>% 
+  as_tibble() 
+
+# Define two groups of selectors for region (where spent formative years) and province (of current residence).
+can_regions <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                  "NB", "NS", "PE", "NL", "TR", "US", "UK")
+
+
+```
+
+
+## Gender categories: *N* per age level (density curves)
+
+```{r warning=FALSE, message=FALSE, fig.height=3.5, fig.width=8.5}
+
+p_load(ggridges) 
+
+# ── 1  keep complete rows & lock factor order ────────────────────────────────
+df_age <- df %>%     
+  filter(!is.na(age), !is.na(gender)) %>%
+  mutate(
+    gender = factor(gender,
+                    levels = c("female", "male", "other")) 
+  )
+
+# ── 2  ridgeline density plot ────────────────────────────────────────────────
+ggplot(df_age,
+       aes(x = age, y = gender, fill = gender)) +
+  geom_density_ridges(
+    alpha            = .7,          # transparency of the fill
+    scale            = 2.25,        # vertical overlap (<1 = little overlap)
+    rel_min_height   = .01,         # cut off long tiny tails
+    bandwidth_adjust = .9,          # like adjust= in geom_density()
+    colour           = "white",     # thin white outline for crisp edges
+    linewidth        = .6
+  ) +
+  scale_fill_manual(                 # Okabe-Ito palette (no red/green contrast)
+    values = c(
+      "male" = "#0072B2",   # blue
+      "female"   = "#E69F00",   # orange
+      "other"  = "#CC79A7"    # magenta-purple
+    ),
+    guide  = "none"           # legend unnecessary—labels are on the ridges
+  ) +
+  labs(
+    x     = "Age",
+    y     = NULL,
+    title = "Age distribution by gender (ridgeline densities)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    plot.title.position = "plot"
+  )
+
+```
+
+```{r fig.width=8, fig.height=4.5}
+
+# ── 1  Keep rows that have both age and gender ───────────────────────────────
+df_age <- df %>%                     # replace with your object name
+  filter(!is.na(age), !is.na(gender)) %>%      # drop incomplete rows
+  mutate(
+    gender = factor(gender,       
+                    levels = c("female", "male", "other"))
+  )
+
+# ── 2  Density-line plot ─────────────────────────────────────────────────────
+ggplot(df_age, aes(x = age, colour = gender)) +
+  geom_density(           # kernel density estimate
+    linewidth = 2.5,      # use linewidth, not size (ggplot ≥ 3.4)
+    adjust    = 0.9,      # < 1 = more detail; > 1 = smoother
+    trim      = TRUE,     # drop tails outside observed range
+    fill      = NA,        # lines only, no shading
+    alpha     = 0.6
+  ) +
+  scale_colour_manual(    # colour-blind-friendly palette
+    values = c(
+      "male" = "#0072B2",   # blue
+      "female"   = "#E69F00",   # orange
+      "other"  = "#CC79A7"    # magenta-purple
+    ),
+    name = NULL
+  ) +
+  labs(
+    x = "Age",
+    y = "Density (kernel estimate)",
+    title = "Age distribution by gender"
+  ) +
+  theme_minimal() +
+  theme(plot.title.position = "plot")
+
+```
+
+::: {.callout-tip}
+## What this shows us
+If you ask me, these viz'es show that the older you get, the less likely you are to be nonbinary. 
+:::
+
+## Line plot without probability estimation
+
+Just a simple line plot without any smoothing over top. 
+
+```{r fig.width=8, fig.height=4.5}
+# ── 1  keep rows that have both age and gender ───────────────────────────────
+df_age <- df %>%                     # replace with your frame name
+  filter(!is.na(age), !is.na(gender)) %>%
+  mutate(
+    gender = factor(gender,
+                    levels = c("female", "male", "other"))
+  )
+
+# ── 2  count cases per age × gender ──────────────────────────────────────────
+df_counts <- df_age %>%
+  count(age, gender, name = "n")
+
+# ── 3  line plot of raw counts ───────────────────────────────────────────────
+ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
+  geom_line(linewidth = 2,
+            alpha = 0.6) +
+  scale_colour_manual(
+    values = c(
+      "male" = "#0072B2",   # blue
+      "female"   = "#E69F00",   # orange
+      "other"  = "#CC79A7"    # magenta-purple
+    ),
+    name = NULL
+  ) +
+  labs(
+    x     = "Age",
+    y     = "Number of respondents",
+    title = "Respondent counts by age and gender"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title.position = "plot")
+```
+Another version with just some very slight curve smoothing.
+
+```{r fig.width=8, fig.height=4.5}
+# ── 1  keep rows that have both age and gender ───────────────────────────────
+df_age <- df %>%                     # replace with your frame name
+  filter(!is.na(age), !is.na(gender)) %>%
+  mutate(
+    gender = factor(gender,
+                    levels = c("female", "male", "other"))
+  )
+
+# ── 2  count cases per age × gender ──────────────────────────────────────────
+df_counts <- df_age %>%
+  count(age, gender, name = "n")
+
+# ── 3  line plot of raw counts ───────────────────────────────────────────────
+ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
+  geom_point(alpha = 0.25, size = 1, show.legend = FALSE) +
+  # loess smoother (span < 1 makes it wigglier; tweak to taste)
+  geom_smooth(
+    method    = "loess",
+    formula   = y ~ x,
+    span      = 0.29,       # 0.4–0.5: moderate smoothing
+    se        = FALSE,
+    linewidth = 2.1,
+    alpha = 0.65
+  ) +
+  scale_colour_manual(
+    values = c(
+      "male" = "#0072B2",   # blue
+      "female"   = "#E69F00",   # orange
+      "other"  = "#CC79A7"    # magenta-purple
+    ),
+    name = NULL
+  ) +
+  labs(
+    x     = "Age",
+    y     = "Number of respondents",
+    title = "Respondent counts by age and gender"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title.position = "plot")
+```
+
+  
+  

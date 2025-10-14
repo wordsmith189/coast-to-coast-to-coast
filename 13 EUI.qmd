@@ -1,0 +1,338 @@
+---
+title: "13 EUI"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: false
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+
+df <- import("data/df_cleaned_5.rds") %>% 
+  as_tibble() %>% 
+  filter(!region=="other")
+
+```
+
+
+## Variables
+
+We now turn to `eui`. I has values on an integer scale from 0 to 15. 
+
+```{r}
+df <- df %>% 
+  mutate(eui = as.integer(eui))
+df %>% count(eui) %>% gt()
+```
+A quick plot of the distribution.
+
+```{r fig-eui-density, fig.height=4.5, fig.width=8.5}
+
+ncases <- nrow(df) %>% format(big.mark = ",")
+
+ggplot(df, aes(x = eui)) +
+  geom_density(fill = "blue", alpha = 0.5, bw = 0.5) +
+  labs(title = "Density Plot of EUI",
+       x = "EUI",
+       y = "Density",
+       caption = paste0("N = ", ncases)) +
+  theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+
+```
+
+
+
+
+We are going to go ahead and bin the responses into groups: 
+
+- Monolingual (0)
+- Some non-English (1-2)
+- Considerable non-English (3-15)
+
+```{r}
+df_eui <- df %>%
+  mutate(eui_bin = case_when(
+    eui == 0 ~ "Monolingual (0)",
+    eui >= 1 & eui <= 2 ~ "Some non-English (1-2)",
+    eui >= 3 & eui <= 15 ~ "Considerable non-English (3-15)",
+    TRUE ~ NA_character_
+  ),
+  eui_bin = factor(eui_bin, levels = c("Monolingual (0)", "Some non-English (1-2)", "Considerable non-English (3-15)"))
+  )
+
+df_eui %>%  count(eui_bin) %>% print()
+
+```
+
+## Predicting `st_heard`
+
+```{r fig-eui-bins-st-heard}
+df_plot <- df_eui %>% 
+  filter(!is.na(eui_bin),
+         !is.na(st_heard))
+
+ncases <- nrow(df_plot) %>% format(big.mark = ",")
+
+p1 <- df_plot %>% 
+ggplot(aes(x = eui_bin, fill = st_heard)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Distribution of st_heard as predicted by EUI",
+       caption = bquote(italic(N) == .(ncases)),
+       x = "EUI",
+       y = "Count",
+       fill = NULL) +
+  theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p1 + scale_fill_manual(values = c("#0072B2","#E69F00", "#F0E442", "#CC79A7", "#D55E00")) 
+
+```
+
+```{r}
+p1 + scale_fill_grey(start = 0.2, end = 0.8) 
+
+```
+
+
+```{r fig-eui-bins-st-heard-flip}
+df_plot <- df_eui %>% 
+  filter(!is.na(eui_bin),
+         !is.na(st_heard))
+
+ncases <- nrow(df_plot) %>% format(big.mark = ",")
+
+p2 <- df_plot %>% 
+ggplot(aes(x = st_heard, fill = eui_bin)) +
+  geom_bar(position = "dodge", width = 0.7) +
+  labs(title = "Distribution of EUI as predicted by st_heard",
+       caption = bquote(italic(N) == .(ncases)),
+       y = NULL,
+       x = "st_heard",
+       fill = NULL) +
+  theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p2 + scale_fill_manual(values = c("#0072B2","#CC79A7", "#E69F00", "#F0E442",  "#D55E00")) 
+
+```
+  
+```{r}
+p2 + scale_fill_grey(start = 0.2, end = 0.8) 
+
+```
+
+
+
+```{r}
+
+df_descr <- df_eui %>% 
+  mutate(st_descr = str_trim(st_descr))
+
+levs <- df_descr %>% pull(st_descr) %>% na.omit() %>% unique()
+
+df_descr <- df_descr %>% 
+  select(eui_bin, st_descr, region) %>%
+  mutate(
+    st_descr = factor(st_descr, levels = levs)
+  ) %>% 
+  na.omit()
+
+df_descr %>% 
+  count(eui_bin, st_descr) %>% print()
+```
+
+The data table (above) is what we want to visualize.
+
+```{r fig-stdescr-eui, message=FALSE, fig.width=7, fig.height=4.5}
+
+
+total_counts <- df_descr %>%
+  group_by(eui_bin) %>%
+  summarise(total_count = n())
+
+data_percent <- df_descr %>%
+  group_by(eui_bin, st_descr) %>%
+  summarise(count = n()) %>%
+  left_join(total_counts, by = "eui_bin") %>%
+  mutate(percentage = count / total_count * 100)
+
+# Calculate total counts for each eui_bin level
+total_counts <- data_percent %>%
+  group_by(eui_bin) %>%
+  summarise(total_count = paste0("n = ", sum(count)))
+
+
+# Create the plot
+p5 <- ggplot(data_percent, aes(x = eui_bin, y = percentage, fill =  st_descr)) +
+  geom_bar(stat = "identity", position = "stack", width = .6,
+           show.legend = T) +
+  geom_label(data = total_counts, aes(x = eui_bin, y = 60, label = total_count), vjust = -0.5, inherit.aes = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  labs(title = "Distribution of st_descr as predicted by EUI",
+       x = NULL,
+       y = "Percentage",
+       fill = "St descr") +
+  theme_minimal() +
+  coord_flip() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+
+p5 + scale_fill_manual(values = c("#D55E00", "#0072B2","#CC79A7", "#E69F00", "#F0E442")) 
+
+```
+
+::: {.callout-tip}
+## The lowdown
+This distribution is not at all significant.
+:::
+
+
+## EUI and `cdn_way`
+
+```{r}
+
+levs <- df_eui %>% pull(cdn_way) %>% na.omit() %>% unique() %>% .[c(4,1,2,3)]
+
+
+df_eui_way <- df_eui %>% 
+  select(eui_bin, cdn_way, region) 
+
+df_eui_way <- df_eui_way %>%
+  mutate(
+    cdn_way = factor(cdn_way, levels = levs)
+  ) %>% 
+    na.omit()
+
+df_eui_way %>% 
+  count(eui_bin, cdn_way)
+
+```
+
+
+```{r fig-cdnway-eui, message=FALSE, fig.width=7, fig.height=5}
+
+# Calculate percentages and counts
+data_percent <- df_eui_way %>%
+  group_by(eui_bin, cdn_way) %>%
+  summarise(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100)
+
+# Calculate total counts for each eui_bin level
+total_counts <- data_percent %>%
+  group_by(eui_bin) %>%
+  summarise(total_count = paste0("n = ", sum(count)))
+
+# Create the plot
+p4 <- ggplot(data_percent, aes(x = eui_bin, y = percentage, fill = cdn_way)) +
+  geom_bar(stat = "identity", position = "stack", width = .6) +
+  geom_text(data = total_counts, aes(x = eui_bin, y = 100, label = total_count), vjust = -0.5, inherit.aes = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  labs(title = "Distribution of cdn_way as predicted by EUI",
+       x = "EUI",
+       y = "Percentage",
+       fill = "Is there a Canadian Way?") +
+  theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0),
+        axis.text.x = element_text(angle = 17))
+
+
+
+
+p4 + scale_fill_manual(values = c("#0072B2","#CC79A7", "#E69F00", "#F0E442",  "#D55E00")) 
+
+```
+
+Is what we see here statistically significant? 
+
+```{r}
+
+# Create a contingency table
+contingency_table <- df_plot %>%
+  count(eui_bin, cdn_way) %>%
+  spread(cdn_way, n, fill = 0)
+
+# Perform the chi-square test
+chi_square_test <- chisq.test(as.matrix(contingency_table[,-1]))
+
+# Print the results
+print(chi_square_test)
+
+```
+::: {.callout-tip}
+## The lowdown
+Significant at the *p* ≤ 0.05<sup>*</sup> level.
+:::
+
+## EUI and SLAI
+
+```{r fig-slai-eui, warning=FALSE}
+
+df_eui <- import("data/df_canada_6.rds") %>% 
+  tibble() %>% 
+  filter(!region=="other") %>% 
+  mutate(
+    eui = as.integer(eui),
+    eui_bin = case_when(
+    eui == 0 ~ "Monolingual (0)",
+    eui >= 1 & eui <= 2 ~ "Some non-English (1-2)",
+    eui >= 3 & eui <= 15 ~ "Considerable non-English (3-15)",
+    TRUE ~ NA_character_
+  ),
+  eui_bin = factor(eui_bin, levels = c("Monolingual (0)", "Some non-English (1-2)", "Considerable non-English (3-15)"))
+  )
+
+df_plot <- df_eui %>% 
+  select(eui_bin, slai) %>% 
+  na.omit()
+
+# Create the plot
+p6 <- df_plot %>% 
+  ggplot(aes(x = eui_bin, y = slai, fill = eui_bin)) +
+   geom_boxplot(aes(fill = eui_bin), width = 0.7,
+                show.legend = F) +
+   labs(title = "Distribution of SLAI by EUI",
+             x = "EUI",
+             y = "SLAI") +
+   theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p6 + scale_fill_manual(values = c("#D55E00", "#0072B2","#CC79A7", "#E69F00", "#F0E442")[c(2,4,5)])
+
+```
+
+::: {.callout-tip}
+## The lowdown
+This distribution is not at all significant.
+:::

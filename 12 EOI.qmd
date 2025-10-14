@@ -1,0 +1,297 @@
+---
+title: "12 EOI"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: false
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+
+df <- import("data/df_cleaned_5.rds") %>% 
+  as_tibble() %>% 
+  filter(!region=="other")
+
+```
+
+
+## Variables
+
+Our variable of interest here is `eoi`. It has values from 0 to 15. There is also a great number of NA responses. 
+
+```{r}
+df <- df %>% 
+  mutate(eoi = as.integer(eoi))
+df %>% count(eoi) %>% gt()
+```
+We are going to go ahead and bin the responses into groups: 
+
+- None (0)
+- 1-3
+- 4-15
+
+```{r}
+df_eoi <- df %>% 
+  filter(!is.na(eoi)) %>% 
+  mutate(eoi_bin = case_when(
+    eoi == 0 ~ "None",
+    eoi >= 1 & eoi <= 3 ~ "Low (1-3)",
+    eoi >= 4 & eoi <= 15 ~ "High (4-14)",
+    .default = "Other"
+  ),
+  eoi_bin = factor(eoi_bin, levels = c("None", "Low (1-3)", "High (4-14)"))
+  )
+
+df_eoi %>% count(eoi_bin)
+```
+## Predicting `st_heard`
+
+```{r fig-eoi-bins-st-heard}
+df_plot <- df_eoi %>% 
+  filter(!is.na(eoi_bin),
+         !is.na(st_heard))
+
+ncases <- nrow(df_plot) %>% format(big.mark = ",")
+
+p1 <- df_plot %>% 
+ggplot(aes(x = eoi_bin, fill = st_heard)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Distribution of st_heard as predicted by EOI",
+       caption = bquote(italic(N) == .(ncases)),
+       x = "EOI",
+       y = "Count",
+       fill = NULL) +
+  theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p1 + scale_fill_manual(values = c("#0072B2","#E69F00", "#F0E442", "#CC79A7", "#D55E00")) 
+
+```
+
+```{r}
+p1 + scale_fill_grey(start = 0.2, end = 0.8) 
+
+```
+
+
+```{r fig-eoi-bins-st-heard-flip}
+df_plot <- df_eoi %>% 
+  filter(!is.na(eoi_bin),
+         !is.na(st_heard))
+
+ncases <- nrow(df_plot) %>% format(big.mark = ",")
+
+p2 <- df_plot %>% 
+ggplot(aes(x = st_heard, fill = eoi_bin)) +
+  geom_bar(position = "dodge", width = 0.7) +
+  labs(title = "Distribution of EOI as predicted by st_heard",
+       caption = bquote(italic(N) == .(ncases)),
+       y = NULL,
+       x = "st_heard",
+       fill = "EOI") +
+  theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p2 + scale_fill_manual(values = c("#0072B2","#CC79A7", "#E69F00", "#F0E442",  "#D55E00")) 
+
+```
+  
+```{r}
+p2 + scale_fill_grey(start = 0.2, end = 0.8) 
+
+```
+  
+## EOI and `cdn_way`
+
+```{r}
+
+levs <- df %>% pull(cdn_way) %>% na.omit() %>% unique() %>% .[c(4,1,2,3)]
+
+
+df_eoi_way <- df %>% 
+  mutate(eoi_bin = case_when(
+    eoi == 0 ~ "None",
+    eoi >= 1 & eoi <= 3 ~ "Low (1-3)",
+    eoi >= 4 & eoi <= 15 ~ "High (4-14)",
+    .default = NA
+  ),
+  eoi_bin = factor(eoi_bin, levels = c("None", "Low (1-3)", "High (4-14)"))
+  ) %>% 
+  select(eoi_bin, cdn_way, region) 
+
+df_eoi_way <- df_eoi_way %>%
+  mutate(
+    cdn_way = factor(cdn_way, levels = levs)
+  ) %>% 
+    na.omit()
+
+df_eoi_way %>% 
+  count(eoi_bin, cdn_way)
+
+
+```
+
+
+```{r fig-cdnway-eoi, message=FALSE, fig.width=7, fig.height=4.5}
+
+# Calculate percentages and counts
+data_percent <- df_eoi_way %>%
+  group_by(eoi_bin, cdn_way) %>%
+  summarise(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100)
+
+# Calculate total counts for each eoi_bin level
+total_counts <- data_percent %>%
+  group_by(eoi_bin) %>%
+  summarise(total_count = paste0("n = ", sum(count)))
+
+# Create the plot
+p4 <- ggplot(data_percent, aes(x = eoi_bin, y = percentage, fill = cdn_way)) +
+  geom_bar(stat = "identity", position = "stack", width = .6) +
+  geom_text(data = total_counts, aes(x = eoi_bin, y = 100, label = total_count), vjust = -0.5, inherit.aes = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  labs(title = "Distribution of cdn_way as predicted by EOI",
+       x = "EOI",
+       y = "Percentage",
+       fill = "Is there a Canadian Way?") +
+  theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+
+
+
+p4 + scale_fill_manual(values = c("#0072B2","#CC79A7", "#E69F00", "#F0E442",  "#D55E00")) 
+
+```
+
+## EOI and `st_descr`
+
+The question is: `st_descr` - **Stefan, what does this mean**
+
+We want to know the cross with `eoi`.
+
+```{r}
+
+df <- df %>% 
+  mutate(st_descr = str_trim(st_descr))
+
+levs <- df %>% pull(st_descr) %>% na.omit() %>% unique()
+
+df_descr <- df %>% 
+  mutate(eoi_bin = case_when(
+    eoi == 0 ~ "None",
+    eoi >= 1 & eoi <= 3 ~ "Low (1-3)",
+    eoi >= 4 & eoi <= 15 ~ "High (4-14)",
+    .default = NA
+  ),
+  eoi_bin = factor(eoi_bin, levels = c("None", "Low (1-3)", "High (4-14)"))
+  ) %>% 
+  select(eoi_bin, st_descr, region)
+
+df_descr <- df_descr %>%
+  mutate(
+    st_descr = factor(st_descr, levels = levs)
+  ) %>% 
+  na.omit()
+
+df_descr %>% 
+  count(eoi_bin, st_descr)
+```
+
+```{r fig-stdescr-eoi, message=FALSE, fig.width=7, fig.height=4.5}
+
+# Calculate percentages and counts
+data_percent <- df_descr %>%
+  group_by(eoi_bin,  st_descr) %>%
+  summarise(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100)
+
+# Calculate total counts for each eoi_bin level
+total_counts <- data_percent %>%
+  group_by(eoi_bin) %>%
+  summarise(total_count = paste0("n = ", sum(count)))
+
+# Create the plot
+p5 <- ggplot(data_percent, aes(x = eoi_bin, y = percentage, fill =  st_descr)) +
+  geom_bar(stat = "identity", position = "stack", width = .6) +
+  geom_text(data = total_counts, aes(x = eoi_bin, y = 100, label = total_count), vjust = -0.5, inherit.aes = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  labs(title = "Distribution of st_descr as predicted by EOI",
+       x = "EOI",
+       y = "Percentage",
+       fill = "St descr???") +
+  theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+
+
+
+p5 + scale_fill_manual(values = c("#0072B2","#CC79A7", "#E69F00", "#F0E442",  "#D55E00")[3:4]) 
+
+```
+
+## EOI and SLAI
+
+```{r fig-slai-eoi, warning=FALSE}
+
+df <- import("data/df_canada_6.rds") %>% 
+  tibble() %>% 
+  filter(!region=="other")
+
+df_plot <- df %>% 
+  mutate(eoi_bin = case_when(
+    eoi == 0 ~ "None",
+    eoi >= 1 & eoi <= 3 ~ "Low (1-3)",
+    eoi >= 4 & eoi <= 15 ~ "High (4-14)",
+    .default = NA
+  ),
+  eoi_bin = factor(eoi_bin, levels = c("None", "Low (1-3)", "High (4-14)"))
+  ) %>% 
+  select(eoi_bin, slai, region)
+
+# Create the plot
+p6 <- df_plot %>% 
+  ggplot(aes(x = eoi_bin, y = slai)) +
+   geom_boxplot(fill = "salmon") +
+   labs(title = "Distribution of SLAI by EOI",
+             x = "EOI",
+             y = "SLAI") +
+   theme_minimal() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p6
+
+```
+
+::: {.callout-tip}
+## The lowdown
+This distribution is completely random.
+:::

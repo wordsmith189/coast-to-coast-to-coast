@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kollege Hinrichs">
+
+<title>PCA und/oder GLM mit Kollege Dollingers Daten</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="dollingers_daten_files/libs/clipboard/clipboard.min.js"></script>
+<script src="dollingers_daten_files/libs/quarto-html/quarto.js"></script>
+<script src="dollingers_daten_files/libs/quarto-html/popper.min.js"></script>
+<script src="dollingers_daten_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="dollingers_daten_files/libs/quarto-html/anchor.min.js"></script>
+<link href="dollingers_daten_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="dollingers_daten_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="dollingers_daten_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="dollingers_daten_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="dollingers_daten_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
+   
+  <ul>
+  <li><a href="#ausgangspunkt" id="toc-ausgangspunkt" class="nav-link active" data-scroll-target="#ausgangspunkt">Ausgangspunkt</a></li>
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning">Data cleaning</a>
+  <ul class="collapse">
+  <li><a href="#probleme-mit-spaltenklassifizierung-beheben" id="toc-probleme-mit-spaltenklassifizierung-beheben" class="nav-link" data-scroll-target="#probleme-mit-spaltenklassifizierung-beheben">Probleme mit Spaltenklassifizierung beheben</a></li>
+  <li><a href="#leere-zellen-als-na-darstellen" id="toc-leere-zellen-als-na-darstellen" class="nav-link" data-scroll-target="#leere-zellen-als-na-darstellen">Leere Zellen als NA darstellen</a></li>
+  </ul></li>
+  <li><a href="#versuchen-das-modell-laufen-zu-lassen" id="toc-versuchen-das-modell-laufen-zu-lassen" class="nav-link" data-scroll-target="#versuchen-das-modell-laufen-zu-lassen">Versuchen, das Modell laufen zu lassen</a></li>
+  <li><a href="#weitere-problembehebung" id="toc-weitere-problembehebung" class="nav-link" data-scroll-target="#weitere-problembehebung">Weitere Problembehebung</a></li>
+  <li><a href="#erneutes-model-fitting" id="toc-erneutes-model-fitting" class="nav-link" data-scroll-target="#erneutes-model-fitting">Erneutes model fitting</a></li>
+  <li><a href="#probleme-mit-der-antwortvariable-lösen" id="toc-probleme-mit-der-antwortvariable-lösen" class="nav-link" data-scroll-target="#probleme-mit-der-antwortvariable-lösen">Probleme mit der Antwortvariable lösen</a></li>
+  <li><a href="#model-fitting-mit-reduziertem-datensatz" id="toc-model-fitting-mit-reduziertem-datensatz" class="nav-link" data-scroll-target="#model-fitting-mit-reduziertem-datensatz">Model fitting mit reduziertem Datensatz</a></li>
+  <li><a href="#reparatur-der-antwortvariable" id="toc-reparatur-der-antwortvariable" class="nav-link" data-scroll-target="#reparatur-der-antwortvariable">Reparatur der Antwortvariable</a></li>
+  <li><a href="#vierter-versuch" id="toc-vierter-versuch" class="nav-link" data-scroll-target="#vierter-versuch">Vierter Versuch</a>
+  <ul class="collapse">
+  <li><a href="#die-gute-nachricht" id="toc-die-gute-nachricht" class="nav-link" data-scroll-target="#die-gute-nachricht">Die gute Nachricht</a></li>
+  <li><a href="#die-schlechte-nachricht" id="toc-die-schlechte-nachricht" class="nav-link" data-scroll-target="#die-schlechte-nachricht">Die schlechte Nachricht</a></li>
+  </ul></li>
+  <li><a href="#fünfter-versuch" id="toc-fünfter-versuch" class="nav-link" data-scroll-target="#fünfter-versuch">Fünfter Versuch</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">PCA und/oder GLM mit Kollege Dollingers Daten</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor:in</div>
+    <div class="quarto-title-meta-contents">
+             <p>Kollege Hinrichs </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Veröffentlichungsdatum</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">7. März 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="ausgangspunkt" class="level2">
+<h2 class="anchored" data-anchor-id="ausgangspunkt">Ausgangspunkt</h2>
+<p>Dieses Skript enthält den Hinweis auf das Ziel.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">library</span>(factoextra)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">library</span>(FactoMineR)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Befehl für das angestrebte Modell mit Error</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> model1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(X8HeardQ5 <span class="sc">~</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                  X30Age<span class="sc">+</span>X33Gender<span class="sc">+</span>X36Region<span class="sc">+</span>X37LUI<span class="sc">+</span>X39EOI.n,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> df)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Error in y - mu : non-numeric argument to binary operator</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Der Error deutet an, dass das Problem zunächst mal mit der Formatierung der einen Variable zu tun hat.</p>
+<p>Wir wollen das also mal nachbauen. Zuerst die Pakete.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pacman)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">p_load</span>(rio, tidyverse, janitor, gt,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>       factoextra, FactoMineR)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Jetzt laden wir die Daten standardmäßig als df.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">"data/Master3100.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning">Data cleaning</h2>
+<p>Als nächstes schauen wir, was zur Vorbereitung des Datensatzes zu tun ist. Dazu gehört, dass der Typus aller Spalten überprüft wird.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,048,574
+Columns: 49
+$ x1cool_q1             &lt;chr&gt; "Strongly agree", "Strongly agree", "Strongly ag…
+$ x2multiling_q2        &lt;chr&gt; "Definitely yes", "Probably yes", "Probably yes"…
+$ x3u_multiling_q58     &lt;chr&gt; "No", "No", "No", "Yes", "Yes", "Yes", "No", "No…
+$ x4comf_non_eng_q13    &lt;chr&gt; "", "", "", "Extremely comfortable", "Moderately…
+$ x5media_q14           &lt;chr&gt; "Extremely unimportant", "Important", "Extremely…
+$ x6priv_q62            &lt;chr&gt; "Yes", "No", "That depends (please also explain …
+$ x7priv_q62b           &lt;chr&gt; "", "", "", "Depends on the size of the group &amp; …
+$ x8heard_q5            &lt;chr&gt; "Yes", "Yes", "No", "No", "Yes", "Not sure", "No…
+$ x9descr_q63           &lt;chr&gt; "Yes, but I can't describe it well", "Yes, but I…
+$ x10know_q6            &lt;chr&gt; "both", "zed", "zee", "zee", "both", "zee", "zed…
+$ x11spellimp_q18       &lt;chr&gt; "Very unimportant", "Important", "Unimportant", …
+$ x12aca_work_q19       &lt;chr&gt; "Definitely not", "Probably yes", "Probably not"…
+$ x13distinct_q4        &lt;chr&gt; "Definitely not", "Probably yes", "Definitely no…
+$ x14w_esame_q8         &lt;chr&gt; "Probably not", "Definitely not", "Probably yes"…
+$ x15cdn_pos_q12        &lt;chr&gt; "No", "Yes (please specify who):", "No", "Yes (p…
+$ x16most_prest_q10     &lt;chr&gt; "Singaporean English", "British English", "Briti…
+$ x17rec_cdns_q15       &lt;chr&gt; "Rarely", "Sometimes", "Sometimes", "Often", "So…
+$ x18software_q17       &lt;chr&gt; "Yes", "Yes", "Yes", "No", "Yes", "Yes", "", "",…
+$ x19on_dict_q20        &lt;chr&gt; "Neither yes or no", "Yes", "No", "Yes", "Yes", …
+$ x20recog_eh_q21       &lt;chr&gt; "Definitely yes", "Probably yes", "Definitely ye…
+$ x21cdn_sorry_more_q23 &lt;chr&gt; "Definitely yes", "Definitely yes", "Definitely …
+$ x22engl_yes_q67       &lt;chr&gt; "Disagree", "Disagree", "Agree", "Disagree", "Di…
+$ x23fr_yes_q67         &lt;chr&gt; "Disagree", "Disagree", "Neither disagree nor ag…
+$ x24indg_yes_q67       &lt;chr&gt; "Strongly agree", "Agree", "Agree", "Strongly ag…
+$ x25more_e_fq67        &lt;chr&gt; "Neither disagree nor agree", "Agree", "Disagree…
+$ x26cdn_way_q9         &lt;chr&gt; "Probably not", "Probably yes", "Probably yes", …
+$ x30age                &lt;chr&gt; "15-19", "20-24", "15-19", "20-24", "20-24", "20…
+$ x31live_prov          &lt;chr&gt; "Canada", "Canada", "United States", "Canada", "…
+$ x32live_land          &lt;chr&gt; "British Columbia", "British Columbia", "Califor…
+$ x33gender             &lt;chr&gt; "female", "female", "male", "non-binary", "non-b…
+$ x34edu_comp           &lt;chr&gt; "high school", "high school", "high school", "hi…
+$ x35degree_year        &lt;chr&gt; "Second year", "Fourth year+", "I am not current…
+$ x36region             &lt;chr&gt; "BC", "BC", "BC", "US", "BC", "Singapore", "BC",…
+$ x37lui                &lt;chr&gt; "0", "0", "0", "4", "0", "3", "0", "0", "0", "0"…
+$ x38dist_cult          &lt;chr&gt; "no", "yes (please specify):", "no", "yes (pleas…
+$ x39eoi_n              &lt;chr&gt; "", "12", "", "4", "", "8", "4", "", "", "", "3"…
+$ x40eoi_calc           &lt;chr&gt; "", "12", "", "4", "", "8", "4", "", "", "", "3"…
+$ eoi_check             &lt;chr&gt; "1", "1", "1", "1", "1", "1", "1", "1", "1", "1"…
+$ hood                  &lt;chr&gt; "", "somewhat", "", "only a little", "", "somewh…
+$ hood_number           &lt;chr&gt; "0", "2", "0", "1", "0", "2", "2", "0", "0", "0"…
+$ rel                   &lt;chr&gt; "", "somewhat", "", "not at all", "", "", "not a…
+$ rel_number            &lt;chr&gt; "0", "2", "0", "0", "0", "0", "0", "0", "0", "0"…
+$ comm                  &lt;chr&gt; "", "somewhat", "", "only a little", "", "somewh…
+$ comm_number           &lt;chr&gt; "0", "2", "0", "1", "0", "2", "1", "0", "0", "0"…
+$ eoi_work              &lt;chr&gt; "", "very much", "", "not at all", "", "somewhat…
+$ eoi_work_number       &lt;chr&gt; "0", "3", "0", "0", "0", "2", "1", "0", "0", "0"…
+$ eoi_online            &lt;chr&gt; "", "very much", "", "somewhat", "", "somewhat",…
+$ eoi_online_number     &lt;chr&gt; "0", "3", "0", "2", "0", "2", "0", "0", "0", "0"…
+$ x41soc_media          &lt;chr&gt; "4-6 hours", "1-2 hours", "4-6 hours", "2-4 hour…</code></pre>
+</div>
+</div>
+<p>Wir sehen in der Vorschau hier zwei wichtige Dinge:</p>
+<ul>
+<li>Der Datensatz ist urs lang, über 1 Million Zeilen, das ist schön.</li>
+<li>Es werden alle Zeilen als Typ “character” gelesen, das ist wahrscheinlich nicht das, was wir wollen.</li>
+</ul>
+<section id="probleme-mit-spaltenklassifizierung-beheben" class="level3">
+<h3 class="anchored" data-anchor-id="probleme-mit-spaltenklassifizierung-beheben">Probleme mit Spaltenklassifizierung beheben</h3>
+<p>Ich weiß nicht genau, woran das letztere Problem liegt, aber wir müssen jetzt einfach mal per Hand die falsch erkannten Spalten umkategorisieren. Wir machen eine Liste der Spalten, die als ganze Zahlen (integers) gelesen werden sollen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>read_as_num <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'x37lui'</span>, <span class="st">"x39eoi_n"</span>, <span class="st">"x40eoi_calc"</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"eoi_check"</span>, <span class="st">"hood_number"</span>, <span class="st">"rel_number"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"comm_number"</span>, <span class="st">"eoi_work_number"</span>, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"eoi_online_number"</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Jetzt werden alle diese Spalten <em>par force</em> in numerische umgewandelt.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(read_as_num), as.integer))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,048,574
+Columns: 49
+$ x1cool_q1             &lt;chr&gt; "Strongly agree", "Strongly agree", "Strongly ag…
+$ x2multiling_q2        &lt;chr&gt; "Definitely yes", "Probably yes", "Probably yes"…
+$ x3u_multiling_q58     &lt;chr&gt; "No", "No", "No", "Yes", "Yes", "Yes", "No", "No…
+$ x4comf_non_eng_q13    &lt;chr&gt; "", "", "", "Extremely comfortable", "Moderately…
+$ x5media_q14           &lt;chr&gt; "Extremely unimportant", "Important", "Extremely…
+$ x6priv_q62            &lt;chr&gt; "Yes", "No", "That depends (please also explain …
+$ x7priv_q62b           &lt;chr&gt; "", "", "", "Depends on the size of the group &amp; …
+$ x8heard_q5            &lt;chr&gt; "Yes", "Yes", "No", "No", "Yes", "Not sure", "No…
+$ x9descr_q63           &lt;chr&gt; "Yes, but I can't describe it well", "Yes, but I…
+$ x10know_q6            &lt;chr&gt; "both", "zed", "zee", "zee", "both", "zee", "zed…
+$ x11spellimp_q18       &lt;chr&gt; "Very unimportant", "Important", "Unimportant", …
+$ x12aca_work_q19       &lt;chr&gt; "Definitely not", "Probably yes", "Probably not"…
+$ x13distinct_q4        &lt;chr&gt; "Definitely not", "Probably yes", "Definitely no…
+$ x14w_esame_q8         &lt;chr&gt; "Probably not", "Definitely not", "Probably yes"…
+$ x15cdn_pos_q12        &lt;chr&gt; "No", "Yes (please specify who):", "No", "Yes (p…
+$ x16most_prest_q10     &lt;chr&gt; "Singaporean English", "British English", "Briti…
+$ x17rec_cdns_q15       &lt;chr&gt; "Rarely", "Sometimes", "Sometimes", "Often", "So…
+$ x18software_q17       &lt;chr&gt; "Yes", "Yes", "Yes", "No", "Yes", "Yes", "", "",…
+$ x19on_dict_q20        &lt;chr&gt; "Neither yes or no", "Yes", "No", "Yes", "Yes", …
+$ x20recog_eh_q21       &lt;chr&gt; "Definitely yes", "Probably yes", "Definitely ye…
+$ x21cdn_sorry_more_q23 &lt;chr&gt; "Definitely yes", "Definitely yes", "Definitely …
+$ x22engl_yes_q67       &lt;chr&gt; "Disagree", "Disagree", "Agree", "Disagree", "Di…
+$ x23fr_yes_q67         &lt;chr&gt; "Disagree", "Disagree", "Neither disagree nor ag…
+$ x24indg_yes_q67       &lt;chr&gt; "Strongly agree", "Agree", "Agree", "Strongly ag…
+$ x25more_e_fq67        &lt;chr&gt; "Neither disagree nor agree", "Agree", "Disagree…
+$ x26cdn_way_q9         &lt;chr&gt; "Probably not", "Probably yes", "Probably yes", …
+$ x30age                &lt;chr&gt; "15-19", "20-24", "15-19", "20-24", "20-24", "20…
+$ x31live_prov          &lt;chr&gt; "Canada", "Canada", "United States", "Canada", "…
+$ x32live_land          &lt;chr&gt; "British Columbia", "British Columbia", "Califor…
+$ x33gender             &lt;chr&gt; "female", "female", "male", "non-binary", "non-b…
+$ x34edu_comp           &lt;chr&gt; "high school", "high school", "high school", "hi…
+$ x35degree_year        &lt;chr&gt; "Second year", "Fourth year+", "I am not current…
+$ x36region             &lt;chr&gt; "BC", "BC", "BC", "US", "BC", "Singapore", "BC",…
+$ x37lui                &lt;int&gt; 0, 0, 0, 4, 0, 3, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, …
+$ x38dist_cult          &lt;chr&gt; "no", "yes (please specify):", "no", "yes (pleas…
+$ x39eoi_n              &lt;int&gt; NA, 12, NA, 4, NA, 8, 4, NA, NA, NA, 3, NA, NA, …
+$ x40eoi_calc           &lt;int&gt; NA, 12, NA, 4, NA, 8, 4, NA, NA, NA, 3, NA, NA, …
+$ eoi_check             &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ hood                  &lt;chr&gt; "", "somewhat", "", "only a little", "", "somewh…
+$ hood_number           &lt;int&gt; 0, 2, 0, 1, 0, 2, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, …
+$ rel                   &lt;chr&gt; "", "somewhat", "", "not at all", "", "", "not a…
+$ rel_number            &lt;int&gt; 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ comm                  &lt;chr&gt; "", "somewhat", "", "only a little", "", "somewh…
+$ comm_number           &lt;int&gt; 0, 2, 0, 1, 0, 2, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, …
+$ eoi_work              &lt;chr&gt; "", "very much", "", "not at all", "", "somewhat…
+$ eoi_work_number       &lt;int&gt; 0, 3, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ eoi_online            &lt;chr&gt; "", "very much", "", "somewhat", "", "somewhat",…
+$ eoi_online_number     &lt;int&gt; 0, 3, 0, 2, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, …
+$ x41soc_media          &lt;chr&gt; "4-6 hours", "1-2 hours", "4-6 hours", "2-4 hour…</code></pre>
+</div>
+</div>
+<p>Das sieht besser aus.</p>
+</section>
+<section id="leere-zellen-als-na-darstellen" class="level3">
+<h3 class="anchored" data-anchor-id="leere-zellen-als-na-darstellen">Leere Zellen als NA darstellen</h3>
+<p>Es gibt in den character-Spalten ein paar leere Zellen, die sollten besser als <code>NA</code> gespeichert werden.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>)))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="versuchen-das-modell-laufen-zu-lassen" class="level2">
+<h2 class="anchored" data-anchor-id="versuchen-das-modell-laufen-zu-lassen">Versuchen, das Modell laufen zu lassen</h2>
+<p>Versuchen wir es mal mit dem ursprünglichen Skript.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(x8heard_q5 <span class="sc">~</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                x30age <span class="sc">+</span> x33gender <span class="sc">+</span> x36region <span class="sc">+</span> x37lui <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                x39eoi_n,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> df)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Error in y - mu : non-numeric argument to binary operator</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Des Pudels Kern
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Das Kernproblem ist, dass die <code>glm()</code>-Funktion nicht mit nichtnumerischen, nichtfaktoriellen Variablen als Prädiktoren klarkommt. Also nicht nur die Spalten, die eh schon Zahlen enthielten, sondern auch Spalten vom Typ “character” müssen entweder numerisch oder Faktoren sein, damit <code>glm()</code> damit klar kommt.</p>
+</div>
+</div>
+<p>Die Fehlermeldung ist noch die selbe wie bei Kollege Dollinger. Wir überprüfen also mal, ob all die Variablen im Modell tatsächlich numerisch sind, denn das wird ja hier moniert.</p>
+</section>
+<section id="weitere-problembehebung" class="level2">
+<h2 class="anchored" data-anchor-id="weitere-problembehebung">Weitere Problembehebung</h2>
+<p>Eine Überprüfung ergibt, dass von den 5 Variablen plus der Antwortvariable nur 2 numerisch sind, nämlich <code>x37lui</code> und <code>x39eoi_n</code>.</p>
+<p>Es müssen also die folgenden Variablen auf numerisch übersetzt werden:</p>
+<ul>
+<li><code>x30age</code></li>
+<li><code>x33gender</code></li>
+<li><code>x36region</code></li>
+<li><code>x8heard_q5</code></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Numerisch oder faktoriell?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Eine von diesen vier ist <strong>inhärent numerisch und skalar</strong>, das ist <code>x30age</code>. Die wollen wir in <em>numerische Werte</em> umwandeln. Die anderen drei, <code>x33gender</code>, <code>x36region</code> und <code>x8heard_q5</code>, sind nicht inhärent numerisch geordnet, deshalb wandeln wir sie in <em>Faktoren</em> um.</p>
+</div>
+</div>
+<p>Schauen wir mal, wie viele verschiedene Werte die erste hat.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(x30age)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         x30age       n
+1  14 and under      12
+2         15-19     165
+3         20-24     472
+4         25-29     348
+5         30-34     423
+6         35-39     343
+7         40-44     331
+8         45-49     228
+9         50-54     174
+10        55-59     157
+11        60-64     117
+12        65-69     112
+13        70-74      45
+14        75-79      24
+15        80-84      11
+16        85-89       2
+17            x       2
+18         &lt;NA&gt; 1045608</code></pre>
+</div>
+</div>
+<p>Das sind 18 verschiedene Werte. Ganz automatisch kann man das nicht in numerische Werte umwandeln, also werden wir das re-coden mit der Funktion <code>case_match()</code>. Genauer gesagt, wir erstellen eine neue Spalte <code>age_num</code>, also die numerische Version von <code>x30age</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_num =</span> <span class="fu">case_match</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>      x30age,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"14 and under"</span> <span class="sc">~</span> <span class="dv">14</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"15-19"</span> <span class="sc">~</span> <span class="dv">19</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"20-24"</span> <span class="sc">~</span> <span class="dv">24</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"25-29"</span> <span class="sc">~</span> <span class="dv">29</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"30-34"</span> <span class="sc">~</span> <span class="dv">34</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"35-39"</span> <span class="sc">~</span> <span class="dv">39</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"40-44"</span> <span class="sc">~</span> <span class="dv">44</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">"45-49"</span> <span class="sc">~</span> <span class="dv">49</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">"50-54"</span> <span class="sc">~</span> <span class="dv">54</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">"55-59"</span> <span class="sc">~</span> <span class="dv">59</span>,</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"60-64"</span> <span class="sc">~</span> <span class="dv">64</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">"65-69"</span> <span class="sc">~</span> <span class="dv">69</span>,</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">"70-74"</span> <span class="sc">~</span> <span class="dv">74</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"75-79"</span> <span class="sc">~</span> <span class="dv">79</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">"80-84"</span> <span class="sc">~</span> <span class="dv">84</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">"85-89"</span> <span class="sc">~</span> <span class="dv">89</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>      <span class="st">"x"</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Und nun wandeln wir die beiden anderen in Faktoren um.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Einen Vektor mit den Namen der vars definieren, die umgewandelt werden sollen</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>vars_to_factor <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"x33gender"</span>, <span class="st">"x36region"</span>, <span class="st">"x8heard_q5"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(vars_to_factor), as.factor))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Jetzt noch einmal kucken, ob die Umwandlung geklappt hat.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    age_num, x33gender, x36region, x8heard_q5</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,048,574
+Columns: 4
+$ age_num    &lt;dbl&gt; 19, 24, 19, 24, 24, 24, 24, 19, 19, 54, 24, 24, 24, 24, 24,…
+$ x33gender  &lt;fct&gt; female, female, male, non-binary, non-binary, non-binary, m…
+$ x36region  &lt;fct&gt; BC, BC, BC, US, BC, Singapore, BC, ON, BC, X, MB, AB, ON, B…
+$ x8heard_q5 &lt;fct&gt; Yes, Yes, No, No, Yes, Not sure, No, Not sure, No, No, Yes,…</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hinweis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Der Variablentyp <code>&lt;dbl&gt;</code> ist einer von mehreren numerischen Typen.</p>
+</div>
+</div>
+<p>Ja, hat geklappt.</p>
+</section>
+<section id="erneutes-model-fitting" class="level2">
+<h2 class="anchored" data-anchor-id="erneutes-model-fitting">Erneutes model fitting</h2>
+<p>Jetzt probieren wir es nochmal mit dem Modell, mit der neuen var <code>age_num</code> und den jetzt in Faktoren umgewandelten vars <code>x33gender</code>, <code>x36region</code> und <code>x8heard_q5</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(x8heard_q5 <span class="sc">~</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                age_num <span class="sc">+</span> x33gender <span class="sc">+</span> x36region <span class="sc">+</span> x37lui <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                x39eoi_n,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> df)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Error in glm.fit(x = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  : NA/NaN/Inf in 'y'</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Geht immer noch nicht. Ich glaube, das liegt jetzt daran, dass die Antwortvariable <code>x8heard_q5</code> außer <code>Yes</code> und <code>No</code> auch noch andere Werte enthält.</p>
+</section>
+<section id="probleme-mit-der-antwortvariable-lösen" class="level2">
+<h2 class="anchored" data-anchor-id="probleme-mit-der-antwortvariable-lösen">Probleme mit der Antwortvariable lösen</h2>
+<p>Insgesamt hat sie die folgenden Werte:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(x8heard_q5)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x8heard_q5       n
+1         No    1020
+2   Not sure     444
+3          x       2
+4        Yes    1494
+5       &lt;NA&gt; 1045614</code></pre>
+</div>
+</div>
+<p>Ich schlage vor, wir trennen uns für den Zweck dieses Modells von allen Zeilen, in der die response etwas anderes ist als <code>Yes</code> oder <code>No</code>.</p>
+<p>Zuvor lassen wir die Werte in der Spalte kategorisch klein schreiben, also <code>yes</code> oder <code>no</code> anstatt <code>Yes</code> oder <code>No</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">x8heard_q5 =</span> <span class="fu">tolower</span>(x8heard_q5))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>df_filtered <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    x8heard_q5 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Der Datensatz ist so erheblich kleiner, nur ein fünfhundertstel des Ausgangs-Datensatzes.</p>
+</section>
+<section id="model-fitting-mit-reduziertem-datensatz" class="level2">
+<h2 class="anchored" data-anchor-id="model-fitting-mit-reduziertem-datensatz">Model fitting mit reduziertem Datensatz</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(x8heard_q5 <span class="sc">~</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                age_num <span class="sc">+</span> x33gender <span class="sc">+</span> x36region <span class="sc">+</span> x37lui <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                x39eoi_n,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> df_filtered) <span class="co"># jetzt mit df_filtered statt df</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Error in y - mu : non-numeric argument to binary operator</span></span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Der Fehler besteht weiterhin.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Auch Du, y-Variable?!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Die Antwortvariable <strong>muss</strong>, nach weiterer Recherche, numerisch sein. Also werden wir sie ebenfalls re-coden.</p>
+</div>
+</div>
+</section>
+<section id="reparatur-der-antwortvariable" class="level2">
+<h2 class="anchored" data-anchor-id="reparatur-der-antwortvariable">Reparatur der Antwortvariable</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df_filtered <span class="ot">&lt;-</span> df_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x8heard_q5 =</span> <span class="fu">case_match</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>      x8heard_q5,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"yes"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"no"</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>df_filtered <span class="sc">%&gt;%</span> <span class="fu">count</span>(x8heard_q5)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x8heard_q5    n
+1          0 1020
+2          1 1494</code></pre>
+</div>
+</div>
+</section>
+<section id="vierter-versuch" class="level2">
+<h2 class="anchored" data-anchor-id="vierter-versuch">Vierter Versuch</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model4 <span class="ot">&lt;-</span> <span class="fu">glm</span>(x8heard_q5 <span class="sc">~</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                age_num <span class="sc">+</span> x33gender <span class="sc">+</span> x36region <span class="sc">+</span> x37lui <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                x39eoi_n,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> df_filtered) </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>model4 <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = x8heard_q5 ~ age_num + x33gender + x36region + 
+    x37lui + x39eoi_n, data = df_filtered)
+
+Coefficients:
+                                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                        0.5527636  0.0777618   7.108 3.15e-12 ***
+age_num                            0.0016343  0.0013891   1.176   0.2398    
+x33gendermale                      0.0187765  0.0397663   0.472   0.6370    
+x33gendernon-binary                0.1368296  0.1202679   1.138   0.2557    
+x33genderother (please type here) -0.1292640  0.1240198  -1.042   0.2977    
+x36regionAUS                      -0.6044479  0.4905291  -1.232   0.2183    
+x36regionAustralia                -0.0022077  0.2880382  -0.008   0.9939    
+x36regionAUSTRALIA                -0.6597897  0.4899585  -1.347   0.1786    
+x36regionAustria                   0.3614102  0.4916847   0.735   0.4626    
+x36regionBangladesh               -0.6618892  0.4904417  -1.350   0.1776    
+x36regionBC                       -0.0091264  0.0647564  -0.141   0.8880    
+x36regionBotswana                 -0.6566212  0.4908714  -1.338   0.1815    
+x36regionBrazil                    0.3520636  0.4947920   0.712   0.4770    
+x36regionChile                    -0.6089406  0.4910580  -1.240   0.2154    
+x36regionChina                     0.0777496  0.1927256   0.403   0.6868    
+x36regionColumbia                  0.3550162  0.4904822   0.724   0.4694    
+x36regionFrance                   -0.6390730  0.4899763  -1.304   0.1926    
+x36regionGER                       0.3809480  0.4901835   0.777   0.4374    
+x36regionGermany                   0.3198281  0.4908404   0.652   0.5149    
+x36regionGERMANY                  -0.6434056  0.3481677  -1.848   0.0651 .  
+x36regionHK                       -0.6689345  0.4917275  -1.360   0.1742    
+x36regionHong Kong                -0.3073511  0.2892584  -1.063   0.2884    
+x36regionIndia                    -0.4310770  0.2255494  -1.911   0.0564 .  
+x36regionIndonesia                 0.3805071  0.4924944   0.773   0.4400    
+x36regionIraq                     -0.6571644  0.4943775  -1.329   0.1842    
+x36regionKorea                     0.3862055  0.4923899   0.784   0.4331    
+x36regionKOREA                    -0.6752348  0.4920752  -1.372   0.1705    
+x36regionMalaysia                  0.3683229  0.4897297   0.752   0.4523    
+x36regionMB                       -0.0593198  0.0735368  -0.807   0.4202    
+x36regionMeXico                   -0.3919124  0.2534073  -1.547   0.1225    
+x36regionNB                        0.2198767  0.1902809   1.156   0.2483    
+x36regionNetherlands               0.3156965  0.4912713   0.643   0.5207    
+x36regionNL                        0.0323445  0.1696628   0.191   0.8489    
+x36regionNS                        0.0887648  0.2512641   0.353   0.7240    
+x36regionON                        0.0532586  0.0636081   0.837   0.4027    
+x36regionPE                        0.3810666  0.4897366   0.778   0.4368    
+x36regionPEI                       0.0203319  0.2079149   0.098   0.9221    
+x36regionPH                        0.3839839  0.4903685   0.783   0.4339    
+x36regionPHI                      -0.6593064  0.4902922  -1.345   0.1792    
+x36regionPhilippines              -0.1973495  0.1913722  -1.031   0.3028    
+x36regionQC                       -0.0228051  0.1081008  -0.211   0.8330    
+x36regionSaudia Arabia             0.3507358  0.4901369   0.716   0.4745    
+x36regionSCT                       0.3511359  0.4897633   0.717   0.4737    
+x36regionSingapore                -0.1153293  0.3477948  -0.332   0.7403    
+x36regionSK                        0.0319476  0.1223603   0.261   0.7941    
+x36regionSouth Africa              0.3823252  0.4899510   0.780   0.4355    
+x36regionTaiwan                    0.3578806  0.4920237   0.727   0.4673    
+x36regionThailand                 -0.6465098  0.4908961  -1.317   0.1883    
+x36regionUganda                   -0.6149205  0.4904734  -1.254   0.2104    
+x36regionUK                       -0.0721603  0.2262803  -0.319   0.7499    
+x36regionUkraine                  -0.1375452  0.3526367  -0.390   0.6966    
+x36regionUS                       -0.1419719  0.0971395  -1.462   0.1444    
+x36regionVietnam                  -0.6384409  0.4932316  -1.294   0.1960    
+x36regionX                        -0.0793237  0.0893344  -0.888   0.3749    
+x37lui                            -0.0002815  0.0095759  -0.029   0.9766    
+x39eoi_n                           0.0033970  0.0056638   0.600   0.5489    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for gaussian family taken to be 0.236902)
+
+    Null deviance: 164.28  on 693  degrees of freedom
+Residual deviance: 151.14  on 638  degrees of freedom
+  (1820 observations deleted due to missingness)
+AIC: 1025.7
+
+Number of Fisher Scoring iterations: 2</code></pre>
+</div>
+</div>
+<section id="die-gute-nachricht" class="level3">
+<h3 class="anchored" data-anchor-id="die-gute-nachricht">Die gute Nachricht</h3>
+<p>Das Modell läuft jetzt.</p>
+</section>
+<section id="die-schlechte-nachricht" class="level3">
+<h3 class="anchored" data-anchor-id="die-schlechte-nachricht">Die schlechte Nachricht</h3>
+<p>In den Levels mindestens eines Prädiktors zeigt sich dass noch mehr cleaning zu tun ist, es gibt z.B. mehrere Fälle, wo sowohl groß- als auch kleingeschriebene Versionen der Werte mit dabei sind, z.B. AUSTRALIA und australia.</p>
+<p>Also, wir schreiben jetzt einfach alle nichtnumerischen Vars komplett klein.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>vars_to_lower <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"x33gender"</span>, <span class="st">"x36region"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>df_filtered <span class="ot">&lt;-</span> df_filtered <span class="sc">%&gt;%</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(vars_to_lower), tolower)) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(vars_to_lower), as.factor))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="fünfter-versuch" class="level2">
+<h2 class="anchored" data-anchor-id="fünfter-versuch">Fünfter Versuch</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>model5 <span class="ot">&lt;-</span> <span class="fu">glm</span>(x8heard_q5 <span class="sc">~</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                age_num <span class="sc">+</span> x33gender <span class="sc">+</span> x36region <span class="sc">+</span> x37lui <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                x39eoi_n,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> df_filtered) </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>model5 <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = x8heard_q5 ~ age_num + x33gender + x36region + 
+    x37lui + x39eoi_n, data = df_filtered)
+
+Coefficients:
+                                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                        0.5541914  0.0778536   7.118 2.94e-12 ***
+age_num                            0.0015933  0.0013889   1.147   0.2517    
+x33gendermale                      0.0187242  0.0397963   0.471   0.6382    
+x33gendernon-binary                0.1363370  0.1205713   1.131   0.2586    
+x33genderother (please type here) -0.1288871  0.1243349  -1.037   0.3003    
+x36regionaus                      -0.6047934  0.4918011  -1.230   0.2192    
+x36regionaustralia                -0.1652849  0.2512550  -0.658   0.5109    
+x36regionaustria                   0.3615577  0.4929610   0.733   0.4636    
+x36regionbangladesh               -0.6626442  0.4917185  -1.348   0.1783    
+x36regionbc                       -0.0095779  0.0649236  -0.148   0.8828    
+x36regionbotswana                 -0.6572393  0.4921464  -1.335   0.1822    
+x36regionbrazil                    0.3522853  0.4960694   0.710   0.4779    
+x36regionchile                    -0.6087143  0.4923261  -1.236   0.2168    
+x36regionchina                     0.0767047  0.1932284   0.397   0.6915    
+x36regioncolumbia                  0.3542434  0.4917632   0.720   0.4716    
+x36regionfrance                   -0.6384438  0.4912525  -1.300   0.1942    
+x36regionger                       0.3815345  0.4914566   0.776   0.4378    
+x36regiongermany                  -0.3220741  0.2865264  -1.124   0.2614    
+x36regionhk                       -0.6687011  0.4930129  -1.356   0.1755    
+x36regionhong kong                -0.3067104  0.2899992  -1.058   0.2906    
+x36regionindia                    -0.4313669  0.2261323  -1.908   0.0569 .  
+x36regionindonesia                 0.3791507  0.4937758   0.768   0.4429    
+x36regioniraq                     -0.6576424  0.4956669  -1.327   0.1851    
+x36regionkorea                    -0.1444483  0.3517759  -0.411   0.6815    
+x36regionmalaysia                  0.3680386  0.4910082   0.750   0.4538    
+x36regionmb                       -0.0593196  0.0737279  -0.805   0.4214    
+x36regionmexico                   -0.3915598  0.2540552  -1.541   0.1238    
+x36regionnb                        0.2197684  0.1907782   1.152   0.2498    
+x36regionnetherlands               0.3171479  0.4925453   0.644   0.5199    
+x36regionnl                        0.0324822  0.1701056   0.191   0.8486    
+x36regionns                        0.0877968  0.2519016   0.349   0.7276    
+x36regionon                        0.0531852  0.0637705   0.834   0.4046    
+x36regionpe                        0.3808792  0.4910142   0.776   0.4382    
+x36regionpei                       0.0203900  0.2084403   0.098   0.9221    
+x36regionph                        0.3836721  0.4916436   0.780   0.4355    
+x36regionphi                      -0.6589514  0.4915739  -1.340   0.1806    
+x36regionphilippines              -0.1973966  0.1918662  -1.029   0.3040    
+x36regionqc                       -0.0225670  0.1083791  -0.208   0.8351    
+x36regionsaudia arabia             0.3508517  0.4914141   0.714   0.4755    
+x36regionsct                       0.3506737  0.4910383   0.714   0.4754    
+x36regionsingapore                -0.1155260  0.3487033  -0.331   0.7405    
+x36regionsk                        0.0317886  0.1226737   0.259   0.7956    
+x36regionsouth africa              0.3823646  0.4912260   0.778   0.4366    
+x36regiontaiwan                    0.3584135  0.4933037   0.727   0.4678    
+x36regionthailand                 -0.6474881  0.4921768  -1.316   0.1888    
+x36regionuganda                   -0.6159752  0.4917532  -1.253   0.2108    
+x36regionuk                       -0.0714901  0.2268500  -0.315   0.7528    
+x36regionukraine                  -0.1370992  0.3535412  -0.388   0.6983    
+x36regionus                       -0.1414675  0.0973851  -1.453   0.1468    
+x36regionvietnam                  -0.6375410  0.4945087  -1.289   0.1978    
+x36regionx                        -0.0794206  0.0895665  -0.887   0.3756    
+x37lui                            -0.0004774  0.0095772  -0.050   0.9603    
+x39eoi_n                           0.0035682  0.0056674   0.630   0.5292    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for gaussian family taken to be 0.2381423)
+
+    Null deviance: 164.28  on 693  degrees of freedom
+Residual deviance: 152.65  on 641  degrees of freedom
+  (1820 observations deleted due to missingness)
+AIC: 1026.5
+
+Number of Fisher Scoring iterations: 2</code></pre>
+</div>
+</div>
+<p>Dafür gibts ja verschiedene Pakete, zum Bsp. <code>{prettyglm}</code>, <code>{sjplot}</code>, <code>{stargazer}</code> und andere. ## Hübschere Visualisierung der Modell-Koeffizienten</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Kopiert");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Kopiert");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

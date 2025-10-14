@@ -1,0 +1,190 @@
+---
+title: "5 Overview table"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: true
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+df <- import("data/df_cleaned.rds") %>% 
+  as_tibble()
+```
+
+Define target values for `region`.
+
+```{r}
+can_provs <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                   "NB", "NS", "PE", "NL", "NU", "NT", "YT", "US", "UK")
+
+# add "other" at the end of the existing order
+region_order <- c("BC", "AB", "SK", "MB", "ON", "PE", "QC",
+                  "NB", "NS", "NL", "TR", "US", "UK", "other")
+
+df <- df %>% 
+  
+  mutate(
+    
+    # make a backup of the old region col
+    region_previous = region,
+    
+    # make sure the region values are upper case
+    region = toupper(region),
+    
+    # fix the PEI error
+    region = if_else(region == "PEI", "PE", region),
+    
+    # collapse northern values and assign 'other' to non-target rows
+    region = case_when(
+      region %in% c("NU", "NT", "YT")      ~ "TR",          # merge territories
+      region %in% can_provs                ~ region,        # keep listed codes
+      TRUE                                 ~ "other"        # everything else
+    ),
+    
+    # factorize region
+    region = factor(region, levels = region_order)
+    
+  ) %>% 
+  
+  # reorder the sequence of columns
+  select(region, region_previous, province, everything()) 
+
+```
+
+In a sequence parallel to `region_order`, define target values for `province` and give one of those values or "other".
+
+```{r}
+# list of Canadian provinces and territories
+canadian_provinces <- c(
+  "British Columbia", "Alberta", "Saskatchewan", "Manitoba", "Ontario", "Quebec", "New Brunswick", "Nova Scotia", "Prince Edward Island", "Newfoundland and Labrador", "Territories", "United States", "United Kingdom")
+
+df <- df %>% 
+  mutate(
+    province = str_trim(province),
+    province = toupper(province),
+    province = str_to_title(province),
+    province = str_replace_all(province, "\\bAnd\\b", "and"),
+    province = if_else(province %in% state.name, "United States", province
+    ),
+    province = if_else(province %in% canadian_provinces,
+      province,
+      "other"
+    ),
+    province = factor(province,
+                      levels = c(canadian_provinces, "other"))
+  )
+
+```
+
+
+```{r save-data, include=FALSE, eval=FALSE}
+df %>% export("data/df_cleaned_5.rds")
+
+```
+
+Create a lookup table for abbreviations and verbatim names.
+
+```{r}
+prov_lookup <- tibble(
+  province = c(canadian_provinces,
+               "other"),
+  region   = region_order
+)
+```
+
+Obtain the counts.
+
+```{r}
+prov_cnt <- df %>%
+  count(province, name = "n_province")
+
+region_cnt <- df %>%
+  count(region,   name = "n_region")
+```
+
+Compile the summary table.
+
+```{r}
+summary_tbl <- prov_lookup %>%
+  left_join(prov_cnt,   by = "province") %>%   # add province counts
+  left_join(region_cnt, by = "region")   %>%   # add region-code counts
+  replace_na(list(n_province = 0, n_region = 0)) %>% # fill gaps with 0
+  select(-region)
+
+summary_tbl %>% gt()
+```
+
+Visualize the data.
+
+```{r fig.width=8.5, fig.height=5}
+
+# ── reshape counts into long form
+prov_levels <- prov_lookup$province   # or  summary_tbl$province
+
+plot_df <- summary_tbl %>% 
+  select(province, n_province, n_region) %>% 
+  pivot_longer(
+    cols      = starts_with("n_"),
+    names_to  = "source",
+    values_to = "count"
+  ) %>% 
+  mutate(
+    source   = dplyr::recode(as.character(source),
+                      "n_province" = "Province column",
+                      "n_region"   = "Region code"),
+    province = factor(province, levels = prov_levels)   # ← restore order
+  )
+
+# ----- PLOT -----
+
+plot_df %>% 
+  mutate(
+    source = if_else(source == "Province column", "Current residence", "Formative years spent")
+  ) %>% 
+ggplot(aes(x = province, y = count, fill = source)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  scale_fill_manual(
+    values = c(
+      "Current residence" = "#34608D",   
+      "Formative years spent"     = "#E9842B"  
+    )
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+  labs(x = NULL,
+       y = "Number of responses",
+       fill = NULL,
+       title = "Area of current residence versus formative years spent") +
+  #coord_flip() +                      # flip for long names; drop if you prefer
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "top",
+    plot.title.position = "plot",
+    axis.text.x = element_text(        # ← y-axis because of coord_flip()
+      angle  = 20,                     # tilt
+      hjust  = 1, vjust = 0.9,         # nudge toward the axis
+      size   = 9,                      # a bit smaller
+      margin = margin(r = 2)           # pull 2 pt closer (right-hand margin)
+    )
+  )
+
+
+```
+

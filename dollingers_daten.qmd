@@ -1,0 +1,301 @@
+---
+title: "PCA und/oder GLM mit Kollege Dollingers Daten"
+date: "07-Mar-2025"
+author: "Kollege Hinrichs"
+lang: de
+format: 
+  docx:
+    toc: true
+---
+
+## Ausgangspunkt
+
+Dieses Skript enthält den Hinweis auf das Ziel.
+
+```{r eval=FALSE}
+
+> library(ggplot2)
+> library(factoextra)
+> library(FactoMineR)
+
+# Befehl für das angestrebte Modell mit Error
+# model1 <- glm(X8HeardQ5 ~
+#                  X30Age+X33Gender+X36Region+X37LUI+X39EOI.n,
+#                data = df)
+# Error in y - mu : non-numeric argument to binary operator
+
+```
+
+Der Error deutet an, dass das Problem zunächst mal mit der Formatierung der einen Variable zu tun hat. 
+
+Wir wollen das also mal nachbauen. Zuerst die Pakete.
+
+```{r}
+library(pacman)
+p_load(rio, tidyverse, janitor, gt,
+       factoextra, FactoMineR)
+```
+
+Jetzt laden wir die Daten standardmäßig als df.
+
+```{r}
+df <- import("data/Master3100.csv") %>% 
+  clean_names()
+```
+
+## Data cleaning
+
+Als nächstes schauen wir, was zur Vorbereitung des Datensatzes zu tun ist. Dazu gehört, dass der Typus aller Spalten überprüft wird.
+
+```{r}
+
+df %>% glimpse()
+```
+
+Wir sehen in der Vorschau hier zwei wichtige Dinge:
+
+- Der Datensatz ist urs lang, über 1 Million Zeilen, das ist schön.
+- Es werden alle Zeilen als Typ "character" gelesen, das ist wahrscheinlich nicht das, was wir wollen.
+
+### Probleme mit Spaltenklassifizierung beheben
+
+Ich weiß nicht genau, woran das letztere Problem liegt, aber wir müssen jetzt einfach mal per Hand die falsch erkannten Spalten umkategorisieren. Wir machen eine Liste der Spalten, die als ganze Zahlen (integers) gelesen werden sollen:
+
+```{r}
+read_as_num <- c('x37lui', "x39eoi_n", "x40eoi_calc",
+                 "eoi_check", "hood_number", "rel_number",
+                 "comm_number", "eoi_work_number", 
+                 "eoi_online_number")
+```
+
+Jetzt werden alle diese Spalten *par force* in numerische umgewandelt.
+
+```{r warning=FALSE}
+df <- df %>%
+  mutate(across(all_of(read_as_num), as.integer))
+
+df %>% glimpse()
+```
+
+Das sieht besser aus. 
+
+### Leere Zellen als NA darstellen
+
+Es gibt in den character-Spalten ein paar leere Zellen, die sollten besser als `NA` gespeichert werden.
+
+```{r}
+df <- df %>% 
+  mutate(across(where(is.character), ~ na_if(.x, "")))
+
+```
+
+## Versuchen, das Modell laufen zu lassen
+
+Versuchen wir es mal mit dem ursprünglichen Skript.
+
+```{r eval=FALSE}
+model1 <- glm(x8heard_q5 ~
+                x30age + x33gender + x36region + x37lui +
+                x39eoi_n,
+              data = df)
+# Error in y - mu : non-numeric argument to binary operator
+```
+
+::: {.callout-note}
+## Des Pudels Kern
+Das Kernproblem ist, dass die `glm()`-Funktion nicht mit nichtnumerischen, nichtfaktoriellen Variablen als Prädiktoren klarkommt. Also nicht nur die Spalten, die eh schon Zahlen enthielten, sondern auch Spalten vom Typ "character" müssen entweder numerisch oder Faktoren sein, damit `glm()` damit klar kommt. 
+:::
+
+Die Fehlermeldung ist noch die selbe wie bei Kollege Dollinger. Wir überprüfen also mal, ob all die Variablen im Modell tatsächlich numerisch sind, denn das wird ja hier moniert.
+
+## Weitere Problembehebung
+
+Eine Überprüfung ergibt, dass von den 5 Variablen plus der Antwortvariable nur 2 numerisch sind, nämlich `x37lui` und `x39eoi_n`.
+
+Es müssen also die folgenden Variablen auf numerisch übersetzt werden:
+
+- `x30age`
+- `x33gender`
+- `x36region`
+- `x8heard_q5`
+
+::: {.callout-note}
+## Numerisch oder faktoriell?
+Eine von diesen vier ist **inhärent numerisch und skalar**, das ist `x30age`. Die wollen wir in *numerische Werte* umwandeln. Die anderen drei, `x33gender`, `x36region` und `x8heard_q5`, sind nicht inhärent numerisch geordnet, deshalb wandeln wir sie in *Faktoren* um.
+:::
+
+
+Schauen wir mal, wie viele verschiedene Werte die erste hat. 
+
+```{r}
+df %>% 
+  count(x30age)
+```
+Das sind 18 verschiedene Werte. Ganz automatisch kann man das nicht in numerische Werte umwandeln, also werden wir das re-coden mit der Funktion `case_match()`.  Genauer gesagt, wir erstellen eine neue Spalte `age_num`, also die numerische Version von `x30age`.
+
+```{r}
+
+df <- df %>% 
+  mutate(
+    age_num = case_match(
+      x30age,
+      "14 and under" ~ 14,
+      "15-19" ~ 19,
+      "20-24" ~ 24,
+      "25-29" ~ 29,
+      "30-34" ~ 34,
+      "35-39" ~ 39,
+      "40-44" ~ 44,
+      "45-49" ~ 49,
+      "50-54" ~ 54,
+      "55-59" ~ 59,
+      "60-64" ~ 64,
+      "65-69" ~ 69,
+      "70-74" ~ 74,
+      "75-79" ~ 79,
+      "80-84" ~ 84,
+      "85-89" ~ 89,
+      "x" ~ NA
+    )
+  )
+  
+```
+
+Und nun wandeln wir die beiden anderen in Faktoren um.
+
+```{r}
+# Einen Vektor mit den Namen der vars definieren, die umgewandelt werden sollen
+vars_to_factor <- c("x33gender", "x36region", "x8heard_q5")
+
+df <- df %>%
+  mutate(across(all_of(vars_to_factor), as.factor))
+```
+
+Jetzt noch einmal kucken, ob die Umwandlung geklappt hat.
+
+```{r}
+df %>% 
+  select(
+    age_num, x33gender, x36region, x8heard_q5
+  ) %>% 
+  glimpse()
+```
+::: {.callout-note}
+Der Variablentyp `<dbl>` ist einer von mehreren numerischen Typen.
+:::
+
+Ja, hat geklappt.
+
+## Erneutes model fitting
+
+Jetzt probieren wir es nochmal mit dem Modell, mit der neuen var `age_num` und den jetzt in Faktoren umgewandelten vars `x33gender`, `x36region` und `x8heard_q5`.
+
+```{r eval=FALSE}
+model2 <- glm(x8heard_q5 ~
+                age_num + x33gender + x36region + x37lui +
+                x39eoi_n,
+              data = df)
+#Error in glm.fit(x = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  : NA/NaN/Inf in 'y'
+```
+
+Geht immer noch nicht. Ich glaube, das liegt jetzt daran, dass die Antwortvariable `x8heard_q5` außer `Yes` und `No` auch noch andere Werte enthält. 
+
+## Probleme mit der Antwortvariable lösen
+
+Insgesamt hat sie die folgenden Werte:
+
+```{r}
+df %>%
+  count(x8heard_q5)
+```
+
+Ich schlage vor, wir trennen uns für den Zweck dieses Modells von allen Zeilen, in der die response etwas anderes ist als `Yes` oder `No`. 
+
+Zuvor lassen wir die Werte in der Spalte kategorisch klein schreiben, also `yes` oder `no` anstatt `Yes` oder `No`.
+
+```{r}
+df <- df %>% 
+  mutate(x8heard_q5 = tolower(x8heard_q5))
+
+df_filtered <- df %>% 
+  filter(
+    x8heard_q5 %in% c("yes", "no")
+  )
+```
+Der Datensatz ist so erheblich kleiner, nur ein fünfhundertstel des Ausgangs-Datensatzes.
+
+## Model fitting mit reduziertem Datensatz
+
+```{r eval=FALSE}
+model3 <- glm(x8heard_q5 ~
+                age_num + x33gender + x36region + x37lui +
+                x39eoi_n,
+              data = df_filtered) # jetzt mit df_filtered statt df
+# Error in y - mu : non-numeric argument to binary operator
+```
+
+Der Fehler besteht weiterhin.
+
+::: {.callout-note}
+## Auch Du, y-Variable?!
+Die Antwortvariable **muss**, nach weiterer Recherche, numerisch sein. Also werden wir sie ebenfalls re-coden.
+:::
+
+## Reparatur der Antwortvariable
+
+```{r}
+df_filtered <- df_filtered %>% 
+  mutate(
+    x8heard_q5 = case_match(
+      x8heard_q5,
+      "yes" ~ 1,
+      "no" ~ 0
+    )
+  )
+
+
+df_filtered %>% count(x8heard_q5)
+```
+
+## Vierter Versuch
+
+```{r}
+model4 <- glm(x8heard_q5 ~
+                age_num + x33gender + x36region + x37lui +
+                x39eoi_n,
+              data = df_filtered) 
+model4 %>% summary()
+```
+### Die gute Nachricht
+
+Das Modell läuft jetzt.
+
+### Die schlechte Nachricht
+
+In den Levels mindestens eines Prädiktors zeigt sich dass noch mehr cleaning zu tun ist, es gibt z.B. mehrere Fälle, wo sowohl groß- als auch kleingeschriebene Versionen der Werte mit dabei sind, z.B. AUSTRALIA und australia. 
+
+Also, wir schreiben jetzt einfach alle nichtnumerischen Vars komplett klein. 
+
+```{r}
+vars_to_lower <- c("x33gender", "x36region")
+
+df_filtered <- df_filtered %>% 
+  mutate(across(all_of(vars_to_lower), tolower)) %>% 
+  mutate(across(all_of(vars_to_lower), as.factor))
+
+```
+
+## Fünfter Versuch
+
+```{r}
+model5 <- glm(x8heard_q5 ~
+                age_num + x33gender + x36region + x37lui +
+                x39eoi_n,
+              data = df_filtered) 
+model5 %>% summary()
+```
+
+## Hübschere Visualisierung der Modell-Koeffizienten
+
+Dafür gibts ja verschiedene Pakete, zum Bsp. `{prettyglm}`, `{sjplot}`, `{stargazer}` und andere.
+

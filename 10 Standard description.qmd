@@ -1,0 +1,158 @@
+---
+title: "10 Standard Description"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: false
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+
+df <- import("data/df_cleaned_5.rds") %>% 
+  as_tibble() 
+
+# Define two groups of selectors for region (where spent formative years) and province (of current residence).
+can_regions <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                  "NB", "NS", "PE", "NL", "TR", "US", "UK")
+
+can_provinces <- c(
+  "British Columbia", "Alberta", "Saskatchewan", 
+  "Manitoba", "Ontario", "Quebec", "New Brunswick", 
+  "Nova Scotia", "Prince Edward Island", "Newfoundland and Labrador", 
+  "Territories", "United States", "United Kingdom")
+
+```
+
+
+
+## `st_descr` - yes, but.../yes
+
+We are interested in the question "Do you know StCanE and can you describe it?", with possible answers "Yes, but" and "Yes, I do". 
+
+Specifically, answers to this question by `age`.
+
+For this analysis we remove any cases of NA for either `age` or `st_descr`.
+
+### Plot 1
+
+First we show the age trend of probabilities for the two answer choices in a linear representation.  
+
+```{r fig-st-descr}
+
+df_plot <- df %>% 
+  filter(!is.na(st_descr), !is.na(age)) %>%
+  mutate(
+    st_descr = droplevels(factor(st_descr))       # make sure the 2 levels stay
+  )
+
+# ── 2  Fit a binary-logit using the *second* level as the "success" case ─────
+# (If you prefer the other level as the reference, swap the order in step 1.)
+fit <- glm(st_descr ~ age, data = df_plot, family = binomial)
+
+# ── 3  Build a prediction grid & get probabilities for *both* levels ─────────
+pred_df <- tibble(
+  age = seq(floor(min(df_plot$age, na.rm = TRUE)),
+            ceiling(max(df_plot$age, na.rm = TRUE)), 1)
+) %>%
+  mutate(
+    prob_lvl2 = predict(fit, newdata = ., type = "response"),
+    prob_lvl1 = 1 - prob_lvl2
+  ) %>%
+  pivot_longer(
+    cols      = starts_with("prob_"),
+    names_to  = "st_descr",
+    values_to = "prob"
+  ) %>%
+  mutate(
+  st_descr = case_when(
+    st_descr == "prob_lvl1" ~ levels(df_plot$st_descr)[1],
+    TRUE                    ~ levels(df_plot$st_descr)[2]
+  )
+)
+
+# ── 4  Plot: two model-based lines in a single panel ─────────────────────────
+ggplot(pred_df, aes(x = age, y = prob, colour = st_descr)) +
+  geom_line(linewidth = 1.1) +
+  scale_colour_manual(
+    values = c("#5B8FF9",  # muted blue
+               "#F07F6A"), # muted salmon
+    name   = NULL
+  ) +
+  labs(
+    x     = "Age",
+    y     = "Predicted probability",
+    title = "Probability of each st_descr response across age"
+  ) +
+  theme_minimal()
+
+```
+
+### Plot 2
+
+Next, we show the probabilities with a loess smoother, which is a little more sensitive. 
+
+```{r fig-st-descr-age-probability, warning=FALSE}
+df_plot <- df %>%  
+  filter(!is.na(st_descr), !is.na(age)) %>%
+  mutate(st_descr = droplevels(factor(st_descr))) 
+lev <- levels(df_plot$st_descr)   
+
+# ── 2  build a binary indicator for the 2nd level (pick either level as "1") --
+df_plot <- df_plot %>%
+  mutate(is_lvl2 = as.numeric(st_descr == lev[2]))  
+
+# ── 3  fit a loess to *all* points at once ------------------------------------
+lo_fit <- loess(is_lvl2 ~ age, data = df_plot, span = 0.2)   # span ↓ = wigglier
+
+# prediction grid
+grid  <- tibble(age = seq(min(df_plot$age),
+                          max(df_plot$age), by = 1)) %>%
+  mutate(
+    prob_lvl2 = predict(lo_fit, newdata = .),
+    prob_lvl1 = 1 - prob_lvl2
+  ) %>%
+  pivot_longer(cols = starts_with("prob_"),
+               names_to = "st_descr", values_to = "prob") %>%
+  mutate(
+  st_descr = case_match(
+    st_descr,
+    "prob_lvl1" ~ lev[1],
+    "prob_lvl2" ~ lev[2]
+  )
+)
+
+# ── 4  plot the two non-flat smoothers ----------------------------------------
+ggplot(grid, aes(age, prob, colour = st_descr)) +
+  geom_line(linewidth = 1.1) +
+  scale_colour_manual(values = c("#5B8FF9", "#F07F6A"), name = NULL) +
+  labs(x = "Age",
+       y = "Estimated probability",
+       title = "Loess smoother of st_descr vs. age\n(span = 0.2)") +
+  theme_minimal()
+```
+### Is the prediction significant?
+
+```{r}
+glm_fit <- glm(st_descr ~ age, data=df_plot, family=binomial); summary(glm_fit)
+```
+## Conclusion
+
+Even though we get a good *p*-value, visual inspection and common sense tell us clearly: the distribution of answers is roughly the same at every age level. The old folks don't know the standard any better or worse than the young ones. 

@@ -1,0 +1,297 @@
+---
+title: "9 Zoom in on Gender"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: false
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+```{r setup, message=FALSE, warning=FALSE, include=FALSE}
+df_canada <- import("data/df_canada_6.rds") %>% 
+  as_tibble() 
+
+# Define two groups of selectors for region (where spent formative years) and province (of current residence).
+can_regions <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                  "NB", "NS", "PE", "NL", "TR", "US", "UK")
+
+can_provinces <- c(
+  "British Columbia", "Alberta", "Saskatchewan", 
+  "Manitoba", "Ontario", "Quebec", "New Brunswick", 
+  "Nova Scotia", "Prince Edward Island", "Newfoundland and Labrador", 
+  "Territories", "United States", "United Kingdom")
+```
+
+
+## `Gender` and `umultiling` in BC
+
+A close-up on the two vars in one region. For our DV, we continue to focus on `slai`.
+
+We shrink the data to `region == "BC"` only.
+
+```{r data-gender-multiling-bc}
+
+bc <- df_canada |>
+  filter(region == "BC") |>
+  mutate(
+    gender      = factor(gender),
+    umultiling  = factor(umultiling, levels = c("no","yes"))
+  )
+bc
+
+```
+
+A quick sanity check.
+
+```{r sanity-bc}
+bc |>
+  group_by(gender, umultiling) |>
+  summarise(
+    n          = n(),
+    mean_slai  = mean(slai, na.rm = TRUE),
+    sd_slai    = sd(slai,  na.rm = TRUE),
+    .groups = "drop"
+)
+
+```
+
+### Viz of joint effect - non-parametric (BC)
+
+```{r fig-viz-joint-effect-bc}
+
+ggplot(bc, aes(gender, slai, fill = umultiling)) +
+  geom_violin(trim = FALSE, alpha = .6) +
+  geom_boxplot(width = .12, colour = "black",
+               position = position_dodge(.9), outlier.shape = NA) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3,
+               position = position_dodge(.9)) +
+  labs(
+    title = "Combined effects of gender and umultiling on SLAI",
+    subtitle = "Non-parametric visualization | BC only",
+    y   = "SLAI (Standard Language Attitude Index)",
+    x   = "Gender",
+    fill= "Multilingual?"
+  ) +
+  theme_minimal()
+
+```
+
+### Viz of joint effect - parametric (BC)
+
+```{r fig-parametric-gender-umult-bc}
+p_load(emmeans)
+
+bc2 <- bc %>% filter(!gender == "other")
+
+fit  <- lm(slai ~ gender * umultiling, data = bc2)
+emmip(fit, gender ~ umultiling, CIs = TRUE) +
+  labs(title = "Combined effects of gender and umultiling on SLAI",
+    subtitle = "Linear model predictions | BC only",
+    caption = "Including only \'female\' and \'male\' respondents"
+    ) +
+  theme_minimal() +
+  theme(plot.caption.position = "plot")
+
+```
+
+### Significance check (BC)
+
+```{r sig-check-bc, message=FALSE}
+p_load(car)        # for Type-III ANOVA
+fit <- lm(slai ~ gender * umultiling, data = bc)
+
+# Classical two-way ANOVA
+car::Anova(fit, type = 3)
+
+# Effect sizes (partial η²)
+library(effectsize)
+effectsize::eta_squared(fit, partial = TRUE)
+
+```
+:::{.callout-warning appearance="simple"}
+There is absolutely no significance in these effects.
+:::
+
+Let's try the other high-N region, AB.
+
+## `Gender` and `umultiling` in AB
+
+Shrink the data to `region == "AB"` only.
+
+```{r data-gender-multiling-ab}
+
+ab <- df_canada |>
+  filter(region == "AB") |>
+  mutate(
+    gender      = factor(gender),
+    umultiling  = factor(umultiling, levels = c("no","yes"))
+  )
+
+ab
+```
+
+A quick sanity check.
+
+```{r sanity-ab}
+ab |>
+  group_by(gender, umultiling) |>
+  summarise(
+    n          = n(),
+    mean_slai  = mean(slai, na.rm = TRUE),
+    sd_slai    = sd(slai,  na.rm = TRUE),
+    .groups = "drop"
+)
+
+```
+
+### Viz of joint effect - non-parametric (AB)
+
+```{r fig-viz-joint-effect-ab}
+ggplot(ab, aes(gender, slai, fill = umultiling)) +
+  geom_violin(trim = FALSE, alpha = .6) +
+  geom_boxplot(width = .12, colour = "black",
+               position = position_dodge(.9), outlier.shape = NA) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3,
+               position = position_dodge(.9)) +
+  labs(
+    title = "Combined effects of gender and umultiling on SLAI",
+    subtitle = "Non-parametric visualization | AB only",
+    y   = "SLAI (Standard Language Attitude Index)",
+    x   = "Gender",
+    fill= "Multilingual?"
+  ) +
+  theme_minimal()
+
+```
+
+### Viz of joint effect - parametric
+
+```{r fig-parametric-gender-umult-ab}
+p_load(emmeans)
+
+ab2 <- ab %>% filter(!gender == "other")
+
+fit  <- lm(slai ~ gender * umultiling, data = ab2)
+emmip(fit, gender ~ umultiling, CIs = TRUE) +
+  labs(title = "Combined effects of gender and umultiling on SLAI",
+    subtitle = "Linear model predictions | AB only",
+    caption = "Including only \'female\' and \'male\' respondents"
+    ) +
+  theme_minimal() +
+  theme(plot.caption.position = "plot")
+
+```
+
+### Significance check
+
+```{r sig-check-ab, message=FALSE}
+p_load(car)        # for Type-III ANOVA
+fit <- lm(slai ~ gender * umultiling, data = ab)
+
+# Classical two-way ANOVA
+car::Anova(fit, type = 3)
+
+# Effect sizes (partial η²)
+library(effectsize)
+effectsize::eta_squared(fit, partial = TRUE)
+
+```
+
+:::{.callout-tip appearance="simple"}
+In AB, `gender` is significant (unlike in BC), but not in combination with `umultiling`. <br>While **we can rely on women showing higher `slai`** regardless of what else is in the analysis, the direction and significance of the `umultiling` effect in interaction seems to be unreliable/subject to chance.
+:::
+
+Given the insignificance of `umultiling` we focus instead on `edu`.
+
+## Focus on `edu` and `gender` in AB
+
+Double checking to see if AB is maybe even clearer.
+
+```{r data-edu-gender-ab}
+
+ab <- df_canada |>
+  filter(region == "AB") |>
+  mutate(
+    gender     = factor(gender),
+    edu_comp   = factor(edu_comp)          # e.g., "HS", "College", "Grad"
+  )
+
+ab |>
+  group_by(gender, edu_comp) |>
+  summarise(
+    n         = n(),
+    mean_slai = mean(slai, na.rm = TRUE),
+    sd_slai   = sd(slai,  na.rm = TRUE),
+    .groups   = "drop"
+)
+
+```
+
+
+```{r fig-full-distrib-ab, warning=FALSE, fig.width=8.5, fig.height=6.5}
+
+
+ggplot(ab, aes(x = gender, y = slai, fill = gender)) +
+  geom_violin(trim = FALSE, width = .8, alpha = .6) +   
+  geom_boxplot(width = .15, colour = "black",
+               outlier.shape = NA, show.legend = FALSE) +  
+  stat_summary(fun = mean, geom = "point",
+               shape = 23, size = 3, show.legend = FALSE) + 
+  facet_wrap(~ edu_comp, nrow = 1, strip.position = "bottom") +
+  scale_fill_manual(
+    values = c(
+      "female" = "#5B8FF9",   # muted blue
+      "male"   = "#F07F6A",   # muted salmon
+      "other"  = "#8FBC8F"    # desaturated green
+    ),
+    drop = FALSE  
+  ) +
+  labs(
+    title = "Combined effects of gender and education level on SLAI",
+    subtitle = "Non-parametric visualization | AB only",
+    x    = NULL,
+    y    = "Standard Language Attitude Index",
+    fill = NULL
+  ) +
+  guides(fill = guide_legend(override.aes = list(
+      alpha    = 1,
+      shape    = NA,
+      linetype = "blank"
+    ))
+  ) +
+  theme_minimal() +
+  theme(
+    strip.placement  = "outside",
+    legend.position = "top",
+    strip.background = element_blank(),
+    panel.spacing.x  = unit(1, "lines")
+  )
+  
+
+
+```
+
+
+:::{.callout-tip appearance="simple"}
+Given the somewhat tepid violin plot for AB here, it makes more sense to focus, in our close-up analysis, on BC.
+:::
+
+
+

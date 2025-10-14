@@ -1,0 +1,446 @@
+---
+title: "3 A multi-variable standard language attitude index (SLAI)"
+subtitle: "Based on Dollinger's 2023 survey on CanE lg. attitudes"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: true
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+Load the data.
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+df <- import("data/df_cleaned.rds") %>% 
+  as_tibble() %>% 
+  select(region, everything())
+df
+```
+
+Define a list of all the `region` values we are interested in: the Canadian provinces plus US and UK.
+
+```{r}
+can_provs <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                   "NB", "NS", "PE", "NL", "NU", "NT", "YT", "US", "UK")
+```
+
+Clean the region codes. 
+In the following chunk, we 
+
+1. uppercase the `region` values
+1. drop all rows where `region` is not in our list of target regions, `can_provs`,
+1. collapse NU, NT, and YT into `TR`, and
+1. turn `region` into a factor in which the provinces are **ordered** in the west-east sequence that SD has designed.
+
+Let's keep the current version of the var as `region_previous` and create a new `fct` var called `region`.
+
+```{r}
+
+region_order <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                   "NB", "NS", "PE", "NL", "TR", "US", "UK")
+
+df <- df %>% 
+  
+  mutate(
+    
+    # make a backup of the old region col
+    region_previous = region,
+    
+    # make sure the region values are upper case
+    region = toupper(region)
+  ) %>% 
+  
+  # reorder the sequence of columns
+  select(region, region_previous, everything()) %>% 
+  
+  # drop all rows in which region is not CAN, US, or UK
+  filter(region %in% can_provs) %>% 
+  
+  # collapse the three northern territories into TR
+  mutate(
+    region = case_when(
+      region %in% c("NU", "NT", "YT") ~ "TR",
+      TRUE                            ~ region
+    ),
+    
+    # turn region into a factor with the levels in proper order
+    region = factor(region, levels = region_order)  
+  )
+
+df
+
+```
+
+What values do we have now for `region`?
+
+```{r}
+df %>% count(region) %>% gt()
+```
+
+
+
+## Data prep
+
+
+
+Preview of our data. We want only canadian respondents, with `gender` reordered.
+
+```{r}
+
+# include only respondents from Canadian provinces
+df_canada <- df %>%
+  filter(province %in% canadian_provinces)
+
+# Reorder the levels of the gender variable
+df_canada <- df_canada %>%
+  mutate(gender = factor(gender, levels = c("female", "male", "other")))
+
+df_canada
+```
+
+Next, we address comparability among survey questions. Some questions use a 4-point Likert scale, others a 5-point scale. We rescale the 4-point Likert items to a 5-point scale in order to make them comparable with the 5-point items. 
+
+
+```{r warning=FALSE}
+
+# 1️⃣ Recode Likert responses to numeric
+
+df_canada <- df_canada %>%
+  
+  mutate(
+    spell_uni = str_trim(spell_uni),
+    distinct = str_trim(distinct),
+    cdn_way = str_trim(cdn_way),
+    spell = str_trim(spell),
+
+    spell_uni_num = case_match(spell_uni,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "might or might not" ~ 3,
+      "probably yes" ~ 4,
+      "definitely yes" ~ 5,
+      .default = NA
+    ),
+
+    distinct_num = case_match(distinct,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "probably yes" ~ 3,
+      "definitely yes" ~ 4,
+      .default = NA
+    ),
+
+    cdn_way_num = case_match(cdn_way,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "probably yes" ~ 3,
+      "definitely yes" ~ 4,
+      .default = NA
+    ),
+
+    spell_num = case_match(spell,
+      "very unimportant" ~ 1,
+      "unimportant" ~ 2,
+      "neither unimportant nor important" ~ 3,
+      "important" ~ 4,
+      "very important" ~ 5,
+      .default = NA
+    )
+  )
+
+# 2️⃣ Rescale 4-point Likert items to 5-point scale
+rescale_4_to_5 <- function(x) {
+  1 + (x - 1) * (4 / 3)
+}
+```
+
+
+## Forming the SLAI
+
+This study forms a mean index of responses to the following questions:
+
+### DVs
+
+Response variables (ordinal or categorical):
+
+- `st_heard`: yes / no / not sure
+- `spell_uni`: Likert-style (5 levels)
+- `distinct`: Likert-style (4 levels)
+- `cdn_way`: Likert-style (4 levels)
+- `spell`: Likert-style (5 levels)
+
+### IVs
+
+And it takes an interest in the following predictors:
+
+- `umultiling`: yes / no (binary)
+- `edu_comp`: 6 levels (educational attainment)
+- `province`: 40 levels (many, likely sparse — might need recoding)
+- `gender`: 3 levels (female/male/nonbinary)
+
+Here, we perform the rescaling and form the attitude index by forming `rowMeans`. To prepare for plotting, we also filter out respondents that didn't answer one of the questions.
+
+```{r echo=TRUE, warning=FALSE}
+
+df_canada <- df_canada %>%
+  mutate(
+    spell_uni_scaled = spell_uni_num,
+    distinct_scaled  = rescale_4_to_5(distinct_num),
+    cdn_way_scaled   = rescale_4_to_5(cdn_way_num),
+    attitude_index_scaled = rowMeans(
+      cbind(spell_uni_scaled, distinct_scaled, cdn_way_scaled, spell_num),
+      na.rm = TRUE
+    )
+  )
+
+# Filter complete cases for plotting
+# and fix edu_comp factor 
+df_plot <- df_canada %>%
+  filter(!is.na(attitude_index_scaled), !is.na(edu_comp), !is.na(gender),
+         !is.na(umultiling)) %>%
+  mutate(
+    edu_comp = str_trim(edu_comp),
+    edu_comp = factor(
+      edu_comp,
+      levels = c(
+        "other",
+        "elementary school",
+        "high school",
+        "undergraduate degree",
+        "graduate degree",
+        "postgraduate degree"
+      )
+    )
+  ) %>% 
+  filter(! edu_comp == "other")
+```
+
+### Univariate dependency plotting
+
+Begin with `umultiling`.
+
+```{r}
+
+# 3️⃣ Plot 1: Attitude Index by Education
+ggplot(df_plot, aes(x = attitude_index_scaled, y = edu_comp)) +
+  geom_jitter(aes(color = gender), width = 0.1, alpha = 0.3, size = .8) +
+  geom_boxplot(aes(group = edu_comp), fill = "grey90", width = 0.5, outlier.shape = NA) +
+  labs(title = "Standard Language Attitude Index by Education", 
+       y = NULL, x = "Attitude Index (1–5)") +
+  theme_minimal()
+```
+Now plot the interaction education x gender.
+
+```{r edu-gender-plot}
+
+ggplot(df_plot, aes(x = edu_comp, y = attitude_index_scaled, color = gender, group = gender)) +
+  stat_summary(fun = mean, geom = "point", position = position_dodge(0.5)) +
+  stat_summary(fun = mean, geom = "line", position = position_dodge(0.5),
+               linewidth=1.2) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, position = position_dodge(0.5)) +
+  scale_color_manual(values = c(
+  "male" = "#E69F00",      # warm gold
+  "female" = "#56B4E9",    # sky blue
+  "other" = "#009E73"      # teal green
+)) +
+  labs(title = "Standard Language Attitude Index by Education and Gender", x = NULL, y = "SLAI") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+:::{.callout-tip appearance="simple"}
+The difference between male and female speakers is clearest among respondents with a graduate degree.
+:::
+
+```{r plot-gender-multiling, fig.height=5.5, fig.width=7, warning=FALSE}
+
+# 5️⃣ Plot 3: Interaction — Multilingualism × Gender with Sample Sizes
+df_plot %>%
+  count(umultiling, gender) -> n_labels
+
+ggplot(df_plot, aes(x = umultiling, y = attitude_index_scaled, color = gender, group = gender)) +
+  stat_summary(fun = mean, geom = "point", position = position_dodge(0.5)) +
+  stat_summary(fun = mean, geom = "line", position = position_dodge(0.5), 
+  linewidth = 1.2) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, position = position_dodge(0.5)) +
+  scale_color_manual(values = c(
+  "male" = "#E69F00",      # warm gold
+  "female" = "#56B4E9",    # sky blue
+  "other" = "#009E73"      # teal green
+)) +
+  geom_text(
+    data = n_labels,
+    aes(label = paste0("n=", n), y = 5.1),
+    position = position_dodge(0.5),
+    size = 3, color = "black"
+  ) +
+  #ylim(c(3.0, 4.8)) +
+  labs(title = "Standard Language Attitude Index by Multilingualism and Gender", 
+       x = "Multilingual", y = "SLAI") +
+  theme_minimal()
+
+```
+:::{.callout-tip appearance="simple"}
+The multilingual factor makes the most difference among female respondents. Women who are multilingual are less positively oriented toward StCanE. **This is surprising.**
+:::
+
+## Statistical tests
+
+```{r}
+model_main <- lm(attitude_index_scaled ~ province + gender + edu_comp, data = df_plot)
+summary(model_main)
+```
+
+### Anova test
+
+```{r}
+p_load(car)
+
+Anova(model_main, type = 2)
+
+```
+
+### Interactions included in model
+
+```{r}
+model_interact <- lm(attitude_index_scaled ~ province + gender * edu_comp, data = df_plot)
+Anova(model_interact, type = 2)
+
+```
+:::{.callout-tip appearance="simple"}
+This shows that the interaction term is not significant (at all), so we can stop talking about it.
+:::
+
+### Pairwise comparisons
+
+Between education levels.
+
+```{r}
+p_load(emmeans)
+
+emmeans(model_main, pairwise ~ edu_comp)
+
+```
+
+A better view of the output of the Anova for main effects.
+
+```{r}
+# Get Type II ANOVA table
+anova_table <- Anova(model_main, type = 2) %>%
+  as.data.frame() %>%
+  rownames_to_column("Term") %>%
+  mutate(
+    `F value` = round(`F value`, 2),
+    `Pr(>F)` = round(`Pr(>F)`, 3),
+    `Signif.` = case_when(
+      `Pr(>F)` < 0.001 ~ "***",
+      `Pr(>F)` < 0.01  ~ "**",
+      `Pr(>F)` < 0.05  ~ "*",
+      `Pr(>F)` < 0.1   ~ ".",
+      TRUE             ~ ""
+    )
+  )
+
+# View results with stars
+anova_table %>% gt()
+```
+
+
+### Visualize pairwise comparisons with `province` and `umultilingual`
+
+```{r warning=FALSE, fig.width=9, fig.height=6}
+
+# 1️⃣ Fit the model
+model <- lm(attitude_index_scaled ~ province * umultiling, data = df_plot)
+
+# 2️⃣ Get estimated marginal means (EMMs)
+emm <- emmeans(model, ~ province * umultiling)
+
+# 3️⃣ Get pairwise contrasts of multilingualism within each province
+pairwise_within_province <- contrast(emm, method = "pairwise", by = "province")
+
+# 4️⃣ Format results for plotting
+plot_df <- as.data.frame(pairwise_within_province) %>%
+  mutate(
+    p.value = round(p.value, 3),
+    signif = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.01  ~ "**",
+      p.value < 0.05  ~ "*",
+      p.value < 0.1   ~ ".",
+      TRUE ~ ""
+    ),
+    contrast_label = paste(province, contrast, sep = ": ")
+  )
+
+ggplot(plot_df, aes(x = contrast_label, y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = estimate - SE, ymax = estimate + SE), width = 0.2) +
+  geom_text(aes(label = signif, y = estimate + SE + 0.05), size = 3) +
+  labs(
+    title = "Difference in Attitude Index: Multilingualism Within Provinces",
+    x = "Province: Multilingual Comparison",
+    y = "Estimated Difference (Multilingual Yes - No)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+```
+:::{.callout-tip appearance="simple"}
+Only in Alberta and British Columbia does being multilingual have a statistically significant effect on SLAI.
+:::
+
+### Multivariate model plot
+
+```{r plot-coefs, fig.width=9, fig.height=6}
+p_load(broom)
+
+
+# 1 Tidy and annotate the model
+tidy_model <- tidy(model_main) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(
+    p_star = case_when(
+      p.value < 0.001 ~ "***",
+      p.value < 0.01  ~ "**",
+      p.value < 0.05  ~ "*",
+      p.value < 0.1   ~ ".",
+      TRUE ~ ""
+    ),
+    term_label = paste(term, p_star),
+    estimate_label = round(estimate, 2)
+  )
+
+# 2️ Plot with coefficient labels
+ggplot(tidy_model, aes(x = reorder(term_label, estimate), y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = estimate - std.error, ymax = estimate + std.error), width = 0.2) +
+  # geom_text(aes(label = estimate_label), hjust = -0.3, size = 3.5) +  
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  coord_flip() +
+  labs(
+    title = "Predicting Standard Language Attitude Index: Model Coefficients",
+    x = NULL,
+    y = "Estimate (β)"
+  ) +
+  theme_minimal()
+
+```
+

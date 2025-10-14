@@ -1,0 +1,331 @@
+---
+title: "8 Exploring Overlap Between Standard Language Attitudes and Multilingualism Attitudes"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: false
+---
+
+
+```{r packages, include=FALSE}
+rm(list=ls())
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+```
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+df_canada <- import("data/df_canada_6.rds") %>% 
+  as_tibble() 
+```
+
+
+```{r define-selectors, include=FALSE}
+
+# Define two groups of selectors for region (where spent formative years) and province (of current residence).
+
+can_regions <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                  "NB", "NS", "PE", "NL", "TR", "US", "UK")
+
+can_provinces <- c(
+  "British Columbia", "Alberta", "Saskatchewan", 
+  "Manitoba", "Ontario", "Quebec", "New Brunswick", 
+  "Nova Scotia", "Prince Edward Island", "Newfoundland and Labrador", 
+  "Territories", "United States", "United Kingdom")
+```
+
+
+## The multiling-attitudes battery
+
+The variables that are implicated in multilingualism-attitudes and ability are: 
+
+::: aside
+The last one of these variables must definitely be treated separately. It does not apply to about half of all respondents, and it has 6 levels as opposed to 5 for the other 5 questions.
+:::
+
+- `engl_able`: "Should all Canadians be taught/be able to speak English?"
+- `fr_able`: "Should all Canadians be taught/be able to speak French?"
+- `ind_able`: "Should all Canadians have the opportunity to learn an indigenous language?"
+- `beyond_ef`: [don't know what it means]
+- `multiling`: "Is multilingualism an important feature of the Cdn. population?"
+- `comf_non_eng`: "How comf. are you speaking non-En. lgs. in Can.?"
+
+Without doubt, these variables do reflect a similar set of attitudes. The only issue is that people will rarely respond in the same way to all four of the first items above: `engl_able`, `fr_able`, `ind_able`, `beyond_ef`. These rarely shape up the same way in the same person. Nonetheless, let us explore Cronbach’s α for these. 
+
+```{r warning=FALSE}
+
+# Recode Likert responses to numeric
+
+df_canada <- df_canada %>%
+  
+  mutate(
+    engl_able = str_trim(engl_able),
+    fr_able = str_trim(fr_able),
+    ind_able = str_trim(ind_able),
+    beyond_ef = str_trim(beyond_ef),
+    multiling = str_trim(multiling),
+    comf_non_eng = str_trim(comf_non_eng),
+    
+    engl_able_num = case_match(engl_able,
+                               "strongly disagree" ~ 1,
+                               "disagree" ~ 2,
+                               "neither disagree nor agree" ~ 3,
+                               "agree" ~ 4,
+                               "strongly agree" ~ 5,
+                               .default = NA
+                               ),
+    
+    fr_able_num = case_match(fr_able,
+                               "strongly disagree" ~ 1,
+                               "disagree" ~ 2,
+                               "neither disagree nor agree" ~ 3,
+                               "agree" ~ 4,
+                               "strongly agree" ~ 5,
+                               .default = NA
+                               ),
+
+    ind_able_num = case_match(ind_able,
+                               "strongly disagree" ~ 1,
+                               "disagree" ~ 2,
+                               "neither disagree nor agree" ~ 3,
+                               "agree" ~ 4,
+                               "strongly agree" ~ 5,
+                               .default = NA
+                               ),
+    
+    beyond_ef_num = case_match(beyond_ef,
+                               "strongly disagree" ~ 1,
+                               "disagree" ~ 2,
+                               "neither disagree nor agree" ~ 3,
+                               "agree" ~ 4,
+                               "strongly agree" ~ 5,
+                               .default = NA
+                           ),
+    
+    multiling_num = case_match(multiling,
+                           "definitely not" ~ 1,
+                           "probably not" ~ 2,
+                           "neutral" ~ 3,
+                           "probably yes" ~ 4,
+                           "definitely yes" ~ 5,
+                           .default = NA
+                           ),
+    
+    comf_non_eng_num = case_match(comf_non_eng,
+                                  "extremely comfortable" ~ 1,
+                                  "moderately uncomfortable" ~ 2,
+                                  "neither comfortable nor uncomfortable" ~ 3,
+                                  "moderately comfortable" ~ 4,
+                                  "extremely comfortable" ~ 5,
+                                  .default = NA
+                                  )
+  )
+
+multiling_vars <- c(
+  "engl_able_num", "fr_able_num", "ind_able_num", "beyond_ef_num", 
+  "multiling_num", "comf_non_eng_num")
+```
+
+
+### Inspect distributions
+
+After converting our multiling_vars from likert values to numeric (all 5-point), we get the following distributions.
+
+```{r get-multiling-distributions}
+
+summary_tbl <- df_canada %>% 
+  summarise(
+    across(
+      all_of(multiling_vars),
+      list(
+        mean = ~ mean(.x, na.rm = TRUE),
+        sd   = ~ sd(.x,  na.rm = TRUE)
+      ),
+      .names = "{.col}_{.fn}"   
+    )
+  )
+
+summary_tbl %>% t() 
+```
+
+### Compute internal consistency
+
+Next we calculate Cronbach’s α.
+
+::: {.callout-tip}
+## Cronbach’s α
+Rule of thumb: α ≥ .70 for research, α ≥ .80 for high‑stakes decisions (Nunnally & Bernstein, 1994).
+:::
+
+```{r}
+
+p_load(psych)
+psych::alpha(df_canada[, c(multiling_vars)]) 
+
+```
+
+:::{.callout-warning}
+## Internal consistency finding
+As suspected, these variables **do not combine well** into an index.
+:::
+
+## Univariate viz
+
+::: aside
+Notice that the red trend line is pretty much flat for each of these.
+:::
+
+```{r fig-engl-able}
+p_load(gghalves, patchwork) 
+
+# ── helper that builds one rain-cloud plot ────────────────────────────────
+raincloud_plot <- function(data, pred_name) {
+  
+  pred_sym <- rlang::sym(pred_name)              # string  →  symbol
+  
+  df_clean <- data %>% 
+    select(!!pred_sym, slai) %>%                 # keep predictor + outcome
+    drop_na() %>%                                # drop incomplete rows
+    mutate(!!pred_sym := factor(!!pred_sym,      # force ordered factor 1-5
+                                levels = 1:5))
+  
+  ggplot(df_clean, aes(x = !!pred_sym, y = slai)) +
+    gghalves::geom_half_violin(side = "l", fill = "grey90", trim = FALSE) +
+    geom_boxplot(width = .12, outlier.shape = NA, alpha = .7) +
+    gghalves::geom_half_point(side = "r", size = 1.4, alpha = .45) +
+    stat_summary(fun = mean, geom = "point", size = 3, colour = "red") +
+    stat_summary(fun = mean, geom = "line", aes(group = 1),
+                 linewidth = .8, colour = "red") +
+    labs(x = pred_name, y = "SLAI score") +
+    theme_classic() +
+    theme(panel.grid.major.x = element_blank())
+}
+
+# ── make the five plots ──────────────────────────────────────────────────
+vars <- c("engl_able_num",
+          "fr_able_num",
+          "ind_able_num",
+          "beyond_ef_num",
+          "multiling_num")
+
+plots <- map(vars, ~ raincloud_plot(df_canada, .x))
+
+# ── option 1: inspect plots one by one ───────────────────────────────────
+plots[[1]]   # engl_able_num
+plots[[2]]   # fr_able_num
+plots[[3]]   # ind_able_num
+plots[[4]]   # beyond_ef_num
+plots[[5]]   # multiling_num
+
+# ── option 2: 2×3 grid (last cell blank) ─────────────────────────────────
+(plots[[1]] | plots[[2]] | plots[[3]]) /
+(plots[[4]] | plots[[5]] | patchwork::plot_spacer())
+
+
+```
+
+## Significance tests for univariate correlations
+
+```{r}
+library(purrr)
+library(broom)   # for tidy output (optional)
+
+vars <- c("engl_able_num",
+          "fr_able_num",
+          "ind_able_num",
+          "beyond_ef_num",
+          "multiling_num")
+
+cor_results <- map_dfr(vars, function(v) {
+
+  # 1. ensure the column exists
+  if (!v %in% names(df_canada)) {
+    warning(glue::glue("Column {v} not found — skipped"))
+    return(tibble())                     # <- return an empty tibble, not NULL
+  }
+  
+  # 2. keep rows with both values present
+  ok <- complete.cases(df_canada$slai, df_canada[[v]])
+  x  <- df_canada$slai[ok]
+  y  <- df_canada[[v]][ok]
+  n  <- length(x)
+  
+  # 3. if too few points, still return a row
+  if (n < 3) {
+    return(tibble(predictor = v,
+                  rho       = NA_real_,
+                  p_value   = NA_real_,
+                  n         = n))
+  }
+  
+  # 4. run Spearman test, catching any error
+  ct <- tryCatch(
+    suppressWarnings(
+      cor.test(x, y, method = "spearman", exact = FALSE)
+    ),
+    error = function(e) NULL
+  )
+  
+  if (is.null(ct)) {
+    tibble(predictor = v,
+           rho       = NA_real_,
+           p_value   = NA_real_,
+           n         = n)
+  } else {
+    tibble(predictor = v,
+           rho       = unname(ct$estimate),
+           p_value   = ct$p.value,
+           n         = n)
+  }
+})
+
+cor_results <- cor_results %>%
+  mutate(sig = case_when(
+    p_value < 0.001 ~ "***",
+    p_value < 0.01  ~ "**",
+    p_value < 0.05  ~ "*",
+    TRUE            ~ ""
+  ))
+
+cor_results_pretty <- cor_results %>%
+  mutate(
+    rho = formatC(rho,  format = "f", digits = 3),     
+    
+    p_val = case_when( 
+      is.na(p_value)    ~ NA_character_,
+      p_value < 0.001   ~ "< .001",
+      TRUE              ~ sub("^0", "",  
+                              formatC(p_value,
+                                      format = "f",
+                                      digits = 3))
+    )
+  ) %>%
+  select(predictor, rho, p_val, n, -p_value, everything())    # reorder if you like
+
+cor_results_pretty %>% gt()
+```
+
+:::{.callout-warning appearance="simple"}
+None of these variables makes a useful prediction of `slai`. In simple terms, rho is the proportion of variance explained, and so we're talking about 6% explained, 94% not explained. It does not matter that there is significance in the p-value.
+:::
+
+The key statistic here is *rho*. Explanation:
+
+> Spearman’s ρ (rho) is a non-parametric correlation coefficient that quantifies the strength and direction of a monotonic association between two variables by comparing their ranked orders rather than their raw values. To obtain ρ, each variable is converted to ranks (handling ties by averaging ranks), and an ordinary Pearson correlation is then computed on these ranks; ρ therefore ranges from –1 (perfect inverse ordering) through 0 (no monotonic relationship) to +1 (perfect concordant ordering). Because it relies only on rank information, ρ is robust to outliers, does not require the variables to be normally distributed or linearly related, and is well-suited to ordinal data such as 1–5 ability scales. In practical terms, a high positive ρ indicates that respondents who score higher on one measure also tend to rank higher on the other, whereas a ρ near zero signals that knowing a respondent’s position on one variable gives little insight into their position on the other.
+
+
+**Source:** Hauke, J., & Kossowski, T. (2011). Comparison of values of Pearson’s and Spearman’s correlation coefficients on the same sets of data. *Quaestiones Geographicae*, 30(2), 87–93. https://doi.org/10.2478/v10117-011-0021-1
+
+
+
+

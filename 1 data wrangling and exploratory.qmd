@@ -1,0 +1,372 @@
+---
+title: "1 Data wrangling and exploratory steps"
+subtitle: "Data processing for Dollinger's survey work on CanE lg. attitudes"
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
+format:
+  html:
+    embed-resources: true
+number-sections: true
+toc: true
+echo: false
+---
+
+## Data prep
+
+Here is a preview of the data.
+
+```{r setup, warning=FALSE}
+#packages
+library(pacman)
+p_load(rio, tidyverse, janitor, gt, tm)
+
+
+# data
+# df <- import("data/Master3100.csv") %>% 
+#   as_tibble()
+# df %>% tibble()
+# df <- import("data/df_cleaned.rds") %>% tibble()
+
+df <- import("data/df_cleaned_5.rds") %>% tibble()
+
+df
+```
+
+Having cleaned the data in other steps, the version I use here has the `region` column cleaned up. Here are the values we have in `region`:
+
+```{r}
+df %>% count(region)
+```
+...or, sorted by magnitude of n:
+```{r}
+df %>% count(region, sort = T)
+
+```
+
+
+### Data cleaning steps
+
+This, for the record, is the data cleaning procedure that was used.
+
+```{r eval=FALSE, echo=TRUE}
+
+remove_punctuation_except_intra_word_lowercase <- function(text) {
+  # Replace intra-word apostrophes and dashes with placeholders (lowercase only)
+  text <- str_replace_all(text, "(?<=[a-z])(['-])(?=[a-z])", "TEMPINTRA\\1")
+
+  # Remove all punctuation (excluding the placeholder)
+  text <- str_replace_all(text, "[[:punct:]&&[^A-Z]]", "")
+
+  # Restore intra-word apostrophes and dashes
+  text <- str_replace_all(text, "TEMPINTRA(['-])", "\\1")
+
+  # Remove any remaining TEMPINTRA
+  text <- str_replace_all(text, "TEMPINTRA", "")
+
+  return(text)
+}
+
+```
+
+Also applied the following cleaning steps: 
+
+- Clean the `Age` col and make viable as an `integer` col type.
+- Apply lower casing to `char` cols. 
+- Insert NAs instead of blank values in `char` cols.
+- Apply the punctuation cleaner fct (defined above) to the cell content.
+- Apply `janitor::clean_names()` to the colnames.
+
+
+```{r eval=FALSE, echo=TRUE}
+
+df <- df %>%
+  mutate(Age = case_match(
+    Age,
+    "x" ~ NA_character_,
+    "14 and under" ~ "01-14",
+    .default = Age
+  )) %>%
+  mutate(Age = str_extract(Age, "\\d+$")) %>% 
+  mutate(Age = as.integer(Age)) %>% 
+  mutate(across(where(is.character), str_to_lower)) %>%
+  mutate(across(where(is.character), ~na_if(., ""))) %>%
+  mutate(across(where(is.character), ~na_if(., " "))) %>%
+  mutate(across(where(is.character), ~na_if(., "x"))) %>% # 
+  mutate(across(where(is.character), ~na_if(., "don't know"))) %>%
+  mutate(across(where(is.character), ~str_remove_all(., "\\(.*?\\)"))) %>%
+  mutate(across(where(is.character), ~remove_punctuation_except_intra_word_lowercase(.))) %>% 
+  clean_names()
+
+```
+
+#### Fix "land" naming error
+
+One of the column names erroneously uses "land" (`live_land`). This neeeds to be renamed as `country`. 
+
+At the same time, `live_prov` must be renamed to `province`.
+
+```{r eval=FALSE, echo=TRUE}
+df_cleaned <- df_cleaned %>% 
+  rename(country = live_land,
+         province = live_prov)
+
+df <- df_cleaned
+
+```
+
+
+## Descriptive stats: `st_heard`
+
+One top important question is **Have you heard of either "Standard Canadian English" or "Canadian Standard English"?**
+
+In the present dataset, it is called `st_heard`. 
+
+We start by filtering the data, removing NAs, and obtaining the group total for each region. Then straight into the plotting function.
+
+### Complete view
+
+
+```{r fig-plot-all-n, fig.height=6, fig.width=9}
+
+# make sure response is a factor
+df$st_heard <- factor(df$st_heard, levels = c("yes", "no", "not sure"))
+
+df_percent <- df %>%
+  filter(! is.na(st_heard)) 
+
+n_cases <- format(nrow(df_percent), big.mark = ",")
+
+df_percent <- df_percent %>% 
+  group_by(region, st_heard) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(region) %>%
+  mutate(percent = n / sum(n) * 100)
+
+region_counts <- df %>%
+  filter(! is.na(st_heard)) %>% 
+  group_by(region) %>%
+  summarise(n_total = n())
+
+df_percent_labeled <- df_percent %>%
+  left_join(region_counts, by = "region") %>%
+  mutate(region_label = paste0(region, " (n=", n_total, ")"))
+
+p0 <- ggplot(df_percent, aes(x = st_heard, y = percent, fill = st_heard)) +
+  geom_bar(stat = "identity", width = .7) +
+  facet_wrap(~ region) +
+  geom_text(data = region_counts, aes(x = 1.5, y = 100, label = paste0("n = ", n_total)), inherit.aes = FALSE, size = 3) +
+  labs(title = "Have you heard of the term \"(Standard) Canadian English\"?",
+       caption = bquote(italic(N) == .(n_cases)),
+       y = NULL, x = NULL, fill = NULL) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot")
+
+p0 + scale_fill_brewer(palette = "Set2")
+
+```
+
+### Complete view
+
+Testing this distribution for significance, we get the following. 
+
+```{r p-values-regions}
+
+# Filter out 'not sure' responses and keep only 'yes' and 'no'
+df_filtered <- df %>% 
+  filter(
+    !region=="other",
+    st_heard %in% c("yes", "no")
+    )
+
+
+# Group by region and st_heard to get counts
+df_counts <- df_filtered %>%
+  group_by(region, st_heard) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  spread(st_heard, n, fill = 0)
+
+# Perform chi-square test for each region, excluding regions with zero counts for either 'yes' or 'no'
+chi_square_results <- df_counts %>%
+  filter(yes > 0 & no > 0) %>%
+  rowwise() %>%
+  mutate(chi2_test = list(chisq.test(c(yes, no))),
+         chi2 = chi2_test$statistic) %>% 
+  mutate(p_value = chi2_test$p.value,
+         significance = case_when(
+           p_value < 0.0001 ~ "****",
+           p_value < 0.001 ~ "***",
+           p_value < 0.01 ~ "**",
+           p_value < 0.05 ~ "*",
+           TRUE ~ ""
+         ),
+         p_value = sprintf("%.4f", chi2_test$p.value)
+         ) %>%
+  select(region, chi2, p_value, significance)
+
+print(chi_square_results)
+
+```
+
+
+
+
+```{r fig-plot-all-n-with-stars, fig.height=6, fig.width=7.5}
+
+# Filter out 'not sure' responses and keep only 'yes' and 'no'
+df_filtered <- df %>% 
+  filter(!region=="other",
+         !is.na(st_heard))
+
+# Group by region and st_heard to get counts
+df_counts <- df_filtered %>%
+  group_by(region, st_heard) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  spread(st_heard, n, fill = 0)
+
+# Plotting the data
+df_percent <- df_filtered %>%
+  group_by(region, st_heard) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(region) %>%
+  mutate(percent = n / sum(n) * 100)
+
+region_counts <- df_filtered %>%
+  group_by(region) %>%
+  summarise(n_total = n())
+
+df_percent_labeled <- df_percent %>%
+  left_join(region_counts, by = "region") %>%
+  mutate(region_label = paste0(region, " (n=", n_total, ")"))
+
+# Merge chi-square results with df_percent_labeled
+df_percent_labeled <- df_percent_labeled %>%
+  left_join(chi_square_results, by = "region") %>% 
+  mutate(region_label = paste0(region_label, " ", significance))
+
+# Plot
+p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)) +
+  geom_bar(stat = "identity", width = .55) +
+  facet_wrap(~ region_label) +
+  #geom_text(aes(x = 1.5, y = 100, label = paste0("n = ", n_total, "\n", "sig.: ", significance)), inherit.aes = FALSE, size = 3) +
+  labs(title = "Have you heard of the term \"(Standard) Canadian English\"?",
+       subtitle = "Region of formative years",
+       caption = "Significance coding based on chi-square test of the distribution of \"yes\" vs. \"no\" responses\np < 0.0001 ~ ****, p < 0.001 ~ ***, p < 0.01 ~ **, p < 0.05 ~ *",
+       y = NULL, x = NULL, fill = NULL) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1),
+                     limits = c(0, 75)) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p3 + scale_fill_manual(values = c("#E69F00", "#0072B2", "#F0E442", "#D55E00", "#CC79A7")) 
+
+```
+
+
+### Alternative version
+
+This version shows the same information but in a different format. The bars are ordered by the number of "yes" responses.
+
+
+> **Stefan**, Should I exclude the bar where `region` is "other"? Does not seem relevant.
+
+
+```{r fig-stacked-bars, fig.width=9, fig.height=4.5}
+
+df_percent <- df_percent %>%
+  mutate(
+    st_heard = factor(st_heard,
+                      levels = c("not sure", "no", "yes")) 
+  )
+
+## ── 2.  Get regions in descending order of the “yes” percentage ─────────────
+yes_order <- df_percent %>%
+  filter(st_heard == "yes") %>%
+  arrange(desc(percent)) %>%
+  pull(region)
+
+## ── 3.  Assemble plotting data with the ordered region factor ───────────────
+df_plot <- df_percent %>%
+  mutate(region = factor(region, levels = yes_order))
+
+region_counts <- region_counts %>% 
+  mutate(region = factor(region, levels = yes_order))
+
+## ── 4.  Stacked-bar chart ───────────────────────────────────────────────────
+p1 <- ggplot(df_plot, aes(x = region, y = percent, fill = st_heard)) +
+    geom_col(width = .7) +
+    geom_text(
+      data = region_counts,
+      aes(x = region,                     # ← give geom_text its x
+          y = 102,                        # height for the n label
+          label = paste0("n = ", n_total)),
+      size = 3,
+      inherit.aes = FALSE 
+    ) +
+    scale_y_continuous(
+      labels  = scales::percent_format(scale = 1),
+      limits  = c(0, 105),                # room for the label
+      expand  = expansion(mult = c(0, .01))
+    ) +
+    labs(
+      title = 'Have you heard of the term "(Standard) Canadian English"?',
+      caption = bquote(italic(N) == .(n_cases)),
+      y     = NULL, x = NULL, fill = NULL
+    ) +
+    theme_classic() +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p1 + scale_fill_brewer(palette = "Set2", name = NULL)
+
+```
+
+
+
+```{r store-data, include=FALSE, eval=FALSE}
+df_percent %>% export("data/df_can_percent.rds")
+df_cleaned %>% export("data/df_cleaned.rds")
+can_provs %>% export("data/can_provs.rds")
+
+```
+
+
+
+### Some bw versions
+
+```{r fig-plot-all-n-bw, fig.height=6, fig.width=9}
+
+p0 + scale_fill_grey(start = 0.25, end = 0.8) +
+  theme(plot.caption = element_text(hjust = 0))
+
+```
+
+```{r fig-plot-all-n-with-stars-bw, fig.height=6, fig.width=7.5}
+
+p3 + scale_fill_grey(start = 0.2, end = 0.8) 
+```
+
+```{r fig-stacked-bars-bw, fig.width=9, fig.height=4.5}
+
+p1 + scale_fill_grey(start = 0.25, end = 0.8) +
+  theme(plot.caption = element_text(hjust = 0))
+
+```
+
+
+## Next steps
+
+We'll move on to multivariate in the next document. That means: multiple IVs and a single DV.
