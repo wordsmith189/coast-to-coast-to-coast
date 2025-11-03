@@ -1,13 +1,18 @@
 ---
 title: "Canadian language attitudes from \"coast to coast to coast\": On the pluricentricity of English"
+date: Sep-2025
+date-modified: Nov-2025
 author:
  - name: Stefan Dollinger
-   affiliation: University of British Columbia
+   affiliation: The University of British Columbia
+   url: https://english.ubc.ca/profile/stefan-dollinger/
  - name: Lars Hinrichs
    affiliation: The University of Texas at Austin
+   url: https://larshinrichs.site
 format: 
   html:
     number-sections: true
+    toc: true
 editor: source
 ---
 
@@ -158,7 +163,7 @@ ggsave("fig/fig-1.png", width = 8, height = 5, dpi = 600)
 
 
 
-# Results & Discussion
+# Results & discussion
 
 In the first section we aim to connect public discourse and use of language reference tools with language attitudinal data. We will use several single variables and some indices that will, overall, allow us to interpret the strength of the notion of "Canadian English" as a standard variety in the minds of its speakers and with it the role of the pluricentricity of English in North America.
 
