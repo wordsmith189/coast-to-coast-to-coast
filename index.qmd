@@ -84,7 +84,7 @@ Positive assessment can also be seen in terms of domestic linguistic attitudes. 
 
 What is available to date for assessments of Standard Canadian English are province-related findings from Manitoba, Alberta, Ontario and BC, but no study of national scope. One recent exception is Freake (2023: 196-7), a perceptual dialectology and language regard study on Canadian English with a national sample, confirming perceived dialect regions within the country. The present study hits in the same curb by offering solid data from all provinces and territories. It intends to gauge to what degree "Canadian English has become a reality for many of its speakers" (Dollinger 2019a: 224).
 
-# The data
+# The Data
 
 The data was collected with a questionnaire of 25 language attitude and usage questions, which was complemented by 14 social background question. Data was collected with 18 students in an upper level English linguistics seminar at UBC (ENGL 489, Language Majors Seminar) in November and December 2023. The questionnaire can be accessed online. Over 3000 responses were collected, from all ten provinces and three territories, of which up to 3001 were used in the analysis. Table 1 shows the absolute numbers of responses by place of residence (Live now) and formative region, that is the region in which at least 9 years during the formative years 0-18 were spent. Because of low returns from residents of the territories (one from Nunavut (1) and case numbers in the mid-teens from Yukon and Northwest Territories), we created a class for "north of sixty" (degrees of latitude) territories, TR.
 
@@ -163,7 +163,7 @@ ggsave("fig/fig-1.png", width = 8, height = 5, dpi = 600)
 
 
 
-# Results & discussion
+# Results & Discussion
 
 In the first section we aim to connect public discourse and use of language reference tools with language attitudinal data. We will use several single variables and some indices that will, overall, allow us to interpret the strength of the notion of "Canadian English" as a standard variety in the minds of its speakers and with it the role of the pluricentricity of English in North America.
 
