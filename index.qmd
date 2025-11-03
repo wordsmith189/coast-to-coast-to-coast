@@ -22,7 +22,7 @@ To appear in James Walker, Debbie Loakes and Ksenia Gnevsheva (eds.), 2026. *Per
 
 # Introduction
 
-The present paper explores key aspects of the linguistic autonomy and the character, recognition and social embedding of "Standard Canadian English". A focus on the standard of a given context, its conceptualization, perception and discursive construction is sociolinguistically relevant for several reasons. One can argue that attitudes towards a standard variety shape other aspects of linguistic practice. As sociolinguists are not immune to wider social developments we may expect shifting interpretations over time. For instance, while the first generation of Canadian linguists tended to emphasize differences between Canadian English and other varieties, above all American English (e.g. Avis et al. 1967, Scargill 1974), the linguistics of Canadian English has seen a different effect in the era of the free trade negotiations of the 1980s and early 1990s[\[1\]](#_ftn1). This period was marked by statements as to the weakness of Canada-US border as a linguistic divide (e.g. Chambers 1980, Warkentyne & Brett 1981: 307, Warkentyne 1983: 73), or even to its irrelevance (e.g. Woods 1993: 174). The latter point is only occasionally echoed in more recent writings (e.g. Sadlier-Brown 2012: 547).
+The present paper explores key aspects of the linguistic autonomy and the character, recognition and social embedding of "Standard Canadian English". A focus on the standard of a given context, its conceptualization, perception and discursive construction is sociolinguistically relevant for several reasons. One can argue that attitudes towards a standard variety shape other aspects of linguistic practice. As sociolinguists are not immune to wider social developments we may expect shifting interpretations over time. For instance, while the first generation of Canadian linguists tended to emphasize differences between Canadian English and other varieties, above all American English (e.g. Avis et al. 1967, Scargill 1974), the linguistics of Canadian English has seen a different effect in the era of the free trade negotiations of the 1980s and early 1990s^[Omitted: fn. 1.]. This period was marked by statements as to the weakness of Canada-US border as a linguistic divide (e.g. Chambers 1980, Warkentyne & Brett 1981: 307, Warkentyne 1983: 73), or even to its irrelevance (e.g. Woods 1993: 174). The latter point is only occasionally echoed in more recent writings (e.g. Sadlier-Brown 2012: 547).
 
 What generally unites these claims, however, is the lack of a comparative US sample in addition to Canadian samples, which means that US usage is inferred from circumstantial evidence (e.g. dictionary and usage guides, or general impressions) but not based on data collected in the same way as on the Canadian side. Whenever a more rigorous design is brought to study cross-border linguistic influences, however, the relevance of the Canada-US border is shown and its linguistic effects – subtle yet consistent – become evident (e.g. Chambers 1994, 2000; Boberg 2000, Boberg 2005, Boberg 2008; Dollinger 2012) and the pluricentric character of North American English – with a dominant US Standard and a non-dominant Canadian Standard – is accepted.
 
@@ -219,8 +219,10 @@ tibble(`Q. short` = myvars_short,
 #| fig-cap: "Likert-scale responses to questions on the linguistic autonomy of CanE among the Canadian residents (2,723 ≤ *N* ≤ 2,813)."
 #| eval: true
 #| echo: false
-#| fig-width: 15
-#| fig-height: 4.5
+#| fig-width: 10
+#| fig-height: 4.25
+#| column: page-left
+
 
 
 # 1. Define variables, long labels, and color scheme
@@ -425,6 +427,11 @@ print(p)
 
 
 ```
+
+:::{.aside}
+Since we are able to use the caption for explanation, should we perhaps leave out the title within the figure?
+:::
+
 
 ```{r}
 #| label: "save-fig-2"
