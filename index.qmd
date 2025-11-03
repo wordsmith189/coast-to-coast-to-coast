@@ -55,19 +55,9 @@ Interesting in this context is the finding that questions "asking about Canadian
 
 The study’s general national identity results, however, do not always fare positively for Canadian-ness. As Table 1 shows, the teacher’s degree students rated the U.S. "higher as a country in general" over Canada (ibid: 115), and, more strongly so, the U.K. over Canada and the U.K over the US:
 
-| | |
-|:---|:---|
-| (1) Preference ratings |  |
-| US (-1) vs. Canada (+1) | -0.219 |
-| UK (-1) vs. Canada (+1) | -0.382 |
-| UK (-1) vs. US (+1) | -0.395 |
-| UK (-1) vs. US (+1) benefits | -0.307 |
-| (2) Canadian national identity | +0.292 |
-| Canadian linguistic identity | +0.193 |
-| (3) Personality ratings |  |
-| Americans | +0.129 |
-| British | +0.222 |
-| Canadians | +0.205 |
+:::{.callout-note appearance="simple"}
+Table 1 omitted
+:::
 
 **Table 1: Attitudinal ratings in 1977, UVic students (Warkentyne 1983: Table 1)** 
 
@@ -93,45 +83,15 @@ What is available to date for assessments of Standard Canadian English are provi
 
 The data was collected with a questionnaire of 25 language attitude and usage questions, which was complemented by 14 social background question. Data was collected with 18 students in an upper level English linguistics seminar at UBC (ENGL 489, Language Majors Seminar) in November and December 2023. The questionnaire can be accessed online. Over 3000 responses were collected, from all ten provinces and three territories, of which up to 3001 were used in the analysis. Table 1 shows the absolute numbers of responses by place of residence (Live now) and formative region, that is the region in which at least 9 years during the formative years 0-18 were spent. Because of low returns from residents of the territories (one from Nunavut (1) and case numbers in the mid-teens from Yukon and Northwest Territories), we created a class for "north of sixty" (degrees of latitude) territories, TR.
 
-| | | | | | | |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
-| | | | | | | |
-| | **Province/Territory** | | **Live now (n)** | | **Formative region (n)** | |
-| | | | | | | |
-| | BC | | 628 | | 444 | |
-| | | | | | | |
-| | AB | | 663 | | 506 | |
-| | | | | | | |
-| | SK | | 277 | | 278 | |
-| | | | | | | |
-| | MB | | 327 | | 295 | |
-| | | | | | | |
-| | ON | | 450 | | 520 | |
-| | | | | | | |
-| | QC | | 123 | | 105 | |
-| | | | | | | |
-| | NB | | 47 | | 36 | |
-| | | | | | | |
-| | NS | | 46 | | 45 | |
-| | | | | | | |
-| | PE | | 62 | | 45 | |
-| | | | | | | |
-| | NL | | 42 | | 42 | |
-| | | | | | | |
-| | TR | | 35 | | 10 | |
-| | | | | | | |
-| | **Canada total** | | **2700** | | **2326** | |
-| | | | | | | |
-| | US | | 93 | | 127 | |
-| | | | | | | |
-| | UK | | 0 | | 32 | |
-| | | | | | | |
-| | others | | 208 | | 482 | |
-| | | | | | | |
-| | **TOTAL** | | **3001** | | **2967** | |
-| | | | | | | |
+:::{.callout-note appearance="simple"}
+Table 2 omitted
+:::
 
-**Table 1: Absolute frequencies: locations**
+**Table 2: Absolute frequencies: locations**
+
+:::{.aside}
+Make sure this one is labeled and referred to as Table 2.
+:::
 
 Response numbers by age and gender are depicted in Figure 1. As can be seen, the cohort 20-24 is best represented, with females typically outnumbering males. Non-binary respondents are best represented in the cohorts from 20-49.
 
@@ -487,10 +447,14 @@ An open answer field solicited definitions of Standard Canadian English, with th
 :::
 
 :::{.callout-note appearance="simple"}
-Table 2 omitted
+Table 3 omitted
 :::
 
-**Table 2: Select responses to the question "Do you know what "Standard Canadian English" is?**
+**Table 3: Select responses to the question "Do you know what "Standard Canadian English" is?**
+
+:::{.aside}
+**NB the table numbering** is off in the version of the ms. that I got. The correct number for this table is 3.
+:::
 
 Of the ten descriptions of Standard Canadian English, notions of widespread use (1, 4, 6), media (2, 4, 7, 9), more British influence (5), a regional dimension (8) and socialization in Canada (10) are recurring themes, with occasional sceptics (3). What is striking is that the attribute of "educated", normally a mainstay in standard variety definitions, is absent. Trudgill & Hannah (2017: 6) speak of a "North American English (NAmEng), meaning English as written and spoken by educated speakers in the United States of America and Canada", though a definition rooted in educated speech does not feature prominently in the responses, with only three in the entire sample mentioning "educated" speakers.
 
