@@ -161,7 +161,9 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
 ggsave("fig/fig-1.png", width = 8, height = 5, dpi = 600)
 ```
 
-
+:::{.callout-tip appearance="simple"}
+Download this figure [here](fig/fig-1.png).
+:::
 
 # Results & Discussion
 
@@ -426,6 +428,10 @@ print(p)
 
 ggsave("fig/fig-2.png", width = 15, height = 4.5, dpi = 600)
 ```
+
+:::{.callout-tip appearance="simple"}
+Download this figure [here](fig/fig-2.png).
+:::
 
 With such answers the linguistic autonomy of Standard Canadian English seems well enshrined at this point, confirming the 2009 data overall and showing considerable differentiation from the early 1980s, when "Americanization " was the most virulently discussed attribute of Canadian English. This change in outlook is remarkable and warrants a closer look at the social distribution of those who recognize Canadian English – most commonly through its standard that had been documented and fully codified as a distinct variety of English by 1967 (Gregg 1993, Dollinger 2019: 131-32).
 
