@@ -16,6 +16,10 @@ format:
 editor: source
 ---
 
+:::{.callout-info appearance="simple"}
+To appear in James Walker, Debbie Loakes and Ksenia Gnevsheva (eds.), 2026. *Perceptions and attitudes in multilingual contexts*. Special issue, *Australian Journal of Linguistics*. 
+:::
+
 # Introduction
 
 The present paper explores key aspects of the linguistic autonomy and the character, recognition and social embedding of "Standard Canadian English". A focus on the standard of a given context, its conceptualization, perception and discursive construction is sociolinguistically relevant for several reasons. One can argue that attitudes towards a standard variety shape other aspects of linguistic practice. As sociolinguists are not immune to wider social developments we may expect shifting interpretations over time. For instance, while the first generation of Canadian linguists tended to emphasize differences between Canadian English and other varieties, above all American English (e.g. Avis et al. 1967, Scargill 1974), the linguistics of Canadian English has seen a different effect in the era of the free trade negotiations of the 1980s and early 1990s[\[1\]](#_ftn1). This period was marked by statements as to the weakness of Canada-US border as a linguistic divide (e.g. Chambers 1980, Warkentyne & Brett 1981: 307, Warkentyne 1983: 73), or even to its irrelevance (e.g. Woods 1993: 174). The latter point is only occasionally echoed in more recent writings (e.g. Sadlier-Brown 2012: 547).
