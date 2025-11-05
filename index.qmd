@@ -476,6 +476,8 @@ That is as much detail as can be extracted from corpus searches. We aim use the 
 
 ```{r}
 #| label: p-values-regions
+#| echo: false
+#| eval: true
 
 # Filter out 'not sure' responses and keep only 'yes' and 'no'
 df_filtered <- df %>% 
