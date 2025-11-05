@@ -157,7 +157,7 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
     y     = "N respondents",
     title = "Respondents count by age and gender"
   ) +
-  theme_minimal(base_size = 12) +
+  theme_classic(base_size = 12) +
   theme(plot.title.position = "plot")
 
 ```
