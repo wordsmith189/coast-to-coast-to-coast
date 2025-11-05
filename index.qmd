@@ -127,8 +127,10 @@ can_regions <- c("BC", "AB", "SK", "MB", "ON", "QC",
 
 ```{r}
 #| label: fig-age-gender
-#| fig-cap: "Density plot illustrating the distribution of age and gender among those whose formative years were spent in Canada."
+#| fig-cap: "Distribution of age and gender among those whose formative years were spent in Canada."
 #| echo: true
+#| fig-width: 6
+#| fig-height: 3
 
 df_age <- df %>%                     # replace with your frame name
   filter(!is.na(age), !is.na(gender)) %>%
@@ -145,14 +147,22 @@ df_counts <- df_age %>%
 ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
   geom_line(linewidth = 2,
             alpha = 0.6) +
-  scale_colour_manual(
-    values = c(
-      "male" = "#0072B2",   # blue
-      "female"   = "#E69F00",   # orange
-      "other"  = "#CC79A7"    # magenta-purple
-    ),
+  
+  # scale_colour_manual(
+  #   values = c(
+  #     "male" = "#0072B2",   # blue
+  #     "female"   = "#E69F00",   # orange
+  #     "other"  = "#CC79A7"    # magenta-purple
+  #   ),
+  #   name = NULL
+  # ) +
+  
+  scale_color_grey(
+    start = 0,
+    end = 0.66,
     name = NULL
-  ) +
+    ) +
+
   labs(
     x     = "Age",
     y     = "N respondents",
@@ -167,7 +177,7 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
 #| label: "save-fig-1"
 #| eval: false
 
-ggsave("fig/fig-1.png", width = 8, height = 4.3, dpi = 600)
+ggsave("fig/fig-1.png", width = 7, height = 3.5, dpi = 600)
 ```
 
 :::{.callout-tip appearance="simple"}
@@ -256,6 +266,21 @@ response_colors <- c(
   "No"                = "#E69F00",  # Female Orange for "No"
   "Don't know"        = "#CC79A7"   # Other Magenta for "Uncertain"
 )
+
+response_colors_grey <- c(
+  # Likert Scale (5 categories)
+  "Definitely yes"    = "black",       # Most Positive → darkest
+  "(Probably) yes"    = "grey30",
+  "Neither yes or no" = "grey60",      # Neutral
+  "(Probably) no"     = "grey80",
+  "Definitely not"    = "white",       # Most Negative → lightest
+
+  # Three-Way Response
+  "Yes"               = "black",
+  "No"                = "white",
+  "Don't know"        = "grey60"
+)
+
 
 # Define the ordered factor levels for correct plotting sequence
 # NOTE: These are the TARGET levels after remapping
@@ -361,18 +386,15 @@ p <- df_long_summary %>%
   ggplot(aes(x = Response, y = Percentage, fill = Response)) +
   
   # Bars representing the percentage
-  geom_col(width = 0.8, , color="grey40") +
+  geom_col(width = 0.8, , color="grey30") +
   
-  # ----------------------------------------------------
-  # 4a. Percentage labels (ON TOP of the bars)
-  # Applies to all questions
   geom_text(aes(label = Percent_Label), 
             vjust = -0.5, 
             size = 3.5) +
   
-  # 4b. Text labels inside the bars for the Q6 (software) plot
-  geom_text(data = . %>% filter(Question_Short == "software"), # Filter data for only Q6
-            aes(label = Response, y = Percentage / 2), # Place label in the middle of the bar
+  geom_text(data = . %>% filter(Question_Short == "software"), 
+            
+            aes(label = Response, y = Percentage / 2), 
             color = "white",
             fontface = "bold",
             size = 3.5) +
@@ -386,10 +408,8 @@ p <- df_long_summary %>%
   
   # Apply the custom harmonized color scale
   scale_fill_manual(
-    values = response_colors,
-    # --- CHANGE 1: RESTRICT LEGEND TO 5 LIKERT VALUES ---
+    values = response_colors_grey,
     breaks = likert_levels, 
-    # ----------------------------------------------------
     drop = TRUE
   ) +
   
@@ -555,7 +575,7 @@ df_percent_labeled <- df_percent_labeled %>%
 
 # Plot
 p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)) +
-  geom_bar(stat = "identity", width = .55, color="grey40") +
+  geom_bar(stat = "identity", width = .55, color="grey30") +
   facet_wrap(~ region_label, ncol = 5) +
   #geom_text(aes(x = 1.5, y = 100, label = paste0("n = ", n_total, "\n", "sig.: ", significance)), inherit.aes = FALSE, size = 3) +
   labs(title = "Have you heard of the term \"(Standard) Canadian English\"?",
@@ -570,7 +590,9 @@ p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)
         plot.caption.position = "plot",
         plot.caption = element_text(hjust = 0))
 
-p3 + scale_fill_manual(values = c("#E69F00", "#0072B2", "#F0E442", "#D55E00", "#CC79A7")) 
+# p3 + scale_fill_manual(values = c("#E69F00", "#0072B2", "#F0E442", "#D55E00", "#CC79A7")) 
+
+p3 + scale_fill_grey(start=0.15, end=.85)
 
 ```
 
@@ -623,7 +645,7 @@ df_plot_data <- df_filtered %>%
 df_plot_data %>%
   ggplot(aes(x = st_heard, y = Percentage, fill = umultiling)) +
   
-  geom_col(width = 0.5, position = "dodge", color="grey40") +
+  geom_col(width = 0.5, position = "dodge", color="grey30") +
   
   geom_text(
     aes(label = N_Label),
@@ -632,10 +654,15 @@ df_plot_data %>%
     size = 3.5
   ) +
   
+  # scale_fill_manual(
+  #   values = c("#F0E442", "#D55E00"),
+  #   labels = c("monolingual (n=1,242)", "bi- or multilingual (n=1,083)") 
+  # ) +
+  
   scale_fill_manual(
-    values = c("#F0E442", "#D55E00"),
-    labels = c("monolingual (n=1,242)", "bi- or multilingual (n=1,083)") 
-  ) +
+      values = c("grey80", "grey30"),  
+      labels = c("monolingual (n=1,242)", "bi- or multilingual (n=1,083)")
+    ) +
   
   coord_cartesian(ylim = c(0, 0.65)) +
   
