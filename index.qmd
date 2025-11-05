@@ -72,6 +72,10 @@ Table 1 omitted
 
 The fourth line in the preference ratings refers to impressions of the perceived benefits that an association with the UK or the US offers to Canada. In 1977, this sample was clearly on the UK side. More generally, British people were rated more positively than Canadian people, but the Americans the lowest. Warkentyne comments that the "low scores on the items concerning Canadian identity should allay any fears that nationalism may be carried to the extreme" (1983: 73). Discussing correlations, including those about self-ratings and satisfaction in general, Gulden concludes "a striking combination": "those who do not have a very high opinion of themselves or any other people (except Americans) are more likely to favour the U.S. over the U.K." and those who show a high self-evaluation "are correlated with a preference for the U.K. over the U.S." (ibid: 123-4).
 
+:::{.aside}
+Gulden concludes >> Gulden observes
+:::
+
 ## The 2000s: an increase of Canadian linguistic awareness
 
 A generation later, studies that use direct questions to assess respondents’ attitudes towards linguistic autonomy found that scores had markedly improved, with considerable majorities offering affirmative responses. A 2009 Vancouver study found that:
@@ -219,8 +223,8 @@ tibble(`Q. short` = myvars_short,
 #| fig-cap: "Likert-scale responses to questions on the linguistic autonomy of CanE among the Canadian residents (2,723 ≤ *N* ≤ 2,813)."
 #| eval: true
 #| echo: false
-#| fig-width: 10
-#| fig-height: 4.25
+#| fig-width: 9
+#| fig-height: 3.5
 #| column: page-left
 
 
@@ -234,8 +238,8 @@ question_long_names <- c(
   "cdn_way"     = "Is there a Canadian way\nof speaking English?",
   "distinct"    = "Is Canadian English a distinct\nkind of English?",
   "spell"       = "Do you think Canadian\nspelling is important?",
-  "spell_uni"   = "Should Cdn universities encourage\nCdn English spelling?",
-  "software"    = "Should software settings include\na Canadian English option?"
+  "spell_uni"   = "Should Cdn universities\nencourage Cdn English\nspelling?",
+  "software"    = "Should software settings\ninclude a Canadian\nEnglish option?"
 )
 
 response_colors <- c(
@@ -404,9 +408,11 @@ p <- df_long_summary %>%
   ) +
   
   # Custom theming for presentation
-  theme_minimal(base_size = 12) +
+  theme_classic(base_size = 12) +
   theme(
-    # REMOVE X-AXIS TEXT
+    axis.line.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
     axis.text.x = element_blank(), 
     axis.ticks.x = element_blank(),
     
@@ -418,7 +424,7 @@ p <- df_long_summary %>%
     
     # Clean up facet strips (Question labels underneath)
     strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 9, hjust = 0.5),
+    strip.text = element_text(face = "bold", size = 7.2, hjust = 0.5),
     
     plot.title = element_text(face = "bold")
   )
@@ -437,7 +443,7 @@ Since we are able to use the caption for explanation, should we perhaps leave ou
 #| label: "save-fig-2"
 #| eval: false
 
-ggsave("fig/fig-2.png", width = 15, height = 4.5, dpi = 600)
+ggsave("fig/fig-2.png", width = 9.5, height = 4.1, dpi = 600)
 ```
 
 :::{.callout-tip appearance="simple"}
@@ -450,15 +456,196 @@ With such answers the linguistic autonomy of Standard Canadian English seems wel
 
 While "Canadian English ", as a slur, dates to 1857 (DCHP-3, s.v. "Canadian English"), "Standard Canadian English" (StCanE) is a concept that has been discussed in linguistic circles only since the 1970s. It is in pluricentric theory the key concept whose understanding is a *sine-qua-non* for an appreciation of the linguistic autonomy of a variety, i.e. Canadian English. In the public and in schooling, however, uptake of StCanE as a term and autonomous concepts has been slower. While the public perception of a "Canadian English" has been strong, related discourse is subject to considerable fluctuation. Figure 3 (left) shows data to that effect, which compares the use of Canadian dictionary titles in domestic media since the 1970s with the frequencies of the term "Canadian English" ("Canadian Newsstream" database) from 1980 to the end of 2024, shown in Figure 3 (right).
 
+```{r}
+#| label: fig-placeholder
+#| fig-cap: "Placeholder: Figure caption will go here."
+#| echo: false
+#| eval: false
+#| include: false
+#| fig-alt: "Description of the final figure."
+
+```
+
 In general, the 1980s and 1990s were a period of increasing language awareness in Canada, with the uptake of Canadian dictionary titles lagging behind an increase or decrease of the phrase "Canadian English" in the media by a period of five years. The more the concept is discussed, the more Canadian dictionary titles are used as reference sources in the media. The years 1996-1998 have been the most productive years in Canadian English dictionary publishing so far, with four full-size titles appearing. The sole winner, the *Canadian Oxford Dictionary* of this Canadian dictionary war, however, was shut down in 2008, which led to US titles being the most prevalent ones, as Figure 3 (left) shows. Today, the *Canadian English Dictionary* is scheduled to take over that function when finished (Chew 2025).
 
+:::{.aside}
+I don't have the data to reproduce the two panels of Figure 3; can you send them to me? 
+:::
+
 That is as much detail as can be extracted from corpus searches. We aim use the current study to fill in some gaps in interpretation. Figure 4 summarizes the respondent’s general familiarity with the term "Standard Canadian English" or "Canadian Standard English" by region, that is by their formative years ("have you heard the term…"). We assigned a province/territory or country to those who spent at least nine years in their ages 0-18 in one location and show the Canadian as well as the US and UK responses for comparison.
+
+```{r}
+#| label: p-values-regions
+
+# Filter out 'not sure' responses and keep only 'yes' and 'no'
+df_filtered <- df %>% 
+  filter(
+    !region=="other",
+    st_heard %in% c("yes", "no")
+    )
+
+# Group by region and st_heard to get counts
+df_counts <- df_filtered %>%
+  group_by(region, st_heard) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  spread(st_heard, n, fill = 0)
+
+# Perform chi-square test for each region, excluding regions with zero counts for either 'yes' or 'no'
+chi_square_results <- df_counts %>%
+  filter(yes > 0 & no > 0) %>%
+  rowwise() %>%
+  mutate(chi2_test = list(janitor::chisq.test(c(yes, no))),
+         chi2 = chi2_test$statistic) %>% 
+  mutate(p_value = chi2_test$p.value,
+         significance = case_when(
+           p_value < 0.0001 ~ "****",
+           p_value < 0.001 ~ "***",
+           p_value < 0.01 ~ "**",
+           p_value < 0.05 ~ "*",
+           TRUE ~ ""
+         ),
+         p_value = sprintf("%.4f", chi2_test$p.value)
+         ) %>%
+  select(region, chi2, p_value, significance)
+
+```
+
+```{r}
+#| label: fig-stheard-by-region
+#| fig-cap: "Have you heard of either \"Standard Canadian English\" or \"Canadian Standard English\"?"
+#| eval: true
+#| echo: false
+#| fig-width: 9
+#| fig-height: 7
+#| column: page-left
+
+# Filter out 'not sure' responses and keep only 'yes' and 'no'
+df_filtered <- df %>% 
+  filter(!region=="other",
+         !is.na(st_heard))
+
+# Group by region and st_heard to get counts
+df_counts <- df_filtered %>%
+  group_by(region, st_heard) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  spread(st_heard, n, fill = 0)
+
+# Plotting the data
+df_percent <- df_filtered %>%
+  group_by(region, st_heard) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(region) %>%
+  mutate(percent = n / sum(n) * 100)
+
+region_counts <- df_filtered %>%
+  group_by(region) %>%
+  summarise(n_total = n())
+
+df_percent_labeled <- df_percent %>%
+  left_join(region_counts, by = "region") %>%
+  mutate(region_label = paste0(region, " (n=", n_total, ")"))
+
+# Merge chi-square results with df_percent_labeled
+df_percent_labeled <- df_percent_labeled %>%
+  left_join(chi_square_results, by = "region") %>% 
+  mutate(region_label = paste0(region_label, " ", significance))
+
+# Plot
+p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)) +
+  geom_bar(stat = "identity", width = .55) +
+  facet_wrap(~ region_label) +
+  #geom_text(aes(x = 1.5, y = 100, label = paste0("n = ", n_total, "\n", "sig.: ", significance)), inherit.aes = FALSE, size = 3) +
+  labs(title = "Have you heard of the term \"(Standard) Canadian English\"?",
+       subtitle = "Region of formative years",
+       caption = "Significance coding based on chi-square test of the distribution of \"yes\" vs. \"no\" responses\np < 0.0001 ~ ****, p < 0.001 ~ ***, p < 0.01 ~ **, p < 0.05 ~ *",
+       y = NULL, x = NULL, fill = NULL) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1),
+                     limits = c(0, 75)) +
+  theme_classic() +
+  theme(legend.position = "none") +
+  theme(plot.title.position = "plot",
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0))
+
+p3 + scale_fill_manual(values = c("#E69F00", "#0072B2", "#F0E442", "#D55E00", "#CC79A7")) 
+
+```
+
+:::{.aside}
+By the way - is it advised that we use a grey scale instead of colors in the plots? 
+:::
+
+```{r}
+#| label: "save-fig-4"
+#| eval: false
+
+ggsave("fig/fig-4.png", width = 9, height = 7, dpi = 600)
+```
 
 Figure 4 depicts the 10 Canadian provinces (BC to NL) and one plot for the three Canadian Territories (TR), completed by the UK and US respondents. Most often respondents reported having heard the term "Standard Canadian English" in New Brunswick (NB), followed by Ontario (ON), British Columbia (BC), Alberta (AB), Quebec (QC), Manitoba, Sasktachewan. These seven provinces show significant differences between yes and no. The Maritime provinces, Nova Scotia (NS) do not reach significance, though more have heard the term, while in Prince Edward Island (PEI) those who haven’t heard are in the majority, there’s a tie in the Territories (TR). The UK respondents are more exposed to the term than people raised in Manitoba (MB), Newfoundland and Labrador (NL) and [Saskatchewan (SK)]{.underline}.
 
 The Americans (US) in our sample, all of whom likely with some ties to Canada as an artefact of our data collection method (snowball method), are more familiar with the term than Nova Scotians (NS) and Prince Edward Islanders (PE). The assumption is that if speakers are familiar with Standard Canadian English they are more likely to comprehend the social relevance of the variety as a marker of identity. Such awareness would therefore be strongest in New Brunswick (which sets it apart from the other Atlantic Provinces NS, PE and NL), followed by Ontario, then BC and Alberta.
 
 Figure 5 shows exposure to "Standard Canadian English" with respondents’ status of multilingualism. Monolingual speakers, socialized in Canada, are significantly less likely to "have heard" of "Standard Canadian English" or "Canadian Standard English". Monolinguals are more likely to have a "default" of "English unspecified" as a variety and need to learn to appreciate the special characteristics of Standard Canadian English.
+
+```{r}
+#| label: fig-stheard-by-multiling
+#| fig-cap: "Responses to \"Have you heard of StCanE?\" by linguistic background."
+#| eval: true
+#| echo: false
+#| fig-width: 6
+#| fig-height: 3.5
+
+df_filtered <- df %>% 
+  filter(!region=="other",
+         !province %in% c("United States", "other"),
+         !is.na(st_heard),
+         !is.na(umultiling))
+
+df_plot_data <- df_filtered %>%
+  count(st_heard, umultiling) %>%
+  group_by(st_heard) %>%
+  mutate(
+    Percentage = n / sum(n), # Calculate percentage within each st_heard group
+    N_Label = n
+  ) %>%
+  ungroup()
+
+df_plot_data %>%
+  ggplot(aes(x = st_heard, y = Percentage, fill = umultiling)) +
+  
+  geom_col(width = 0.5, position = "dodge", color="grey40") +
+  
+  geom_text(
+    aes(label = N_Label),
+    position = position_dodge(width = 0.5), # Must match geom_col's width
+    vjust = -0.5, # Position the text slightly above the bar
+    size = 3.5
+  ) +
+  
+  scale_fill_manual(
+    values = c("#F0E442", "#D55E00"),
+    labels = c("monolingual (n=1,242)", "bi- or multilingual (n=1,083)") 
+  ) +
+  
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  
+  labs(fill = "Linguistic Background",
+       y = NULL,
+       x = NULL) +
+  
+  theme_classic()
+
+```
+
+```{r}
+#| label: "save-fig-5"
+#| eval: false
+
+ggsave("fig/fig-5.png", width = 6, height = 3.5, dpi = 600)
+```
 
 Figure 5 shows that Multilinguals who were raised in Canada are significantly more likely than Monolinguals to have heard about Standard CanE. What, however, do they understand by the term, which is used in specialist circles, but very little in public discourse today (Figure 3 right, 2020-24 period)?
 
