@@ -13,6 +13,7 @@ format:
   html:
     number-sections: true
     toc: true
+    code-fold: true
 editor: source
 ---
 
@@ -127,7 +128,7 @@ can_regions <- c("BC", "AB", "SK", "MB", "ON", "QC",
 ```{r}
 #| label: fig-age-gender
 #| fig-cap: "Density plot illustrating the distribution of age and gender among those whose formative years were spent in Canada."
-#| echo: false
+#| echo: true
 
 df_age <- df %>%                     # replace with your frame name
   filter(!is.na(age), !is.na(gender)) %>%
@@ -188,7 +189,7 @@ I have selected the following variables by short names, hoping that these are th
 
 ```{r}
 #| label: select-vars
-#| echo: false
+#| echo: true
 
 source("gt_bold.R")
 
@@ -222,7 +223,7 @@ tibble(`Q. short` = myvars_short,
 #| label: fig-various-questions-on-autonomy
 #| fig-cap: "Likert-scale responses to questions on the linguistic autonomy of CanE among the Canadian residents (2,723 ≤ *N* ≤ 2,813)."
 #| eval: true
-#| echo: false
+#| echo: true
 #| fig-width: 9
 #| fig-height: 3.5
 #| column: page-left
@@ -459,7 +460,7 @@ While "Canadian English ", as a slur, dates to 1857 (DCHP-3, s.v. "Canadian Engl
 ```{r}
 #| label: fig-placeholder
 #| fig-cap: "Placeholder: Figure caption will go here."
-#| echo: false
+#| echo: true
 #| eval: false
 #| include: false
 #| fig-alt: "Description of the final figure."
@@ -476,7 +477,7 @@ That is as much detail as can be extracted from corpus searches. We aim use the 
 
 ```{r}
 #| label: p-values-regions
-#| echo: false
+#| echo: true
 #| eval: true
 
 # Filter out 'not sure' responses and keep only 'yes' and 'no'
@@ -516,7 +517,7 @@ chi_square_results <- df_counts %>%
 #| label: fig-stheard-by-region
 #| fig-cap: "Have you heard of either \"Standard Canadian English\" or \"Canadian Standard English\"?"
 #| eval: true
-#| echo: false
+#| echo: true
 #| fig-width: 9
 #| fig-height: 7
 #| column: page-left
@@ -598,7 +599,7 @@ Figure 5 shows exposure to "Standard Canadian English" with respondents’ statu
 #| label: fig-stheard-by-multiling
 #| fig-cap: "Responses to \"Have you heard of StCanE?\" by linguistic background."
 #| eval: true
-#| echo: false
+#| echo: true
 #| fig-width: 6
 #| fig-height: 3.5
 #| message: false
