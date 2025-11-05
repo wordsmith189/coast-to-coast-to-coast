@@ -693,7 +693,7 @@ Another way of gauging the awareness of StCanE is to ask about a "Canadian way" 
 
 The recognition of this expression of linguistic autonomy seems to be predominantly female-led. In terms of age, we see a slight decrease among the younger cohorts, which to a degree will correlate with education: as we will see below, the more educated a respondent is, the more likely they are to recognize Standard Canadian English.
 
-**Standard Language Attitude Index (SLAI)**
+## Standard Language Attitude Index (SLAI)
 
 A further attempt to gauge awareness of standard varieties is via a composite Index SLAI. The original concept of combining five factors was reduced to four due to low internal consistency with the last factor (Have you heard the term "Standard Canadian English"), which was treated separately above. SLAI averages the following four variables at the level of the individual respondent.[\[1\]](#_ftn1)
 
