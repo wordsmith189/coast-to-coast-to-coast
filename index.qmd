@@ -636,7 +636,7 @@ df_plot_data %>%
     labels = c("monolingual (n=1,242)", "bi- or multilingual (n=1,083)") 
   ) +
   
-  ylim(c(0,.65)) +
+  coord_cartesian(ylim = c(0, 0.65)) +
   
   scale_y_continuous(
     labels = scales::percent
