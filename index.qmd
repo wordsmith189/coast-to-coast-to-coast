@@ -601,6 +601,8 @@ Figure 5 shows exposure to "Standard Canadian English" with respondents’ statu
 #| echo: false
 #| fig-width: 6
 #| fig-height: 3.5
+#| message: false
+#| warning: false
 
 df_filtered <- df %>% 
   filter(!region=="other",
@@ -634,6 +636,8 @@ df_plot_data %>%
     labels = c("monolingual (n=1,242)", "bi- or multilingual (n=1,083)") 
   ) +
   
+  ylim(c(0,.65)) +
+  
   scale_y_continuous(
     labels = scales::percent
   ) +
@@ -643,7 +647,6 @@ df_plot_data %>%
        y = NULL,
        x = NULL) +
   
-  ylim(c(0,.65)) +
   
   theme_classic()
 
@@ -653,7 +656,7 @@ df_plot_data %>%
 #| label: "save-fig-5"
 #| eval: false
 
-ggsave("fig/fig-5.png", width = 6, height = 3.5, dpi = 600)
+ggsave("fig/fig-5.png", width = 6, height = 3.2, dpi = 600)
 ```
 
 :::{.callout-tip appearance="simple"}
