@@ -609,8 +609,8 @@ df_filtered <- df %>%
          !is.na(umultiling))
 
 df_plot_data <- df_filtered %>%
-  count(st_heard, umultiling) %>%
-  group_by(st_heard) %>%
+  count(umultiling, st_heard) %>%
+  group_by(umultiling) %>%
   mutate(
     Percentage = n / sum(n), # Calculate percentage within each st_heard group
     N_Label = n
@@ -639,6 +639,7 @@ df_plot_data %>%
   ) +
   
   labs(fill = "Linguistic Background",
+       caption = "NB: bar size corresponds to %."
        y = NULL,
        x = NULL) +
   
@@ -761,7 +762,7 @@ In the Canadian context, the connection between linguistic identity and linguist
 
   The importance of education was highlighted by significant correlations in Figures 8 and 9 via a composite index (SLAI – Standard Language Attitude Index, referring to Standard Canadian English). SLAI confirms that for those growing up in Canada, no correlations with ethnic orientations can be discerned (Figure 12). Those who are themselves multilingual tend to orient themselves more towards StCanE if they are female or non-binary, while male multilinguals are more sceptical (Figure 10). Male scepticism towards the non-dominant StCanE is consistent, for instance in Figure 7 (right panel).
 
-  The frequency of English use (EUI) is, like multilingualism, a more important factor for the Canadian standard. Those who use English the least (Figure 13) also consider CanE its own distinct variety the least, while, conversely, monolingual speakers do so the most. These two groups show a significant difference (with more frequent English users in Canada in between, but not significant).
+The frequency of English use (EUI) is, like multilingualism, a more important factor for the Canadian standard. Those who use English the least (Figure 13) also consider CanE its own distinct variety the least, while, conversely, monolingual speakers do so the most. These two groups show a significant difference (with more frequent English users in Canada in between, but not significant).
 
 As outlined in the beginning, language representations and attitudes are fuelled by wider social contexts. While Canadian national identity was on the rise in the 1970s, linguistic identity was not. This has shifted in the early 2000s and is still ongoing. However, today there is, in comparison to the early 2000s, little to no public discourse about the linguistic identity of Anglophone Canadians, as shown in Figure 1. It will remain to be see if and to what degree linguistic work on the unique angle of Canadian English ([www.canadianenglishdictionary.ca](http://www.canadianenglishdictionary.ca)) may enrich Canadian public discourse. 
 
