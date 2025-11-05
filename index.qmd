@@ -166,7 +166,7 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
 #| label: "save-fig-1"
 #| eval: false
 
-ggsave("fig/fig-1.png", width = 8, height = 5, dpi = 600)
+ggsave("fig/fig-1.png", width = 8, height = 4.3, dpi = 600)
 ```
 
 :::{.callout-tip appearance="simple"}
@@ -642,6 +642,8 @@ df_plot_data %>%
        caption = "Bar height corresponds to %.",
        y = NULL,
        x = NULL) +
+  
+  ylim(c(0,.65)) +
   
   theme_classic()
 
