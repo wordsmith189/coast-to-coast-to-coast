@@ -639,7 +639,7 @@ df_plot_data %>%
   ) +
   
   labs(fill = "Linguistic Background",
-       caption = "Bar size corresponds to %.",
+       caption = "Bar height corresponds to %.",
        y = NULL,
        x = NULL) +
   
