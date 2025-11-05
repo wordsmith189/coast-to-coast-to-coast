@@ -555,7 +555,7 @@ df_percent_labeled <- df_percent_labeled %>%
 # Plot
 p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)) +
   geom_bar(stat = "identity", width = .55, color="grey40") +
-  facet_wrap(~ region_label) +
+  facet_wrap(~ region_label, ncol = 5) +
   #geom_text(aes(x = 1.5, y = 100, label = paste0("n = ", n_total, "\n", "sig.: ", significance)), inherit.aes = FALSE, size = 3) +
   labs(title = "Have you heard of the term \"(Standard) Canadian English\"?",
        subtitle = "Region of formative years",
@@ -564,8 +564,8 @@ p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)
   scale_y_continuous(labels = scales::percent_format(scale = 1),
                      limits = c(0, 75)) +
   theme_classic() +
-  theme(legend.position = "none") +
-  theme(plot.title.position = "plot",
+  theme(legend.position = "none",
+        plot.title.position = "plot",
         plot.caption.position = "plot",
         plot.caption = element_text(hjust = 0))
 
