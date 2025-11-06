@@ -14,7 +14,6 @@ format:
     number-sections: true
     toc: true
     code-fold: true
-    include-after-body: _how-to-cite.html
 editor: source
 ---
 
@@ -87,7 +86,7 @@ The fourth line in the preference ratings refers to impressions of the perceived
 Gulden concludes >> Gulden observes
 :::
 
-## The 2000s: an increase of Canadian linguistic awareness
+## The 2000s: An increase of Canadian linguistic awareness
 
 A generation later, studies that use direct questions to assess respondents’ attitudes towards linguistic autonomy found that scores had markedly improved, with considerable majorities offering affirmative responses. A 2009 Vancouver study found that:
 
