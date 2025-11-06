@@ -189,6 +189,7 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
 ```{r}
 #| label: "save-fig-1"
 #| eval: false
+#| echo: false
 
 ggsave("fig/fig-1.png", width = 7, height = 3.5, dpi = 600)
 ```
@@ -476,6 +477,7 @@ Since we are able to use the caption for explanation, should we perhaps leave ou
 ```{r}
 #| label: "save-fig-2"
 #| eval: false
+#| echo: false
 
 ggsave("fig/fig-2.png", width = 9.5, height = 4.1, dpi = 600)
 ```
@@ -575,6 +577,7 @@ combined_plot
 ```{r}
 #| label: "save-fig-3"
 #| eval: false
+#| echo: false
 
 ggsave("fig/fig-3.png", width = 11, height = 4.9, dpi = 600)
 ```
@@ -686,6 +689,7 @@ By the way - is it advised that we use a grey scale instead of colors in the plo
 ```{r}
 #| label: "save-fig-4"
 #| eval: false
+#| echo: false
 
 ggsave("fig/fig-4.png", width = 9, height = 7, dpi = 600)
 ```
@@ -766,6 +770,7 @@ df_plot_data %>%
 ```{r}
 #| label: "save-fig-5"
 #| eval: false
+#| echo: false
 
 ggsave("fig/fig-5.png", width = 6, height = 3.2, dpi = 600)
 ```
