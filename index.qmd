@@ -14,12 +14,22 @@ format:
     number-sections: true
     toc: true
     code-fold: true
+    include-after-body: _how-to-cite.html
 editor: source
 ---
 
+---
+
 :::{.callout-info appearance="simple"}
-To appear in James Walker, Debbie Loakes and Ksenia Gnevsheva (eds.), 2026. *Perceptions and attitudes in multilingual contexts*. Special issue, *Australian Journal of Linguistics*. 
+**How to Cite**
+
+Dollinger, S., &amp; Hinrichs, L. (2025). <em>Canadian language attitudes from “coast to coast to coast”: On the pluricentricity of English</em>. Manuscript. 
+https://dollinger-hinrichs-2025.netlify.app.
+
+To appear in J. Walker, D. Loakes and K. Gnevsheva (eds.), 2026. *Perceptions and attitudes in multilingual contexts*. Special issue, *Australian Journal of Linguistics*. 
 :::
+
+---
 
 # Introduction
 
@@ -114,7 +124,10 @@ Response numbers by age and gender are depicted in Figure 1. As can be seen, the
 #| include: false
 
 library(pacman)
-p_load(rio, tidyverse, janitor, gt, tm)
+p_load(rio, tidyverse, 
+       janitor, gt, tm,
+       patchwork
+       )
 
 df <- import("data/df_cleaned_5.rds", trust=T) %>% 
   as_tibble() 
@@ -489,16 +502,97 @@ While "Canadian English ", as a slur, dates to 1857 (DCHP-3, s.v. "Canadian Engl
 
 In general, the 1980s and 1990s were a period of increasing language awareness in Canada, with the uptake of Canadian dictionary titles lagging behind an increase or decrease of the phrase "Canadian English" in the media by a period of five years. The more the concept is discussed, the more Canadian dictionary titles are used as reference sources in the media. The years 1996-1998 have been the most productive years in Canadian English dictionary publishing so far, with four full-size titles appearing. The sole winner, the *Canadian Oxford Dictionary* of this Canadian dictionary war, however, was shut down in 2008, which led to US titles being the most prevalent ones, as Figure 3 (left) shows. Today, the *Canadian English Dictionary* is scheduled to take over that function when finished (Chew 2025).
 
-:::{.aside}
-I don't have the data to reproduce the two panels of Figure 3; can you send them to me? 
+```{r}
+#| label: fig-dictionaries
+#| fig-cap: "Canadian dictionary titles and the phrase “Canadian English” in the Canadian press, 1977-2024."
+#| eval: true
+#| echo: true
+#| fig-width: 11
+#| fig-height: 4.9
+#| column: page-left
+
+dat1 <- import("data/data_fig_3_1.csv", header = TRUE) 
+  rownames(dat1) <- dat1[[1]]
+  dat1 <- dat1[-1]
+  dat1 <- dat1 %>% t() %>% as.data.frame()
+  dat1 <- dat1 %>% 
+    rownames_to_column(var = "period") %>% 
+    pivot_longer(cols = (2:4), 
+                 names_to = "dictionary",
+                 values_to = "frequency"
+                   )
+
+dat2 <- import("data/data_fig_3_2.csv", header = TRUE) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  slice(2:n()) %>% 
+  rename(frequency = 1) %>% 
+  rownames_to_column(var = "period") %>% 
+  mutate(frequency = as.numeric(frequency))
+
+p1 <- 
+  dat1 %>% 
+  ggplot(aes(period, 
+             frequency, 
+             colour = dictionary,
+             group = dictionary
+             )
+         ) +
+  geom_line(linewidth = 2
+            ) +
+  labs(
+    title = "\"Canadian English\" in dictionaries, 1977-2024",
+    x=NULL,
+    y=NULL
+  ) +
+  scale_color_grey(start = 0.3, end = 0.85,
+                   name = NULL
+                   ) +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+p2 <- 
+  dat2 %>% 
+  ggplot(aes(period, frequency, group=1)) +
+  geom_line(linewidth = 2, color="grey35") +
+  geom_label(aes(label = frequency), 
+             vjust = -0.5,
+             size = 3
+             ) +
+  labs(
+    title = "\"Canadian English\" in the press, 1980-2024",
+    x=NULL,
+    y=NULL
+  ) +
+  theme_classic() +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
+
+combined_plot <- p1 + p2 + plot_layout(ncol = 2)
+combined_plot
+
+```
+
+```{r}
+#| label: "save-fig-3"
+#| eval: false
+
+ggsave("fig/fig-3.png", width = 11, height = 4.9, dpi = 600)
+```
+
+:::{.callout-tip appearance="simple"}
+Download this figure [here](fig/fig-3.png).
 :::
 
 That is as much detail as can be extracted from corpus searches. We aim use the current study to fill in some gaps in interpretation. Figure 4 summarizes the respondent’s general familiarity with the term "Standard Canadian English" or "Canadian Standard English" by region, that is by their formative years ("have you heard the term…"). We assigned a province/territory or country to those who spent at least nine years in their ages 0-18 in one location and show the Canadian as well as the US and UK responses for comparison.
 
 ```{r}
-#| label: p-values-regions
-#| echo: true
+#| label: fig-stheard-by-region
+#| fig-cap: "Have you heard of either \"Standard Canadian English\" or \"Canadian Standard English\"?"
 #| eval: true
+#| echo: true
+#| fig-width: 9
+#| fig-height: 7
+#| column: page-left
 
 # Filter out 'not sure' responses and keep only 'yes' and 'no'
 df_filtered <- df %>% 
@@ -530,17 +624,6 @@ chi_square_results <- df_counts %>%
          p_value = sprintf("%.4f", chi2_test$p.value)
          ) %>%
   select(region, chi2, p_value, significance)
-
-```
-
-```{r}
-#| label: fig-stheard-by-region
-#| fig-cap: "Have you heard of either \"Standard Canadian English\" or \"Canadian Standard English\"?"
-#| eval: true
-#| echo: true
-#| fig-width: 9
-#| fig-height: 7
-#| column: page-left
 
 # Filter out 'not sure' responses and keep only 'yes' and 'no'
 df_filtered <- df %>% 
