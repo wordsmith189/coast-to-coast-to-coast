@@ -212,7 +212,7 @@ I have selected the following variables by short names, hoping that these are th
 
 ```{r}
 #| label: select-vars
-#| echo: true
+#| echo: false
 
 source("gt_bold.R")
 
@@ -449,6 +449,8 @@ p <- df_long_summary %>%
     axis.text.y = element_blank(),
     axis.text.x = element_blank(), 
     axis.ticks.x = element_blank(),
+    axis.line = element_blank(),
+
     
     # Legend at the top, horizontal, centered
     legend.position = "top",
