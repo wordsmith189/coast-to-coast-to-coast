@@ -995,7 +995,7 @@ The recognition of this expression of linguistic autonomy seems to be predominan
 
 A further attempt to gauge awareness of standard varieties is via a composite Index SLAI. The original concept of combining five factors was reduced to four due to low internal consistency with the last factor (Have you heard the term "Standard Canadian English"), which was treated separately above. SLAI averages the following four variables at the level of the individual respondent.[\[1\]](#_ftn1)
 
--  **Spell_uni**: Do you think Canadian university departments should encourage Canadian English spelling in academic work?
+-  **spell_uni**: Do you think Canadian university departments should encourage Canadian English spelling in academic work?
 
 -  **spell**: Do you think that Canadian spelling is important (e.g. "colour" instead of "color", "familiarize" not "familiarise")?
 
