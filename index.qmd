@@ -3,12 +3,14 @@ title: "Canadian language attitudes from \"coast to coast to coast\": On the plu
 date: Sep-2025
 date-modified: Nov-2025
 author:
- - name: Stefan Dollinger
-   affiliation: The University of British Columbia
-   url: https://english.ubc.ca/profile/stefan-dollinger/
- - name: Lars Hinrichs
-   affiliation: The University of Texas at Austin
-   url: https://larshinrichs.site
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    email: "lh@utexas.edu"
+    orcid: "0000-0003-3679-1927" 
+  - name: "Stefan Dollinger"
+    affiliation: "University of British Columbia"
+    email: "stefan.dollinger@ubc.ca"
+    orcid: "0000-0001-5582-5139" 
 format: 
   html:
     number-sections: true
@@ -683,9 +685,6 @@ p3 + scale_fill_grey(start=0.15, end=.85)
 
 ```
 
-:::{.aside}
-By the way - is it advised that we use a grey scale instead of colors in the plots? 
-:::
 
 ```{r}
 #| label: "save-fig-4"
@@ -802,11 +801,193 @@ Of the ten descriptions of Standard Canadian English, notions of widespread use 
 
 The next question asked, "Do you know what ‘Standard Canadian English’ (or ‘Canadian Standard English’) is?". Figure 6 only shows the ones that were able to answer "Yes" to that question. There were two Yes-categories: "Yes, but I can’t describe it well" and those that did offer a description (n for both Yes-categories was 1513 or 48.2%). While the data in Figure 6 is significant for age, visual inspection shows that starting at 25-29 virtually no change is visible in the two lines. This means that the youngest age cohorts 14 and under, 15-19 and 20-24 are the ones that produce significance for age. In other words: once the university years are over and basic education is completed, there is no change in knowledge about the standard: only some 25% of those how know what Standard Canadian English is are able to describe it in some form.
 
+```{r}
+#| label: fig-describe-StCanE
+#| fig-cap: "Probabilities of being able to describe the standard (lower line) and of self-reported familiarity with the concept but inability to describe it."
+#| eval: true
+#| echo: true
+#| fig-width: 6
+#| fig-height: 3.5
+#| message: false
+#| warning: false
+
+df_plot <- df %>%  
+  filter(!is.na(st_descr), !is.na(age)) %>%
+  mutate(st_descr = droplevels(factor(st_descr))) 
+lev <- levels(df_plot$st_descr)   
+
+# ── 2  build a binary indicator for the 2nd level (pick either level as "1") --
+df_plot <- df_plot %>%
+  mutate(is_lvl2 = as.numeric(st_descr == lev[2]))  
+
+# ── 3  fit a loess to *all* points at once ------------------------------------
+lo_fit <- loess(is_lvl2 ~ age, data = df_plot, span = 0.2)   
+
+# prediction grid
+grid  <- tibble(age = seq(min(df_plot$age),
+                          max(df_plot$age), by = 1)) %>%
+  mutate(
+    prob_lvl2 = predict(lo_fit, newdata = .),
+    prob_lvl1 = 1 - prob_lvl2
+  ) %>%
+  pivot_longer(cols = starts_with("prob_"),
+               names_to = "st_descr", values_to = "prob") %>%
+  
+  mutate(
+    st_descr = case_match(
+      st_descr,
+      "prob_lvl1" ~ "Yes, I do know it is",
+      "prob_lvl2" ~ "Yes, but I can't describe it well"
+    )
+)
+
+grid %>% 
+  ggplot(aes(age, prob, colour = st_descr)) +
+  geom_line(linewidth = 1.6) +
+  scale_colour_grey(start=.2, end=.75, name = NULL) +
+  labs(x = "Age",
+       y = "Est. probability"
+       ) +
+  theme_classic()
+
+
+```
+
+```{r}
+#| label: "save-fig-6"
+#| eval: false
+#| echo: false
+
+ggsave("fig/fig-6.png", width = 6, height = 3.2, dpi = 600)
+```
+
+:::{.aside}
+Does the text in the legend for the lower line make sense - "Yes, I do know it is"?
+
+Also, the caption should address the upper line first, then the lower one. Do you want me to swap the lines? Or does it work if you rearrange the caption?
+:::
+
+:::{.callout-tip appearance="simple"}
+Download this figure [here](fig/fig-6.png).
+:::
+
+
+
 One additional issue is that the older teenagers are the age cohort that is the least likely to know what StCanE is. Only 10 of the 116 youngsters aged 15-19-years and socialized in Canada (162 overall, including newcomers) know what "Standard Canadian English" is, which raises the question how English is taught at Canadian schools, without using this key concept in pluricentric theory. Failure to teach the concept of linguistic pluricentricity in school may offer an explanation why the monolingual speakers (Figure 5) are less likely to have heard about StCanE than multilinguals, which leaves the monolinguals potential for linguistic identity formation untapped.
 
 ## "Canadian way" of speaking
 
 Another way of gauging the awareness of StCanE is to ask about a "Canadian way" of speaking, (Dollinger 2020: 63, Table 4.5). Without using linguistic terminology of standard varieties, the respondents answer with a personal assessment or impression. Figure 7 shows the results for Canadian residents and those who spent their formative years in Canada (left). Those growing up in Canada see consistently more a "Canadian way of speaking". Figure 7 (right) divides the "formative years" on the left by gender, suggesting that females overall play a more important role than males in that process, with non-binaries numerally too weak to make a difference.
+
+```{r}
+#| label: fig-wayofspeaking-res-formativeyears
+#| fig-cap: "\"Canadian way of speaking\" by residential biography (left) and gender (for respondents who spent formative years in Canada, right)."
+#| eval: true
+#| echo: true
+#| fig-width: 11
+#| fig-height: 4.9
+#| message: false
+#| warning: false
+
+dat1 <- df %>% 
+  filter(!is.na(cdn_way),
+         !is.na(age)) %>% 
+  mutate(
+    formative_years_in_CA = if_else(
+      !province %in% c("United States", "other"), TRUE, FALSE),
+    cdn_way_yes = if_else(
+      cdn_way == "definitely yes" | cdn_way == "probably yes", TRUE, FALSE
+    )
+  ) %>% 
+  count(age, formative_years_in_CA, cdn_way_yes)
+
+
+dat1_summary <- dat1 %>%
+  group_by(age, formative_years_in_CA) %>%
+  summarise(
+    total = sum(n),
+    true_count = sum(n[cdn_way_yes == TRUE]),
+    false_count = sum(n[cdn_way_yes == FALSE]),
+    percent_true = 100 * true_count / total,
+    percent_false = 100 * false_count / total,
+    .groups = "drop"
+  ) %>% 
+  filter(true_count > 0,
+         false_count > 0)
+
+p1 <- dat1_summary %>% 
+  mutate(formative_years_in_CA = if_else(formative_years_in_CA,
+    "spent formative years in Canada", "current resident of Canada"
+  )) %>% 
+  ggplot(aes(age, percent_true, 
+             group = formative_years_in_CA, 
+             color = formative_years_in_CA)) +
+  geom_smooth(se=F, linewidth = 2, span=.3) +
+  scale_color_grey(name = NULL) +
+  labs(y=NULL) +
+  theme_classic() +
+  theme(legend.position = "top")
+
+
+dat2 <- df %>% 
+  filter(!is.na(cdn_way),
+         !is.na(age),
+         !province %in% c("United States", "other"),
+         !gender == "other"
+         ) %>% 
+  mutate(cdn_way_yes = if_else(
+      cdn_way == "definitely yes" | cdn_way == "probably yes", TRUE, FALSE
+    )
+  ) %>% 
+  count(age, gender, cdn_way_yes) %>% 
+  group_by(age, gender) %>%
+  summarise(
+    total = sum(n),
+    true_count = sum(n[cdn_way_yes == TRUE]),
+    false_count = sum(n[cdn_way_yes == FALSE]),
+    percent_true = 100 * true_count / total,
+    percent_false = 100 * false_count / total,
+    .groups = "drop"
+  ) %>% 
+  filter(
+    true_count > 0,
+    false_count > 0
+  )
+
+p2 <- dat2 %>% 
+  ggplot(aes(
+    age, percent_true, 
+    group = gender,
+    color = gender
+  )) +
+  geom_smooth(se=F, linewidth = 2, span=.2) +
+  # geom_line(linewidth = 2) +
+  scale_color_grey(name = NULL) +
+  labs(y=NULL) +
+  theme_classic() +
+  theme(legend.position = "top")
+
+combined_plot <- p1 + p2 + plot_layout(ncol = 2)
+combined_plot
+
+```
+
+```{r}
+#| label: "save-fig-7"
+#| eval: false
+#| echo: false
+
+ggsave("fig/fig-7.png", width = 11, height = 4.9, dpi = 600)
+```
+
+:::{.aside}
+These plots are both pretty underwhelming. Your version looks as if it's showing a real difference, but that's because you are plotting absolute numbers I think? Leave these out? 
+:::
+
+:::{.callout-tip appearance="simple"}
+Download this figure [here](fig/fig-7.png).
+:::
+
 
 The recognition of this expression of linguistic autonomy seems to be predominantly female-led. In terms of age, we see a slight decrease among the younger cohorts, which to a degree will correlate with education: as we will see below, the more educated a respondent is, the more likely they are to recognize Standard Canadian English.
 
@@ -826,15 +1007,254 @@ An internal consistency test of the SLAI revealed an overall Cronbach 𝛼 of 0.
 
 Figure 8 shows the distribution of SLAI with Education as explanatory variable, a significant effect (p\<0.05 for all education levels). Figure 8 shows that recognition of StCanE increases regularly with highest level of education completed.
 
-When we introduce Gender into the mix, which tested as significant, a more nuanced picture emerges that allows us to distinguish between English monolingual speakers and multilingual speakers on another level. Among the monolinguals, shown in Figure 9 on the left, gender is more important as a predictor than among the multilinguals (shown on the right). Specifically, monolingual (young) females with only an elementary school education are considerably more positive towards Standard Canadian English, expressed via a higher SLAI, than their male counterparts. A gap that is second widest among those with a graduate education. In the undergraduate segment, non-binary students are more sceptical than both males and females.
+```{r}
+#| label: fig-slai-edu
+#| fig-cap: "Standard Language Attitude Index by education."
+#| eval: true
+#| echo: true
+#| fig-width: 8
+#| fig-height: 4.2
+#| message: false
+#| warning: false
 
-:::{.aside}
-*introduce [...] into the mix* >> add [...] into the mix
+can_regions <- c("BC", "AB", "SK", "MB", "ON", "QC",
+                  "NB", "NS", "PE", "NL", "TR", "US", "UK")
+
+can_provinces <- c(
+  "British Columbia", "Alberta", "Saskatchewan", 
+  "Manitoba", "Ontario", "Quebec", "New Brunswick", 
+  "Nova Scotia", "Prince Edward Island", "Newfoundland and Labrador", 
+  "Territories", "United States", "United Kingdom")
+
+# include only respondents from target regions
+df_canada <- df %>%
+  filter(region %in% can_regions) %>% 
+  select(region, gender, -region_previous, everything())
+
+# Reorder the levels of the gender variable
+df_canada <- df_canada %>%
+  mutate(gender = factor(gender, levels = c("female", "male", "other")),
+         region_previous = NULL
+         )
+
+df_canada <- df_canada %>%
+  
+  mutate(
+    st_heard = str_trim(st_heard),
+    spell_uni = str_trim(spell_uni),
+    distinct = str_trim(distinct),
+    cdn_way = str_trim(cdn_way),
+    spell = str_trim(spell),
+    
+    st_heard_num = case_match(st_heard,
+                              "no" ~ 1,
+                              "not sure" ~ 3,
+                              "yes" ~ 5,
+                              .default = NA
+                              ),
+
+    spell_uni_num = case_match(spell_uni,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "might or might not" ~ 3,
+      "probably yes" ~ 4,
+      "definitely yes" ~ 5,
+      .default = NA
+    ),
+
+    distinct_num = case_match(distinct,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "probably yes" ~ 3,
+      "definitely yes" ~ 4,
+      .default = NA
+    ),
+
+    cdn_way_num = case_match(cdn_way,
+      "definitely not" ~ 1,
+      "probably not" ~ 2,
+      "probably yes" ~ 3,
+      "definitely yes" ~ 4,
+      .default = NA
+    ),
+
+    spell_num = case_match(spell,
+      "very unimportant" ~ 1,
+      "unimportant" ~ 2,
+      "neither unimportant nor important" ~ 3,
+      "important" ~ 4,
+      "very important" ~ 5,
+      .default = NA
+    )
+  )
+
+# Rescale 4-point Likert items to 5-point scale
+rescale_4_to_5 <- function(x) {
+  1 + (x - 1) * (4 / 3)
+}
+
+df_canada <- df_canada %>%
+  mutate(
+    st_heard_scaled  = st_heard_num,
+    spell_uni_scaled = spell_uni_num,
+    distinct_scaled  = rescale_4_to_5(distinct_num),
+    cdn_way_scaled   = rescale_4_to_5(cdn_way_num),
+    spell_scaled     = spell_num
+  )
+
+attitude_vars <- c("st_heard_scaled", "spell_uni_scaled",
+                   "distinct_scaled", "cdn_way_scaled",
+                   "spell_scaled"
+                   )
+
+summary_tbl <- df_canada %>% 
+  summarise(
+    across(
+      all_of(attitude_vars),
+      list(
+        mean = ~ mean(.x, na.rm = TRUE),
+        sd   = ~ sd(.x,  na.rm = TRUE)
+      ),
+      .names = "{.col}_{.fn}"   
+    )
+  )
+
+df_canada <- df_canada %>% 
+  mutate(slai = rowMeans(
+      cbind(
+        #st_heard_scaled, 
+        spell_uni_scaled, 
+        distinct_scaled,
+        cdn_way_scaled, 
+        spell_num),
+      na.rm = TRUE
+    ))
+
+df_canada <- df_canada %>% 
+  mutate(
+    edu_comp = str_trim(edu_comp),
+    edu_comp = factor(
+      edu_comp,
+      levels = c(
+        "other",
+        "elementary school",
+        "high school",
+        "undergraduate degree",
+        "graduate degree",
+        "postgraduate degree"
+      )
+    )
+  ) %>% 
+  filter(! edu_comp == "other")
+
+df_plot <- df_canada %>%
+  filter(!is.na(slai), 
+         !is.na(edu_comp), 
+         !is.na(gender),
+         !is.na(umultiling))
+
+df_plot %>% 
+  ggplot(aes(x = slai, y = edu_comp, group=gender)) +
+  geom_jitter(aes(color = gender), width = 0.1, alpha = 0.5, size = .7) +
+  geom_boxplot(aes(group = edu_comp), 
+               fill = "grey90", 
+               width = 0.5, 
+               outlier.shape = NA,
+               alpha=.8
+               ) +
+  scale_color_grey(name=NULL, start=0, end=.75) +
+  labs(title = "", 
+       y = NULL, x = "SLAI (1–5)") +
+  theme_classic()
+```
+```{r}
+#| label: "save-fig-8"
+#| eval: false
+#| echo: false
+
+ggsave("fig/fig-8.png", width = 8, height = 4.2, dpi = 600)
+```
+
+:::{.callout-tip appearance="simple"}
+Download this figure [here](fig/fig-8.png).
 :::
 
-For the multilinguals (right), males and females align much more closely with one another, with the notable exception of those who only completed elementary school, where males are again more sceptical. Note that non-binaries are, from high-school on, more sceptical, except those with a postgraduate degree, which have a slightly higher SLAI than both females and males in their cohort. 
+
+When we consider the factor gender (which tested as significant) in more detail, a more nuanced picture emerges that allows us to distinguish between English monolingual speakers and multilingual speakers on another level. Among the monolinguals, shown in Figure 9 on the left, gender is more important as a predictor than among the multilinguals (shown on the right). Specifically, monolingual (young) females with only an elementary school education are considerably more positive towards Standard Canadian English, expressed via a higher SLAI, than their male counterparts. A gap that is second widest among those with a graduate education. In the undergraduate segment, non-binary students are more sceptical than both males and females.
+
+:::{.aside}
+**Please note** suggested revision of the first sentence here to "When consider the factor gender (which tested as significant) in more detail, a more nuanced picture..."
+:::
+
+```{r}
+#| label: fig-slai-edu-gender-umultiling
+#| fig-cap: "Standard Language Attitude Index by education, gender, and linguistic background."
+#| eval: true
+#| echo: true
+#| fig-width: 8
+#| fig-height: 4.5
+#| message: false
+#| warning: false
+
+df_plot <- df_canada %>%
+  filter(!is.na(slai), 
+         !is.na(edu_comp), 
+         !is.na(gender),
+         !is.na(umultiling))
+
+df_plot %>% 
+  mutate(
+    umultiling = if_else(umultiling == "no", "monolingual",
+                         "bi-/multilingual"),
+    umultiling = factor(umultiling, levels = c("monolingual",
+                                               "bi-/multilingual"))
+         ) %>% 
+  ggplot(aes(x = edu_comp, y = slai, color = gender, group = gender)) +
+  stat_summary(fun = mean, geom = "point", position = position_dodge(0.5)) +
+  stat_summary(fun = mean, geom = "line", position = position_dodge(0.5),
+               linewidth=1.2) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, position = position_dodge(0.5)) +
+  scale_color_grey(start=0.2, end=.9) +
+  labs(title = "", x = NULL, y = "SLAI") +
+  facet_grid(~umultiling) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+```{r}
+#| label: "save-fig-9"
+#| eval: false
+#| echo: false
+
+ggsave("fig/fig-9.png", width = 8, height = 4.4, dpi = 600)
+```
+
+:::{.callout-tip appearance="simple"}
+Download this figure [here](fig/fig-9.png).
+:::
+
+For the multilinguals (right), males and females align much more closely with one another, with the notable exception of those who only completed elementary school, where males are again more ~~sceptical~~. Note that non-binaries are, from high-school on, more ~~sceptical~~, except those with a postgraduate degree, which have a slightly higher SLAI than both females and males in their cohort. 
+
+:::{.aside}
+sp.: skeptical
+:::
 
 While the difference between male and female participants is clearest among respondents with *either* elementary education *or* those with a graduate degree, the countertrends for males on the one hand and females on the other can be shown in Figure 10:
+
+```{r}
+#| label: fig-placeholder-for-10
+#| fig-width: 2.5
+#| fig-height: 2
+#| fig-cap: "SLAI, Multilingualism and Gender"
+
+df_plot %>% ggplot(aes(umultiling, slai)) +
+  theme_classic()
+
+```
+
+
+:::{.aside}
+I'm not 100% certain that it makes sense to include Figure 10 ("SLAI, Multilingualism and Gender"). It is basically the same plot as the previous one, but with one variable--education--removed. So essentially we are dumbing our analysis down in order to make the gender difference look greater than it would appear if we were to account for education. I would suggest cutting this figure, and the attendant rhetorical turn. 
+:::
 
 In monolinguals females have a higher SLAI than their multilingual peers. The same holds for non-binary speakers. For men, however, the trend is reverse, as multilingual speakers have a higher SLAI than monolingual speakers, which leads to a split between males and females as a significant variable overall.
 
