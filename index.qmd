@@ -601,11 +601,12 @@ ggsave("fig/fig-3.png", width = 11, height = 4.9, dpi = 600)
 ```
 
 
-That is as much detail as can be extracted from corpus searches. We aim use the current study to fill in some gaps in interpretation. Figure 4 summarizes the respondent’s general familiarity with the term "Standard Canadian English" or "Canadian Standard English" by region, that is by their formative years ("have you heard the term…"). We assigned a province/territory or country to those who spent at least nine years in their ages 0-18 in one location and show the Canadian as well as the US and UK responses for comparison.
+That is as much detail as can be extracted from corpus searches. We aim use the current study to fill in some gaps in interpretation. Figure 4 summarizes the respondent’s general familiarity with the term "Standard Canadian English" or "Canadian Standard English" by region, that is by their formative years ("have you heard of the term…"). We assigned a province/territory or country to those who spent at least nine years in their ages 0-18 in one location and show the Canadian as well as the US and UK responses for comparison.
 
 ```{r}
 #| label: fig-stheard-by-region
-#| fig-cap: "Have you heard of either \"Standard Canadian English\" or \"Canadian Standard English\"?"
+#| fig-cap: >
+#|   Responses to "Have you heard of the term '(Standard) Canadian English'?" by region of formative years. 
 #| eval: true
 #| echo: true
 #| fig-width: 9
@@ -701,7 +702,9 @@ p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)
 p3 + scale_fill_grey(start=0.15, end=.85)
 
 ```
-
+:::{.aside}
+I would suggest we standardize how we quote this survey question to __"Have you heard of the term '(Standard) Canadian English'?"__ throughout the text. That makes it clearer what we're talking about in any given moment. 
+:::
 
 ```{r}
 #| label: "save-fig-4"
@@ -720,7 +723,8 @@ Figure 5 shows exposure to "Standard Canadian English" with respondents’ statu
 
 ```{r}
 #| label: fig-stheard-by-multiling
-#| fig-cap: "Responses to \"Have you heard of StCanE?\" by linguistic background."
+#| fig-cap: >
+#|   Responses to "Have you heard of the term '(Standard) Canadian English'?" by linguistic background.
 #| eval: true
 #| echo: true
 #| fig-width: 6
