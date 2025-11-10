@@ -8,7 +8,7 @@ author:
     email: "lh@utexas.edu"
     orcid: "0000-0003-3679-1927" 
   - name: "Stefan Dollinger"
-    affiliation: "University of British Columbia"
+    affiliation: "The University of British Columbia"
     email: "stefan.dollinger@ubc.ca"
     orcid: "0000-0001-5582-5139" 
 format: 
