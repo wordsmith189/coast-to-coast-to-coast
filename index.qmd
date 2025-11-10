@@ -261,6 +261,7 @@ tibble(`Q. short` = myvars_short,
 ```
 :::
 
+
 ```{r}
 #| label: fig-various-questions-on-autonomy
 #| fig-cap: "Likert-scale responses to questions on the linguistic autonomy of CanE among the Canadian residents (2,723 ≤ *N* ≤ 2,813). (Percentage distribution of responses, NA values excluded per question.)"
@@ -622,7 +623,7 @@ That is as much detail as can be extracted from corpus searches. We aim use the 
 #| eval: true
 #| echo: true
 #| fig-width: 9
-#| fig-height: 7
+#| fig-height: 6.2
 #| column: page-left
 
 # Filter out 'not sure' responses and keep only 'yes' and 'no'
@@ -707,7 +708,8 @@ p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)
     plot.caption.position = "plot",
     plot.caption = element_text(hjust = 0),
     strip.background = element_rect(fill = "grey30", color = "grey30"), 
-    strip.text = element_text(color = "white")
+    strip.text = element_text(color = "white",
+                              face = "bold")
     )
 
 # p3 + scale_fill_manual(values = c("#E69F00", "#0072B2", "#F0E442", "#D55E00", "#CC79A7")) 
@@ -724,7 +726,7 @@ I would suggest we standardize how we quote this survey question to __"Have you 
 #| echo: false
 
 activate_fonts_for_saving() 
-ggsave("fig/fig-4.png", width = 9, height = 7, dpi = 600)
+ggsave("fig/fig-4.png", width = 9, height = 6.2, dpi = 600)
 ```
 
 
