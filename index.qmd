@@ -285,14 +285,14 @@ response_colors <- c(
 
 response_colors_grey <- c(
   # Likert Scale (5 categories)
-  "Definitely yes"    = "black",       # Most Positive → darkest
-  "(Probably) yes"    = "grey30",
+  "Definitely yes"    = "grey20",       # Most Positive → darkest
+  "(Probably) yes"    = "grey35",
   "Neither yes or no" = "grey60",      # Neutral
   "(Probably) no"     = "grey80",
   "Definitely not"    = "white",       # Most Negative → lightest
 
   # Three-Way Response
-  "Yes"               = "black",
+  "Yes"               = "grey20",
   "No"                = "white",
   "Don't know"        = "grey60"
 )
@@ -402,7 +402,7 @@ p <- df_long_summary %>%
   ggplot(aes(x = Response, y = Percentage, fill = Response)) +
   
   # Bars representing the percentage
-  geom_col(width = 0.8, , color="grey30") +
+  geom_col(width = 0.6, , color="grey30") +
   
   geom_text(aes(label = Percent_Label), 
             vjust = -0.5, 
@@ -672,7 +672,8 @@ p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)
   theme(legend.position = "none",
         plot.title.position = "plot",
         plot.caption.position = "plot",
-        plot.caption = element_text(hjust = 0))
+        plot.caption = element_text(hjust = 0),
+        )
 
 # p3 + scale_fill_manual(values = c("#E69F00", "#0072B2", "#F0E442", "#D55E00", "#CC79A7")) 
 
