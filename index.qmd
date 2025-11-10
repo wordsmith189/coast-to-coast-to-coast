@@ -962,7 +962,7 @@ p1 <- dat1_summary %>%
   labs(y=NULL) +
   theme_classic(base_family = "roboto") +
   theme(
-    legend.text = element_text(family = "roboto"),    
+    legend.text = element_text(family = "roboto", size = rel(1.15)),    
     legend.title = element_text(family = "roboto"),
     legend.position = "top"
     )
@@ -1006,7 +1006,7 @@ p2 <- dat2 %>%
   labs(y=NULL) +
   theme_classic(base_family = "roboto") +
   theme(
-    legend.text = element_text(family = "roboto"),    
+    legend.text = element_text(family = "roboto", size = rel(1.15)),    
     legend.title = element_text(family = "roboto"),
     legend.position = "top"
     )
