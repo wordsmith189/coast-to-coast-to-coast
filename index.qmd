@@ -131,8 +131,11 @@ Response numbers by age and gender are depicted in Figure 1. As can be seen, the
 library(pacman)
 p_load(rio, tidyverse, 
        janitor, gt, tm,
-       patchwork
+       patchwork, showtext
        )
+
+font_add_google("Roboto", "roboto")
+showtext_auto()
 
 df <- import("data/df_cleaned_5.rds", trust=T) %>% 
   as_tibble() 
@@ -185,8 +188,13 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
     y     = "N respondents",
     title = ""
   ) +
-  theme_classic(base_size = 12) +
-  theme(plot.title.position = "plot")
+  theme_classic(base_family = "roboto",
+                base_size = 12) +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto"),
+    plot.title.position = "plot"
+    )
 
 ```
 
@@ -404,11 +412,13 @@ p <- df_long_summary %>%
   # Bars representing the percentage
   geom_col(width = 0.6, , color="grey30") +
   
-  geom_text(aes(label = Percent_Label), 
+  geom_text(aes(label = Percent_Label),
+            family = "roboto",
             vjust = -0.5, 
             size = 3.5) +
   
-  geom_text(data = . %>% filter(Question_Short == "software"), 
+  geom_text(family = "roboto",
+            data = . %>% filter(Question_Short == "software"), 
             
             aes(label = Response, y = Percentage / 2), 
             color = "white",
@@ -445,8 +455,11 @@ p <- df_long_summary %>%
   ) +
   
   # Custom theming for presentation
-  theme_classic(base_size = 12) +
+  theme_classic(base_family = "roboto",
+                base_size = 12) +
   theme(
+    legend.text = element_text(family = "roboto"),    
+    # legend.title = element_text(family = "roboto"),
     axis.line.y = element_blank(),
     axis.ticks.y = element_blank(),
     axis.text.y = element_blank(),
@@ -547,8 +560,12 @@ p1 <-
   scale_color_grey(start = 0.3, end = 0.85,
                    name = NULL
                    ) +
-  theme_classic() +
-  theme(legend.position = "bottom")
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto"),
+    legend.position = "bottom"
+    )
 
 p2 <- 
   dat2 %>% 
@@ -563,7 +580,11 @@ p2 <-
     x=NULL,
     y=NULL
   ) +
-  theme_classic() +
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto")
+  )
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
 
 combined_plot <- p1 + p2 + plot_layout(ncol = 2)
@@ -664,15 +685,19 @@ p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)
        y = NULL, x = NULL, fill = NULL) +
   scale_y_continuous(labels = scales::percent_format(scale = 1),
                      limits = c(0, 75)) +
-  theme_classic() +
-  theme(legend.position = "none",
-        plot.title.position = "plot",
-        plot.caption.position = "plot",
-        plot.caption = element_text(hjust = 0),
-        )
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto"),
+    legend.position = "none",
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.caption = element_text(hjust = 0),
+    strip.background = element_rect(fill = "grey30", color = "grey30"), 
+    strip.text = element_text(color = "white")
+    )
 
 # p3 + scale_fill_manual(values = c("#E69F00", "#0072B2", "#F0E442", "#D55E00", "#CC79A7")) 
-
 p3 + scale_fill_grey(start=0.15, end=.85)
 
 ```
@@ -723,11 +748,11 @@ df_plot_data %>%
   
   geom_col(width = 0.5, position = "dodge", color="grey30") +
   
-  geom_text(
-    aes(label = N_Label),
-    position = position_dodge(width = 0.5), # Must match geom_col's width
-    vjust = -0.5, # Position the text slightly above the bar
-    size = 3.5
+  geom_text(aes(label = N_Label),
+    position = position_dodge(width = 0.5),
+    vjust = -0.5,
+    size = 3.5,
+    family = "roboto"
   ) +
   
   # scale_fill_manual(
@@ -750,9 +775,12 @@ df_plot_data %>%
        caption = "Bar height corresponds to %.",
        y = NULL,
        x = NULL) +
-  
-  
-  theme_classic()
+
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto"),
+  )
 
 ```
 
@@ -833,7 +861,11 @@ grid %>%
   labs(x = "Age",
        y = "Est. probability"
        ) +
-  theme_classic()
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto")
+  )
 
 
 ```
@@ -906,8 +938,12 @@ p1 <- dat1_summary %>%
   scale_color_grey(name = NULL) +
   scale_y_continuous(limits = c(0, NA)) +
   labs(y=NULL) +
-  theme_classic() +
-  theme(legend.position = "top")
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto"),
+    legend.position = "top"
+    )
 
 
 dat2 <- df %>% 
@@ -946,8 +982,12 @@ p2 <- dat2 %>%
   scale_color_grey(name = NULL) +
   scale_y_continuous(limits = c(0, NA)) +
   labs(y=NULL) +
-  theme_classic() +
-  theme(legend.position = "top")
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto"),
+    legend.position = "top"
+    )
 
 combined_plot <- p1 + p2 + plot_layout(ncol = 2)
 combined_plot
@@ -1142,7 +1182,11 @@ df_plot %>%
   scale_color_grey(name=NULL, start=0, end=.75) +
   labs(title = "", 
        y = NULL, x = "SLAI (1–5)") +
-  theme_classic()
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto")
+  )
 ```
 ```{r}
 #| label: "save-fig-8"
@@ -1190,8 +1234,14 @@ df_plot %>%
   scale_color_grey(start=0.2, end=.9, name=NULL) +
   labs(title = "", x = NULL, y = "SLAI") +
   facet_grid(~umultiling) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    strip.background = element_rect(fill = "grey30", color = "grey30"), 
+    strip.text = element_text(color = "white")
+    )
 ```
 ```{r}
 #| label: "save-fig-9"
@@ -1217,7 +1267,11 @@ While the difference between male and female participants is clearest among resp
 #| fig-cap: "SLAI, Multilingualism and Gender"
 
 df_plot %>% ggplot(aes(umultiling, slai)) +
-  theme_classic()
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto")
+  )
 
 ```
 
@@ -1242,7 +1296,9 @@ Given that speakers’ status as multilingual speakers has effects on the recogn
 p_load(knitr)
 include_graphics("fig/fig-11.png")
 ```
-
+:::{.aside}
+NB: The graphic files used in this document for figs. 11, 12, and 14 are not in for-print quality.
+:::
 
 Yielding scores from 0 (not at all, not applicable) to 3 (very much) for each attribute, the scores range from 0 to 15. In the data set, 896 respondents reported an EOI (of the 2326 who spent their formative years in Canada, see Table 1). Of these 896 emic self-declarations, we accepted an etic EOI for 820. The remaining 76 self-reported distinct cultural group memberships of "White Canadian Settler", or "English/ Scottish Canadian", which we excluded. 
 
@@ -1264,7 +1320,7 @@ Always and not applicable is assigned 0, never 3, so that the possible aggregate
 #| label: fig-eui-3-groups
 #| fig-cap: "EUI in three groups and formative years in Canada."
 #| fig-width: 7
-#| fig-height: 6
+#| fig-height: 5
 #| message: false
 
 df <- import("data/df_cleaned_5.rds", trust=T) %>% 
@@ -1319,7 +1375,8 @@ p4 <- data_percent %>%
              fill = cdn_way)) +
   geom_bar(stat = "identity", 
            position = "stack", width = .6) +
-  geom_text(data = total_counts, 
+  geom_text(family = "roboto",
+            data = total_counts, 
             aes(x = eui_bin, y = 100, 
                 label = total_count), 
             vjust = -0.5, 
@@ -1332,20 +1389,20 @@ p4 <- data_percent %>%
        fill = "Is there a Canadian Way\n[*to do what??*]?",
        caption = "Dollinger & Hinrichs (2026)"
        ) +
-  theme_classic() +
-  theme(plot.title.position = "plot",
-        #plot.caption.position = "plot",
-        #plot.caption = element_text(hjust = 0),
-        axis.text.x = element_text(angle = 12,
-                                   vjust = .55))
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto"),    
+    legend.title = element_text(family = "roboto"),
+    plot.title.position = "plot",
+    #plot.caption.position = "plot",
+    #plot.caption = element_text(hjust = 0),
+    axis.text.x = element_text(angle = 12,
+                               vjust = .55)
+    )
 
 p4 + scale_fill_grey(start = 0.2, end=0.9)
 
 ```
-
-:::{.aside}
-**Stefan**: (1) How can we improve the wording of the legend title? (2) The caption is wrong, isn't it? 
-:::
 
 ```{r}
 #| label: "save-fig-13"
@@ -1354,6 +1411,10 @@ p4 + scale_fill_grey(start = 0.2, end=0.9)
 
 ggsave("fig/fig-13.png", width = 7, height = 5, dpi = 600)
 ```
+
+:::{.aside}
+**Stefan**: (1) How can we improve the wording of the legend title for Fig. 13? (2) The caption is wrong, isn't it? 
+:::
 
 Average EUI is significantly different between the monolinguals and self-reported bi- and multilinguals. The low EUI (some non-English use) speakers are less convinced and high EUI speakers (considerable non-English use) even more so. The EUI suggests that monolinguals (EUI = 0) are driving the identification with Canadian English. This is striking, as they are also the ones who are less likely to have heard of StCanE (Figure 5). The higher the EUI, the less likely one is to conceptualize Canadian English as an autonomous variety, though one is more likely to have heard about StCanE. The finding is consistent with multilingual children and their parents in a study in BC and Alberta (Dollinger et al. 2024). It may seem counter-intuitive that those who speak more than one language regularly would be less open towards the autonomy of Standard Canadian English but in the lived experiences – one may have learned American English in the Philippines before coming to Canada or UK English in Hong Kong – the Canadian dimension in English seems to be less important for the multilinguals who use their languages in one of the contexts.
 
