@@ -1427,16 +1427,19 @@ The results show that roughly one in two respondents knows what StCanE is, while
 Students in elementary and secondary students are linguistically socialized in an unspecified construct of "standard English", schematized in Figure 15 on the left. The pluricentric notion, shown in the right panel, with separate reference points for each national standard, appears late in the respondents’ learning biographies, after high school, and then captures only a fraction of the domestic population. Ethnicity does not affect preferences for a pluricentric view, but, as Figure 13 suggests, the frequency of English use does: the less often one uses English, the less likely one is to construct Canadian English as one of the "peaks" of English in Figure 15. The Canadian (functional) monolinguals are less likely to have heard of the domestic standard.
 
 ```{r}
-#| label: fig-15-import
+#| label: fig-14-import
 #| fig-cap: "\"Unspecified\" \"standard English\" (left) and the pluricentric standards with three standards (right)."
 #| fig-width: 11
 
-include_graphics("fig/fig-15.png")
+include_graphics("fig/fig-14.png")
 
 ```
 
 :::{.aside}
-The plot caption is very hard to understand IMHO
+The plot caption is very __hard to understand__ IMHO.
+
+
+Also pls note this is __Figure 14__, not 15. The references in the text are off. 
 :::
 
 
