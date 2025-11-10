@@ -473,10 +473,6 @@ print(p)
 
 ```
 
-:::{.aside}
-Since we are able to use the caption for explanation, should we perhaps leave out the title within the figure?
-:::
-
 
 ```{r}
 #| label: "save-fig-2"
@@ -783,10 +779,6 @@ Table 3 omitted
 
 **Table 3: Select responses to the question "Do you know what "Standard Canadian English" is?**
 
-:::{.aside}
-**NB the table numbering** is off in the version of the ms. that I got. The correct number for this table is 3.
-:::
-
 Of the ten descriptions of Standard Canadian English, notions of widespread use (1, 4, 6), media (2, 4, 7, 9), more British influence (5), a regional dimension (8) and socialization in Canada (10) are recurring themes, with occasional sceptics (3). What is striking is that the attribute of "educated", normally a mainstay in standard variety definitions, is absent. Trudgill & Hannah (2017: 6) speak of a "North American English (NAmEng), meaning English as written and spoken by educated speakers in the United States of America and Canada", though a definition rooted in educated speech does not feature prominently in the responses, with only three in the entire sample mentioning "educated" speakers.
 
 The next question asked, "Do you know what ‘Standard Canadian English’ (or ‘Canadian Standard English’) is?". Figure 6 only shows the ones that were able to answer "Yes" to that question. There were two Yes-categories: "Yes, but I can’t describe it well" and those that did offer a description (n for both Yes-categories was 1513 or 48.2%). While the data in Figure 6 is significant for age, visual inspection shows that starting at 25-29 virtually no change is visible in the two lines. This means that the youngest age cohorts 14 and under, 15-19 and 20-24 are the ones that produce significance for age. In other words: once the university years are over and basic education is completed, there is no change in knowledge about the standard: only some 25% of those how know what Standard Canadian English is are able to describe it in some form.
@@ -828,8 +820,11 @@ grid  <- tibble(age = seq(min(df_plot$age),
       st_descr,
       "prob_lvl1" ~ "Yes, I know what it is.",
       "prob_lvl2" ~ "Yes, but I can't describe it well."
-    )
+    ),
+    st_descr = factor(st_descr) %>% fct_rev()
 )
+
+
 
 grid %>% 
   ggplot(aes(age, prob, colour = st_descr)) +
