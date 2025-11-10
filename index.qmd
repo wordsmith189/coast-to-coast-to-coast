@@ -32,6 +32,10 @@ To appear in J. Walker, D. Loakes and K. Gnevsheva (eds.), 2026. *Perceptions an
 
 ---
 
+:::{.callout-tip appearance="simple"}
+Download all plot-figures in print-ready quality (greyscale, 600 dpi) [here](https://utexas-my.sharepoint.com/:f:/g/personal/lh9896_eid_utexas_edu/EnJQcehIIhtCgEJanKV56boBVyM8lC9i0OaoCNQT-DRP7A?e=RU3nfO).
+:::
+
 # Introduction
 
 The present paper explores key aspects of the linguistic autonomy and the character, recognition and social embedding of "Standard Canadian English". A focus on the standard of a given context, its conceptualization, perception and discursive construction is sociolinguistically relevant for several reasons. One can argue that attitudes towards a standard variety shape other aspects of linguistic practice. As sociolinguists are not immune to wider social developments we may expect shifting interpretations over time. For instance, while the first generation of Canadian linguists tended to emphasize differences between Canadian English and other varieties, above all American English (e.g. Avis et al. 1967, Scargill 1974), the linguistics of Canadian English has seen a different effect in the era of the free trade negotiations of the 1980s and early 1990s^[Fn. 1 omitted.]. This period was marked by statements as to the weakness of Canada-US border as a linguistic divide (e.g. Chambers 1980, Warkentyne & Brett 1981: 307, Warkentyne 1983: 73), or even to its irrelevance (e.g. Woods 1993: 174). The latter point is only occasionally echoed in more recent writings (e.g. Sadlier-Brown 2012: 547).
@@ -179,7 +183,7 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
   labs(
     x     = "Age",
     y     = "N respondents",
-    title = "Respondents count by age and gender"
+    title = ""
   ) +
   theme_classic(base_size = 12) +
   theme(plot.title.position = "plot")
@@ -191,12 +195,10 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
 #| eval: false
 #| echo: false
 
-ggsave("fig/fig-1.png", width = 7, height = 3.5, dpi = 600)
+ggsave("fig/fig-1.png", width = 7, height = 3.2, dpi = 600)
 ```
 
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-1.png).
-:::
+
 
 # Results & Discussion
 
@@ -245,11 +247,11 @@ tibble(`Q. short` = myvars_short,
 
 ```{r}
 #| label: fig-various-questions-on-autonomy
-#| fig-cap: "Likert-scale responses to questions on the linguistic autonomy of CanE among the Canadian residents (2,723 ≤ *N* ≤ 2,813)."
+#| fig-cap: "Likert-scale responses to questions on the linguistic autonomy of CanE among the Canadian residents (2,723 ≤ *N* ≤ 2,813). (Percentage distribution of responses, NA values excluded per question.)"
 #| eval: true
 #| echo: true
 #| fig-width: 9
-#| fig-height: 3.5
+#| fig-height: 3.2
 #| column: page-left
 
 
@@ -435,8 +437,8 @@ p <- df_long_summary %>%
   
   # Theme and Labels
   labs(
-    title = "Standardized Survey Responses to Language and Identity Questions",
-    subtitle = "Percentage distribution of responses, NA values excluded per question.",
+    title = "",
+    subtitle = "",
     x = NULL,
     y = NULL, 
     fill = NULL 
@@ -461,9 +463,9 @@ p <- df_long_summary %>%
     
     # Clean up facet strips (Question labels underneath)
     strip.background = element_blank(),
-    strip.text = element_text(face = "bold", size = 7.2, hjust = 0.5),
-    
-    plot.title = element_text(face = "bold")
+    strip.text = element_text(face = "bold", size = 7.2, hjust = 0.5)
+    # ,
+    # plot.title = element_text(face = "bold")
   )
 
 print(p)
@@ -481,12 +483,9 @@ Since we are able to use the caption for explanation, should we perhaps leave ou
 #| eval: false
 #| echo: false
 
-ggsave("fig/fig-2.png", width = 9.5, height = 4.1, dpi = 600)
+ggsave("fig/fig-2.png", width = 10.2, height = 4.1, dpi = 600)
 ```
 
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-2.png).
-:::
 
 With such answers the linguistic autonomy of Standard Canadian English seems well enshrined at this point, confirming the 2009 data overall and showing considerable differentiation from the early 1980s, when "Americanization " was the most virulently discussed attribute of Canadian English. This change in outlook is remarkable and warrants a closer look at the social distribution of those who recognize Canadian English – most commonly through its standard that had been documented and fully codified as a distinct variety of English by 1967 (Gregg 1993, Dollinger 2019: 131-32).
 
@@ -584,9 +583,6 @@ combined_plot
 ggsave("fig/fig-3.png", width = 11, height = 4.9, dpi = 600)
 ```
 
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-3.png).
-:::
 
 That is as much detail as can be extracted from corpus searches. We aim use the current study to fill in some gaps in interpretation. Figure 4 summarizes the respondent’s general familiarity with the term "Standard Canadian English" or "Canadian Standard English" by region, that is by their formative years ("have you heard the term…"). We assigned a province/territory or country to those who spent at least nine years in their ages 0-18 in one location and show the Canadian as well as the US and UK responses for comparison.
 
@@ -693,9 +689,6 @@ p3 + scale_fill_grey(start=0.15, end=.85)
 ggsave("fig/fig-4.png", width = 9, height = 7, dpi = 600)
 ```
 
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-4.png).
-:::
 
 Figure 4 depicts the 10 Canadian provinces (BC to NL) and one plot for the three Canadian Territories (TR), completed by the UK and US respondents. Most often respondents reported having heard the term "Standard Canadian English" in New Brunswick (NB), followed by Ontario (ON), British Columbia (BC), Alberta (AB), Quebec (QC), Manitoba, Sasktachewan. These seven provinces show significant differences between yes and no. The Maritime provinces, Nova Scotia (NS) do not reach significance, though more have heard the term, while in Prince Edward Island (PEI) those who haven’t heard are in the majority, there’s a tie in the Territories (TR). The UK respondents are more exposed to the term than people raised in Manitoba (MB), Newfoundland and Labrador (NL) and [Saskatchewan (SK)]{.underline}.
 
@@ -774,9 +767,6 @@ df_plot_data %>%
 ggsave("fig/fig-5.png", width = 6, height = 3.2, dpi = 600)
 ```
 
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-5.png).
-:::
 
 Figure 5 shows that Multilinguals who were raised in Canada are significantly more likely than Monolinguals to have heard about Standard CanE. What, however, do they understand by the term, which is used in specialist circles, but very little in public discourse today (Figure 3 right, 2020-24 period)?
 
@@ -865,11 +855,6 @@ Does the text in the legend for the lower line make sense - "Yes, I do know it i
 
 Also, the caption should address the upper line first, then the lower one. Do you want me to swap the lines? Or does it work if you rearrange the caption?
 :::
-
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-6.png).
-:::
-
 
 
 One additional issue is that the older teenagers are the age cohort that is the least likely to know what StCanE is. Only 10 of the 116 youngsters aged 15-19-years and socialized in Canada (162 overall, including newcomers) know what "Standard Canadian English" is, which raises the question how English is taught at Canadian schools, without using this key concept in pluricentric theory. Failure to teach the concept of linguistic pluricentricity in school may offer an explanation why the monolingual speakers (Figure 5) are less likely to have heard about StCanE than multilinguals, which leaves the monolinguals potential for linguistic identity formation untapped.
@@ -982,11 +967,6 @@ ggsave("fig/fig-7.png", width = 11, height = 4.9, dpi = 600)
 :::{.aside}
 These plots are both pretty underwhelming. Your version looks as if it's showing a real difference, but that's because you are plotting absolute numbers I think? Leave these out? 
 :::
-
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-7.png).
-:::
-
 
 The recognition of this expression of linguistic autonomy seems to be predominantly female-led. In terms of age, we see a slight decrease among the younger cohorts, which to a degree will correlate with education: as we will see below, the more educated a respondent is, the more likely they are to recognize Standard Canadian English.
 
@@ -1174,10 +1154,6 @@ df_plot %>%
 ggsave("fig/fig-8.png", width = 8, height = 4.2, dpi = 600)
 ```
 
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-8.png).
-:::
-
 
 When we consider the factor gender (which tested as significant) in more detail, a more nuanced picture emerges that allows us to distinguish between English monolingual speakers and multilingual speakers on another level. Among the monolinguals, shown in Figure 9 on the left, gender is more important as a predictor than among the multilinguals (shown on the right). Specifically, monolingual (young) females with only an elementary school education are considerably more positive towards Standard Canadian English, expressed via a higher SLAI, than their male counterparts. A gap that is second widest among those with a graduate education. In the undergraduate segment, non-binary students are more sceptical than both males and females.
 
@@ -1227,9 +1203,6 @@ df_plot %>%
 ggsave("fig/fig-9.png", width = 8, height = 4.4, dpi = 600)
 ```
 
-:::{.callout-tip appearance="simple"}
-Download this figure [here](fig/fig-9.png).
-:::
 
 For the multilinguals (right), males and females align much more closely with one another, with the notable exception of those who only completed elementary school, where males are again more ~~sceptical~~. Note that non-binaries are, from high-school on, more ~~sceptical~~, except those with a postgraduate degree, which have a slightly higher SLAI than both females and males in their cohort. 
 
@@ -1263,11 +1236,126 @@ The effects explored here were entered into a linear regression model predicting
 
 Given that speakers’ status as multilingual speakers has effects on the recognition of StCanE, the effect of a speaker’s ethnic group and one’s orientation towards that group – or lack thereof – seemed like a reasonable choice for further exploration. Ethnic heritage group membership has been a recent focus in work on CanE (e.g. Nagy 2024, Nagy, Hoffman & Walker 2020), going back to at least Hoffman & Walker (2010), whose concept of an EOI – Ethnic Orientation Index – was adapted for written questionnaire surveys such as ours and scaled down from 32 to just five questions:
 
+```{r}
+#| label: fig-11-import
+#| fig-cap: "EOI questions in the 2023 written questionnaire."
+#| fig-width: 8
+
+p_load(knitr)
+include_graphics("fig/fig-11.png")
+```
+
+
 Yielding scores from 0 (not at all, not applicable) to 3 (very much) for each attribute, the scores range from 0 to 15. In the data set, 896 respondents reported an EOI (of the 2326 who spent their formative years in Canada, see Table 1). Of these 896 emic self-declarations, we accepted an etic EOI for 820. The remaining 76 self-reported distinct cultural group memberships of "White Canadian Settler", or "English/ Scottish Canadian", which we excluded. 
 
 Ethnic Orientation has no correlation with SLAI or with the key question of a "Canadian way of speaking". As shown in Figure 4, Education does a good job in tuning speakers, regardless of their ethnic backgrounds, onto a positive wavelength for Canadian English; it does, however, do a much less impressive job teaching the necessary concepts for a full appreciation of pluricentric Englishes, as just a little over half of the population have ever heard of StCanE (Figure 4).
 
 Another measure is the "English Use Index" (EUI), inspired by Chambers & Heisler’s (1999) "Language Use Index". The EUI gauges how frequently English is used based on six contexts:
+
+```{r}
+#| label: fig-12-import
+#| fig-cap: "EUI questions in the 2023 written questionnaire."
+#| fig-width: 8
+
+include_graphics("fig/fig-12.png")
+```
+
+Always and not applicable is assigned 0, never 3, so that the possible aggregate values for the EUI range between 0 (monolingual English) and 18. The highest actual value in the sample was 15, as indicated in Figure 13, which depicts “Canadian way of speaking” and speakers’ (socialized in Canada) frequencies of English use.
+
+```{r}
+#| label: fig-eui-3-groups
+#| fig-cap: "EUI in three groups and formative years in Canada."
+#| fig-width: 7
+#| fig-height: 6
+#| message: false
+
+df <- import("data/df_cleaned_5.rds", trust=T) %>% 
+  mutate(eui = as.integer(eui))
+
+df_eui <- df %>%
+  mutate(eui_bin = case_when(
+    eui == 0 ~ "Monolingual (0)",
+    eui >= 1 & eui <= 2 ~ "Some non-English (1-2)",
+    eui >= 3 & eui <= 15 ~ "Considerable non-English (3-15)",
+    TRUE ~ NA_character_
+  )) %>% 
+  mutate(eui_bin = factor(eui_bin, levels = c("Monolingual (0)", "Some non-English (1-2)", "Considerable non-English (3-15)"))
+  ) %>% 
+  filter(!is.na(eui_bin),
+         !is.na(st_heard)) 
+
+levs <- df_eui %>% 
+  pull(cdn_way) %>% 
+  na.omit() %>% 
+  unique() %>% 
+  .[c(4,1,2,3)]
+
+df_eui_way <- df_eui %>%
+  select(eui_bin, cdn_way, region) %>%
+  mutate(
+    cdn_way = factor(cdn_way, levels = levs)
+  ) %>% 
+    na.omit()
+
+ncases <- nrow(df_eui_way) %>% format(big.mark = ",")
+
+# Calculate percentages and counts
+data_percent <- df_eui_way %>%
+  group_by(eui_bin, cdn_way) %>%
+  summarise(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100)
+
+# Calculate total counts for each eui_bin level
+total_counts <- data_percent %>%
+  group_by(eui_bin) %>%
+  summarise(total_count = paste0("n = ", 
+                                 format(sum(count),
+                                        big.mark = ",")),
+            .groups = "drop"
+            ) 
+
+# Create the plot
+p4 <- data_percent %>% 
+  ggplot(aes(x = eui_bin, 
+             y = percentage, 
+             fill = cdn_way)) +
+  geom_bar(stat = "identity", 
+           position = "stack", width = .6) +
+  geom_text(data = total_counts, 
+            aes(x = eui_bin, y = 100, 
+                label = total_count), 
+            vjust = -0.5, 
+            inherit.aes = FALSE) +
+  scale_y_continuous(labels = 
+                       scales::percent_format(scale = 1)) +
+  labs(title = "",
+       x = "EUI Category",
+       y = NULL,
+       fill = "Is there a Canadian Way\n[*to do what??*]?",
+       caption = "Dollinger & Hinrichs (2026)"
+       ) +
+  theme_classic() +
+  theme(plot.title.position = "plot",
+        #plot.caption.position = "plot",
+        #plot.caption = element_text(hjust = 0),
+        axis.text.x = element_text(angle = 12,
+                                   vjust = .55))
+
+p4 + scale_fill_grey(start = 0.2, end=0.9)
+
+```
+
+:::{.aside}
+**Stefan**: (1) How can we improve the wording of the legend title? (2) The caption is wrong, isn't it? 
+:::
+
+```{r}
+#| label: "save-fig-13"
+#| eval: false
+#| echo: false
+
+ggsave("fig/fig-13.png", width = 7, height = 5, dpi = 600)
+```
 
 Average EUI is significantly different between the monolinguals and self-reported bi- and multilinguals. The low EUI (some non-English use) speakers are less convinced and high EUI speakers (considerable non-English use) even more so. The EUI suggests that monolinguals (EUI = 0) are driving the identification with Canadian English. This is striking, as they are also the ones who are less likely to have heard of StCanE (Figure 5). The higher the EUI, the less likely one is to conceptualize Canadian English as an autonomous variety, though one is more likely to have heard about StCanE. The finding is consistent with multilingual children and their parents in a study in BC and Alberta (Dollinger et al. 2024). It may seem counter-intuitive that those who speak more than one language regularly would be less open towards the autonomy of Standard Canadian English but in the lived experiences – one may have learned American English in the Philippines before coming to Canada or UK English in Hong Kong – the Canadian dimension in English seems to be less important for the multilinguals who use their languages in one of the contexts.
 
@@ -1279,9 +1367,23 @@ The results show that roughly one in two respondents knows what StCanE is, while
 
 Students in elementary and secondary students are linguistically socialized in an unspecified construct of "standard English", schematized in Figure 15 on the left. The pluricentric notion, shown in the right panel, with separate reference points for each national standard, appears late in the respondents’ learning biographies, after high school, and then captures only a fraction of the domestic population. Ethnicity does not affect preferences for a pluricentric view, but, as Figure 13 suggests, the frequency of English use does: the less often one uses English, the less likely one is to construct Canadian English as one of the "peaks" of English in Figure 15. The Canadian (functional) monolinguals are less likely to have heard of the domestic standard.
 
+```{r}
+#| label: fig-15-import
+#| fig-cap: "\"Unspecified\" \"standard English\" (left) and the pluricentric standards with three standards (right)."
+#| fig-width: 11
+
+include_graphics("fig/fig-15.png")
+
+```
+
+:::{.aside}
+The plot caption is very hard to understand IMHO
+:::
+
+
 The previous literature attests to an increase in linguistic awareness between the late 1970s and the early 2000s. In the 1977 UVic study a question about the CBC as the bearer of the Canadian standard was asked, and questions about subjective feelings when Canadians are mistaken for an American or British speaker, as well as whether a separate entity of Canadian English existed. These were reported in a composite index, however. An only mildly positive outlook in this category of "linguistic national identity" (+0.193 on a scale from -1 to +1) led to the conclusion that the group did "not feel very strongly about speaking a distinctive variety" (Gulden 1979: 58). In the early 2000s, 81% reported that, by and large, they believed in a "Canadian way of speaking English".
 
-  In the present study, among those having grown up in Canada, a very similar share of 81.4% recognize a Canadian way of speaking in 2023. Women appear to be leading that change and maintenance of language awareness of Canadian English (Figure 7). The cognitive identification with Canada has important linguistic and perceptual repercussions. Swan and Babel (2018: 155), for instance, suggest that language ideologies and attitudes play a role in discriminating Canadians from Americans in perception studies, for which their data shows that "Seattle and Vancouver listeners are generally not able to differentiate a talker as being from Seattle or Vancouver" (p. 153), with the caveat that Seattleites are mildly sensitive to Canadian production stereotypes, which renders Seattleites more accurate in detecting Vancouverites than vice versa. Yet, 73% claimed in 2009 to be able to tell Americans from Canadians.
+In the present study, among those having grown up in Canada, a very similar share of 81.4% recognize a Canadian way of speaking in 2023. Women appear to be leading that change and maintenance of language awareness of Canadian English (Figure 7). The cognitive identification with Canada has important linguistic and perceptual repercussions. Swan and Babel (2018: 155), for instance, suggest that language ideologies and attitudes play a role in discriminating Canadians from Americans in perception studies, for which their data shows that "Seattle and Vancouver listeners are generally not able to differentiate a talker as being from Seattle or Vancouver" (p. 153), with the caveat that Seattleites are mildly sensitive to Canadian production stereotypes, which renders Seattleites more accurate in detecting Vancouverites than vice versa. Yet, 73% claimed in 2009 to be able to tell Americans from Canadians.
 
 Language attitudes are an important factor in "language making" (Krämer et al. 2022) and variety making, especially so for non-dominant varieties (Dollinger 2025b). Rather than declaring socially meaningful discrimination as not existent based on a lack of categoricity in production, as has been done in the Austrian context (e.g. Elspaß & Niehaus 2014: 50), the process of enregisterment and cognitive constructions by the speakers, including nationality, are actuated.
 
