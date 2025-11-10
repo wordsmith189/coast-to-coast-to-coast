@@ -1390,8 +1390,7 @@ p4 <- data_percent %>%
   labs(title = "",
        x = "EUI Category",
        y = NULL,
-       fill = "Is there a Canadian Way\n[*to do what??*]?",
-       caption = "Dollinger & Hinrichs (2026)"
+       fill = "Is there a Canadian Way\n[*to do what??*]?"
        ) +
   theme_classic(base_family = "roboto") +
   theme(
