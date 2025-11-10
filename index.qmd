@@ -1,7 +1,7 @@
 ---
 title: "Canadian language attitudes from \"coast to coast to coast\": On the pluricentricity of English"
-date: Sep-2025
-date-modified: Nov-2025
+date: Sep-15-2025
+date-modified: "`r format(Sys.Date(), '%Y-%m-%d')`"
 author:
   - name: "Lars Hinrichs"
     affiliation: "The University of Texas at Austin"
