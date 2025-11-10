@@ -487,9 +487,9 @@ ggsave("fig/fig-2.png", width = 10.2, height = 4.1, dpi = 600)
 ```
 
 
-With such answers the linguistic autonomy of Standard Canadian English seems well enshrined at this point, confirming the 2009 data overall and showing considerable differentiation from the early 1980s, when "Americanization " was the most virulently discussed attribute of Canadian English. This change in outlook is remarkable and warrants a closer look at the social distribution of those who recognize Canadian English – most commonly through its standard that had been documented and fully codified as a distinct variety of English by 1967 (Gregg 1993, Dollinger 2019: 131-32).
+With such answers the linguistic autonomy of Standard Canadian English seems well enshrined at this point, confirming the 2009 data overall and showing considerable differentiation from the early 1980s, when "Americanization " was the most virulently discussed attribute of Canadian English. This change in outlook is remarkable and warrants a closer look at the social distribution of those who recognize Canadian English – most commonly through its standard that had been documented and fully codified as a distinct variety of English by 1967 (Gregg 1993, Dollinger 2019: 131-32). 
 
-## Familiarity with "Standard Canadian English"
+## Familiarity with "Standard Canadian English" 
 
 While "Canadian English ", as a slur, dates to 1857 (DCHP-3, s.v. "Canadian English"), "Standard Canadian English" (StCanE) is a concept that has been discussed in linguistic circles only since the 1970s. It is in pluricentric theory the key concept whose understanding is a *sine-qua-non* for an appreciation of the linguistic autonomy of a variety, i.e. Canadian English. In the public and in schooling, however, uptake of StCanE as a term and autonomous concepts has been slower. While the public perception of a "Canadian English" has been strong, related discourse is subject to considerable fluctuation. Figure 3 (left) shows data to that effect, which compares the use of Canadian dictionary titles in domestic media since the 1970s with the frequencies of the term "Canadian English" ("Canadian Newsstream" database) from 1980 to the end of 2024, shown in Figure 3 (right).
 
