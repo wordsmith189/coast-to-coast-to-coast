@@ -131,11 +131,18 @@ Response numbers by age and gender are depicted in Figure 1. As can be seen, the
 library(pacman)
 p_load(rio, tidyverse, 
        janitor, gt, tm,
-       patchwork, showtext
+       patchwork, showtext,
+       sysfonts
        )
 
 font_add_google("Roboto", "roboto")
 showtext_auto()
+
+activate_fonts_for_saving <- function() {
+  font_add_google("Roboto", "roboto")
+  showtext_auto()
+  showtext_opts(dpi = 600)
+  }
 
 df <- import("data/df_cleaned_5.rds", trust=T) %>% 
   as_tibble() 
@@ -203,6 +210,7 @@ ggplot(df_counts, aes(x = age, y = n, colour = gender)) +
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving()
 ggsave("fig/fig-1.png", width = 7, height = 3.2, dpi = 600)
 ```
 
@@ -482,8 +490,6 @@ p <- df_long_summary %>%
   )
 
 print(p)
-
-
 ```
 
 
@@ -492,6 +498,7 @@ print(p)
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-2.png", width = 10.2, height = 4.1, dpi = 600)
 ```
 
@@ -522,6 +529,9 @@ In general, the 1980s and 1990s were a period of increasing language awareness i
 #| fig-width: 11
 #| fig-height: 4.9
 #| column: page-left
+#| message: false
+#| warning: false
+
 
 dat1 <- import("data/data_fig_3_1.csv", header = TRUE) 
   rownames(dat1) <- dat1[[1]]
@@ -584,8 +594,9 @@ p2 <-
   theme(
     legend.text = element_text(family = "roboto"),    
     legend.title = element_text(family = "roboto")
-  )
+  ) +
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
+
 
 combined_plot <- p1 + p2 + plot_layout(ncol = 2)
 combined_plot
@@ -597,6 +608,7 @@ combined_plot
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-3.png", width = 11, height = 4.9, dpi = 600)
 ```
 
@@ -711,6 +723,7 @@ I would suggest we standardize how we quote this survey question to __"Have you 
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-4.png", width = 9, height = 7, dpi = 600)
 ```
 
@@ -793,6 +806,7 @@ df_plot_data %>%
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-5.png", width = 6, height = 3.2, dpi = 600)
 ```
 
@@ -879,6 +893,7 @@ grid %>%
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-6.png", width = 6, height = 3.2, dpi = 600)
 ```
 
@@ -1003,6 +1018,7 @@ combined_plot
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-7.png", width = 11, height = 4.9, dpi = 600)
 ```
 
@@ -1192,11 +1208,13 @@ df_plot %>%
     legend.title = element_text(family = "roboto")
   )
 ```
+
 ```{r}
 #| label: "save-fig-8"
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-8.png", width = 8, height = 4.2, dpi = 600)
 ```
 
@@ -1247,11 +1265,13 @@ df_plot %>%
     strip.text = element_text(color = "white")
     )
 ```
+
 ```{r}
 #| label: "save-fig-9"
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-9.png", width = 8, height = 4.4, dpi = 600)
 ```
 
@@ -1412,6 +1432,7 @@ p4 + scale_fill_grey(start = 0.2, end=0.9)
 #| eval: false
 #| echo: false
 
+activate_fonts_for_saving() 
 ggsave("fig/fig-13.png", width = 7, height = 5, dpi = 600)
 ```
 
