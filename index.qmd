@@ -921,6 +921,7 @@ Another way of gauging the awareness of StCanE is to ask about a "Canadian way" 
 #| fig-height: 4.9
 #| message: false
 #| warning: false
+#| include: false
 
 dat1 <- df %>% 
   filter(!is.na(cdn_way),
@@ -1017,6 +1018,87 @@ combined_plot
 ```
 
 ```{r}
+#| label: fig-wayofspeaking-res-formativeyears-alt
+#| fig-cap: "\"Canadian way of speaking\" by residential biography (left) and gender (for respondents who spent formative years in Canada, right)."
+#| message: false
+#| fig-width: 11
+#| fig-height: 4.9
+
+p_load(scales)
+
+dat7a <- read_csv("data/figure7a.csv") %>%  
+  pivot_longer(    
+    cols = -1,
+    names_to = "age",    
+    values_to = "percent"
+    ) %>%  
+  rename(category = 1)  
+
+p7a <- dat7a %>% 
+  ggplot(
+    aes(age, percent, 
+        group = category,
+        color = category)
+  ) +
+  geom_line(linewidth = 2) +
+  scale_color_grey(name = NULL) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +
+  #scale_y_continuous(limits = c(0, NA)) +
+  labs(y=NULL) +
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto", size = rel(1.15)),    
+    legend.title = element_text(family = "roboto"),
+    legend.position = "top"
+    )
+
+
+dat7b <- read_csv("data/figure7b.csv") %>%  
+  pivot_longer(    
+    cols = -1,
+    names_to = "age",    
+    values_to = "percent"
+    ) %>%  
+  rename(gender = 1)  %>% 
+  mutate(
+    gender = if_else(gender == 	"non-b/other",
+                     "other", gender
+                     )
+  )
+
+dat7a <- read_csv("data/figure7a.csv") %>%  
+  pivot_longer(    
+    cols = -1,
+    names_to = "age",    
+    values_to = "percent"
+    ) %>%  
+  rename(category = 1)  
+
+p7b <- dat7b %>% 
+  ggplot(
+    aes(age, percent, 
+        group = gender,
+        color = gender)
+  ) +
+  geom_line(linewidth = 2) +
+  scale_color_grey(name = NULL) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +
+  #scale_y_continuous(limits = c(0, NA)) +
+  labs(y=NULL) +
+  theme_classic(base_family = "roboto") +
+  theme(
+    legend.text = element_text(family = "roboto", size = rel(1.15)),    
+    legend.title = element_text(family = "roboto"),
+    legend.position = "top"
+    )
+
+combined_plot <- p7a + p7b + plot_layout(ncol = 2)
+combined_plot
+
+```
+
+
+```{r}
 #| label: "save-fig-7"
 #| eval: false
 #| echo: false
@@ -1025,9 +1107,6 @@ activate_fonts_for_saving()
 ggsave("fig/fig-7.png", width = 11, height = 4.9, dpi = 600)
 ```
 
-:::{.aside}
-These plots are both pretty underwhelming. Your version looks as if it's showing a real difference, but that's because you are plotting absolute numbers I think? Leave these out? 
-:::
 
 The recognition of this expression of linguistic autonomy seems to be predominantly female-led. In terms of age, we see a slight decrease among the younger cohorts, which to a degree will correlate with education: as we will see below, the more educated a respondent is, the more likely they are to recognize Standard Canadian English.
 
