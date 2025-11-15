@@ -1484,12 +1484,12 @@ p4 + scale_fill_grey(start = 0.2, end=0.9)
 ```
 
 ```{r}
-#| label: "save-fig-13"
+#| label: "save-fig-12"
 #| eval: false
 #| echo: false
 
 activate_fonts_for_saving() 
-ggsave("fig/fig-13.png", width = 7, height = 5, dpi = 600)
+ggsave("fig/fig-12.png", width = 7, height = 5, dpi = 600)
 ```
 
 Average EUI is significantly different between the monolinguals and self-reported bi- and multilinguals. The low EUI (some non-English use) speakers are less convinced and high EUI speakers (considerable non-English use) even more so. The EUI suggests that monolinguals (EUI = 0) are driving the identification with Canadian English. This is striking, as they are also the ones who are less likely to have heard of StCanE (Figure 5). The higher the EUI, the less likely one is to conceptualize Canadian English as an autonomous variety, though one is more likely to have heard about StCanE. The finding is consistent with multilingual children and their parents in a study in BC and Alberta (Dollinger et al. 2024). It may seem counter-intuitive that those who speak more than one language regularly would be less open towards the autonomy of Standard Canadian English but in the lived experiences – one may have learned American English in the Philippines before coming to Canada or UK English in Hong Kong – the Canadian dimension in English seems to be less important for the multilinguals who use their languages in one of the contexts.
@@ -1503,11 +1503,11 @@ The results show that roughly one in two respondents knows what StCanE is, while
 Students in elementary and secondary students are linguistically socialized in an unspecified construct of "standard English", schematized in Figure 15 on the left. The pluricentric notion, shown in the right panel, with separate reference points for each national standard, appears late in the respondents’ learning biographies, after high school, and then captures only a fraction of the domestic population. Ethnicity does not affect preferences for a pluricentric view, but, as Figure 13 suggests, the frequency of English use does: the less often one uses English, the less likely one is to construct Canadian English as one of the "peaks" of English in Figure 15. The Canadian (functional) monolinguals are less likely to have heard of the domestic standard.
 
 ```{r}
-#| label: fig-14-import
+#| label: fig-13-import
 #| fig-cap: "\"Unspecified\" \"standard English\" (left) and the pluricentric standards with three standards (right)."
 #| fig-width: 11
 
-include_graphics("fig/fig-14.png")
+include_graphics("fig/fig-13.png")
 
 ```
 
