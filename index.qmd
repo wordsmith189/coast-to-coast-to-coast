@@ -1384,15 +1384,7 @@ Yielding scores from 0 (not at all, not applicable) to 3 (very much) for each at
 
 Ethnic Orientation has no correlation with SLAI or with the key question of a "Canadian way of speaking". As shown in Figure 4, Education does a good job in tuning speakers, regardless of their ethnic backgrounds, onto a positive wavelength for Canadian English; it does, however, do a much less impressive job teaching the necessary concepts for a full appreciation of pluricentric Englishes, as just a little over half of the population have ever heard of StCanE (Figure 4).
 
-Another measure is the "English Use Index" (EUI), inspired by Chambers & Heisler’s (1999) "Language Use Index". The EUI gauges how frequently English is used based on six contexts:
-
-```{r}
-#| label: fig-12-import
-#| fig-cap: "EUI questions in the 2023 written questionnaire."
-#| fig-width: 8
-
-include_graphics("fig/fig-12.png")
-```
+Another measure is the "English Use Index" (EUI), inspired by Chambers & Heisler’s (1999) "Language Use Index". The EUI gauges how frequently English is used based on six contexts......
 
 Always and not applicable is assigned 0, never 3, so that the possible aggregate values for the EUI range between 0 (monolingual English) and 18. The highest actual value in the sample was 15, as indicated in Figure 13, which depicts “Canadian way of speaking” and speakers’ (socialized in Canada) frequencies of English use.
 
