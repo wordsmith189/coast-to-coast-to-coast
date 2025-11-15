@@ -730,7 +730,7 @@ ggsave("fig/fig-4.png", width = 9, height = 6.2, dpi = 600)
 ```
 
 
-Figure 4 depicts the 10 Canadian provinces (BC to NL) and one plot for the three Canadian Territories (TR), completed by the UK and US respondents. Most often respondents reported having heard the term "Standard Canadian English" in New Brunswick (NB), followed by Ontario (ON), British Columbia (BC), Alberta (AB), Quebec (QC), Manitoba, Sasktachewan. These seven provinces show significant differences between yes and no. The Maritime provinces, Nova Scotia (NS) do not reach significance, though more have heard the term, while in Prince Edward Island (PEI) those who haven’t heard are in the majority, there’s a tie in the Territories (TR). The UK respondents are more exposed to the term than people raised in Manitoba (MB), Newfoundland and Labrador (NL) and [Saskatchewan (SK)]{.underline}.
+Figure 4 depicts the 10 Canadian provinces (BC to NL) and one plot for the three Canadian Territories (TR), completed by the UK and US respondents. Most often respondents reported having heard the term "(Standard) Canadian English" in New Brunswick (NB), followed by Ontario (ON), British Columbia (BC), Alberta (AB), Quebec (QC), Manitoba, Sasktachewan. These seven provinces show significant differences between yes and no. The Maritime provinces, Nova Scotia (NS) do not reach significance, though more have heard the term, while in Prince Edward Island (PEI) those who haven’t heard are in the majority, there’s a tie in the Territories (TR). The UK respondents are more exposed to the term than people raised in Manitoba (MB), Newfoundland and Labrador (NL) and [Saskatchewan (SK)]{.underline}.
 
 The Americans (US) in our sample, all of whom likely with some ties to Canada as an artefact of our data collection method (snowball method), are more familiar with the term than Nova Scotians (NS) and Prince Edward Islanders (PE). The assumption is that if speakers are familiar with Standard Canadian English they are more likely to comprehend the social relevance of the variety as a marker of identity. Such awareness would therefore be strongest in New Brunswick (which sets it apart from the other Atlantic Provinces NS, PE and NL), followed by Ontario, then BC and Alberta.
 
@@ -813,7 +813,7 @@ ggsave("fig/fig-5.png", width = 6, height = 3.2, dpi = 600)
 ```
 
 
-Figure 5 shows that Multilinguals who were raised in Canada are significantly more likely than Monolinguals to have heard about Standard CanE. What, however, do they understand by the term, which is used in specialist circles, but very little in public discourse today (Figure 3 right, 2020-24 period)?
+Figure 5 shows that Multilinguals who were raised in Canada are significantly more likely than Monolinguals to have heard about (Standard) CanE. What, however, do they understand by the term, which is used in specialist circles, but very little in public discourse today (Figure 3 right, 2020-24 period)?
 
 An open answer field solicited definitions of Standard Canadian English, with the options to decline ("don’t know what it is", "do know it but cannot describe it well"), was designed to yield only the answers of the confident respondents in that aspect, some of which are reproduced in Table 2 below:
 
@@ -1112,7 +1112,7 @@ The recognition of this expression of linguistic autonomy seems to be predominan
 
 ## Standard Language Attitude Index (SLAI)
 
-A further attempt to gauge awareness of standard varieties is via a composite Index SLAI. The original concept of combining five factors was reduced to four due to low internal consistency with the last factor (Have you heard the term "Standard Canadian English"), which was treated separately above. SLAI averages the following four variables at the level of the individual respondent.[\[1\]](#_ftn1)
+A further attempt to gauge awareness of standard varieties is via a composite Index SLAI. The original concept of combining five factors was reduced to four due to low internal consistency with the last factor (Have you heard the term "(Standard) Canadian English"), which was treated separately above. SLAI averages the following four variables at the level of the individual respondent.[\[1\]](#_ftn1)
 
 -  **spell_uni**: Do you think Canadian university departments should encourage Canadian English spelling in academic work?
 
@@ -1492,7 +1492,7 @@ p4 <- data_percent %>%
   labs(title = "",
        x = "EUI Category",
        y = NULL,
-       fill = "Is there a Canadian Way\n[*to do what??*]?"
+       fill = "Is there a Canadian way\nof speaking English?"
        ) +
   theme_classic(base_family = "roboto") +
   theme(
