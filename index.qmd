@@ -88,9 +88,7 @@ Table 1 omitted
 
 The fourth line in the preference ratings refers to impressions of the perceived benefits that an association with the UK or the US offers to Canada. In 1977, this sample was clearly on the UK side. More generally, British people were rated more positively than Canadian people, but the Americans the lowest. Warkentyne comments that the "low scores on the items concerning Canadian identity should allay any fears that nationalism may be carried to the extreme" (1983: 73). Discussing correlations, including those about self-ratings and satisfaction in general, Gulden concludes "a striking combination": "those who do not have a very high opinion of themselves or any other people (except Americans) are more likely to favour the U.S. over the U.K." and those who show a high self-evaluation "are correlated with a preference for the U.K. over the U.S." (ibid: 123-4).
 
-:::{.aside}
-Gulden concludes >> Gulden observes
-:::
+
 
 ## The 2000s: An increase of Canadian linguistic awareness
 
@@ -118,9 +116,7 @@ Table 2 omitted
 
 **Table 2: Absolute frequencies: locations**
 
-:::{.aside}
-Make sure this one is labeled and referred to as Table 2.
-:::
+
 
 Response numbers by age and gender are depicted in Figure 1. As can be seen, the cohort 20-24 is best represented, with females typically outnumbering males. Non-binary respondents are best represented in the cohorts from 20-49.
 
@@ -716,9 +712,7 @@ p3 <- ggplot(df_percent_labeled, aes(x = st_heard, y = percent, fill = st_heard)
 p3 + scale_fill_grey(start=0.15, end=.85)
 
 ```
-:::{.aside}
-I would suggest we standardize how we quote this survey question to __"Have you heard of the term '(Standard) Canadian English'?"__ throughout the text. That makes it clearer what we're talking about in any given moment. 
-:::
+
 
 ```{r}
 #| label: "save-fig-4"
@@ -817,10 +811,6 @@ Figure 5 shows that Multilinguals who were raised in Canada are significantly mo
 
 An open answer field solicited definitions of Standard Canadian English, with the options to decline ("don’t know what it is", "do know it but cannot describe it well"), was designed to yield only the answers of the confident respondents in that aspect, some of which are reproduced in Table 2 below:
 
-:::{.aside}
-**Stefan**, suggestion to edit "open answer field" to "open-ended question".
-:::
-
 :::{.callout-note appearance="simple"}
 Table 3 omitted
 :::
@@ -899,11 +889,6 @@ activate_fonts_for_saving()
 ggsave("fig/fig-6.png", width = 6, height = 3.2, dpi = 600)
 ```
 
-:::{.aside}
-Does the text in the legend for the lower line make sense - "Yes, I do know it is"?
-
-Also, the caption should address the upper line first, then the lower one. Do you want me to swap the lines? Or does it work if you rearrange the caption?
-:::
 
 
 One additional issue is that the older teenagers are the age cohort that is the least likely to know what StCanE is. Only 10 of the 116 youngsters aged 15-19-years and socialized in Canada (162 overall, including newcomers) know what "Standard Canadian English" is, which raises the question how English is taught at Canadian schools, without using this key concept in pluricentric theory. Failure to teach the concept of linguistic pluricentricity in school may offer an explanation why the monolingual speakers (Figure 5) are less likely to have heard about StCanE than multilinguals, which leaves the monolinguals potential for linguistic identity formation untapped.
@@ -1303,10 +1288,6 @@ ggsave("fig/fig-8.png", width = 8, height = 4.2, dpi = 600)
 
 When we consider the factor gender (which tested as significant) in more detail, a more nuanced picture emerges that allows us to distinguish between English monolingual speakers and multilingual speakers on another level. Among the monolinguals, shown in Figure 9 on the left, gender is more important as a predictor than among the multilinguals (shown on the right). Specifically, monolingual (young) females with only an elementary school education are considerably more positive towards Standard Canadian English, expressed via a higher SLAI, than their male counterparts. A gap that is second widest among those with a graduate education. In the undergraduate segment, non-binary students are more sceptical than both males and females.
 
-:::{.aside}
-**Please note** suggested revision of the first sentence here to "When consider the factor gender (which tested as significant) in more detail, a more nuanced picture..."
-:::
-
 ```{r}
 #| label: fig-slai-edu-gender-umultiling
 #| fig-cap: "Standard Language Attitude Index by education, gender, and linguistic background."
@@ -1358,11 +1339,7 @@ ggsave("fig/fig-9.png", width = 8, height = 4.4, dpi = 600)
 ```
 
 
-For the multilinguals (right), males and females align much more closely with one another, with the notable exception of those who only completed elementary school, where males are again more ~~sceptical~~. Note that non-binaries are, from high-school on, more ~~sceptical~~, except those with a postgraduate degree, which have a slightly higher SLAI than both females and males in their cohort. 
-
-:::{.aside}
-sp.: skeptical
-:::
+For the multilinguals (right), males and females align much more closely with one another, with the notable exception of those who only completed elementary school, where males are again more septical. Note that non-binaries are, from high-school on, more skeptical, except those with a postgraduate degree, which have a slightly higher SLAI than both females and males in their cohort. 
 
 While the difference between male and female participants is clearest among respondents with *either* elementary education *or* those with a graduate degree, the countertrends for males on the one hand and females on the other can be shown in Figure 10:
 
@@ -1515,10 +1492,6 @@ activate_fonts_for_saving()
 ggsave("fig/fig-13.png", width = 7, height = 5, dpi = 600)
 ```
 
-:::{.aside}
-**Stefan**: (1) How can we improve the wording of the legend title for Fig. 13? (2) The caption is wrong, isn't it? 
-:::
-
 Average EUI is significantly different between the monolinguals and self-reported bi- and multilinguals. The low EUI (some non-English use) speakers are less convinced and high EUI speakers (considerable non-English use) even more so. The EUI suggests that monolinguals (EUI = 0) are driving the identification with Canadian English. This is striking, as they are also the ones who are less likely to have heard of StCanE (Figure 5). The higher the EUI, the less likely one is to conceptualize Canadian English as an autonomous variety, though one is more likely to have heard about StCanE. The finding is consistent with multilingual children and their parents in a study in BC and Alberta (Dollinger et al. 2024). It may seem counter-intuitive that those who speak more than one language regularly would be less open towards the autonomy of Standard Canadian English but in the lived experiences – one may have learned American English in the Philippines before coming to Canada or UK English in Hong Kong – the Canadian dimension in English seems to be less important for the multilinguals who use their languages in one of the contexts.
 
 While we know from previous work that local terms "do not register with the bi- and multilinguals to the same degree" as in the long-term resident population (Dollinger 2012: 529), this explanation does not apply to the results shown here to the same degree as all spent at least 9 years from ages 0-18 in Canada. While among multilingual newcomers the adoption of Canadian items is an exception (only 1 in 5 local forms was used, in that study the term *homo milk* ‘whole milk’) (ibid: 529-30), some of this group’s often predominant UK forms reinforce Canadian English features that seem to "preserve some of the Canadian markers that local speakers seem to be losing" (ibid: 530).
@@ -1538,12 +1511,7 @@ include_graphics("fig/fig-14.png")
 
 ```
 
-:::{.aside}
-The plot caption is very __hard to understand__ IMHO.
 
-
-Also pls note this is __Figure 14__, not 15. The references in the text are off. 
-:::
 
 
 The previous literature attests to an increase in linguistic awareness between the late 1970s and the early 2000s. In the 1977 UVic study a question about the CBC as the bearer of the Canadian standard was asked, and questions about subjective feelings when Canadians are mistaken for an American or British speaker, as well as whether a separate entity of Canadian English existed. These were reported in a composite index, however. An only mildly positive outlook in this category of "linguistic national identity" (+0.193 on a scale from -1 to +1) led to the conclusion that the group did "not feel very strongly about speaking a distinctive variety" (Gulden 1979: 58). In the early 2000s, 81% reported that, by and large, they believed in a "Canadian way of speaking English".
