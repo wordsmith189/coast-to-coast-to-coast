@@ -1367,8 +1367,8 @@ sp.: skeptical
 While the difference between male and female participants is clearest among respondents with *either* elementary education *or* those with a graduate degree, the countertrends for males on the one hand and females on the other can be shown in Figure 10:
 
 ```{r}
-#| label: fig-placeholder-for-10
-#| fig-width: 2.5
+#| label: placeholder-for-10
+#| fig-width: 6
 #| fig-height: 2
 #| fig-cap: "SLAI, Multilingualism and Gender"
 
@@ -1377,14 +1377,11 @@ df_plot %>% ggplot(aes(umultiling, slai)) +
   theme(
     legend.text = element_text(family = "roboto"),    
     legend.title = element_text(family = "roboto")
-  )
+  ) +
+  ggtitle("I am not a plot no more, and ain't numbered neither")
 
 ```
 
-
-:::{.aside}
-I'm not 100% certain that it makes sense to include Figure 10 ("SLAI, Multilingualism and Gender"). It is basically the same plot as the previous one, but with one variable--education--removed. So essentially we are dumbing our analysis down in order to make the gender difference look greater than it would appear if we were to account for education. I would suggest cutting this figure, and the attendant rhetorical turn. 
-:::
 
 In monolinguals females have a higher SLAI than their multilingual peers. The same holds for non-binary speakers. For men, however, the trend is reverse, as multilingual speakers have a higher SLAI than monolingual speakers, which leads to a split between males and females as a significant variable overall.
 
